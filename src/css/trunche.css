@@ -1,0 +1,65 @@
+.header-logo {
+   max-width: 333px;
+   width: 100%;
+}
+
+.baloons {
+  max-width: 388px;
+  @media (max-width: 1400px) {
+    display: none;
+  }
+}
+.baloons-left {
+  transform: rotate(-8deg);
+}
+
+.baloons-right {
+  transform: rotate(8deg);
+}
+
+.nav-item {
+ margin: 0 20px;
+ margin-top: 20px;
+ font-size: 20px;
+}
+
+main {
+  background-image: url('../assets/bg.svg');
+  background-size: 110%;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  main {
+    background-size: 170vw; /* Expands background on smaller screens */
+  }
+}
+
+.bg-white {
+  background-color: transparent !important;
+}
+
+.bg-light {
+  background-color: rgb(248 249 250 / 78%) !important;
+}
+
+.profile.bg-gradient-primary-to-secondary {
+    background: transparent !important;
+}
+
+.bg-gradient-primary-to-secondary {
+        background: linear-gradient(135deg, #f7ce1a 0%, #ea0a6f 100%);
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, #f7ce1a 0%, #ea0a6f 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.navbar-collapse {
+  text-align: center;
+}
