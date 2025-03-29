@@ -34,7 +34,10 @@ main {
 /* Mobile-specific adjustments */
 @media (max-width: 768px) {
   main {
-    background-size: 170vw; /* Expands background on smaller screens */
+    background-position: top center;background-repeat:no-repeat;
+    background-size: 76vh;
+    overflow: -moz-scrollbars-vertical;
+    overflow-y: scroll;
   }
 }
 
