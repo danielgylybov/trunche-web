@@ -42,7 +42,8 @@ body, html {
 }
 
 .content {
-position: absolute;
+    position: absolute;
+    display: contents;
 }
 
 .navbar.bg-white {
