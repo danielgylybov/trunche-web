@@ -28,7 +28,7 @@ async function loadDriveImages() {
                     <div class="row align-items-center gx-5">
                         <div class="col text-center text-lg-start mb-lg-0">
                             <div class="bg-light rounded-4">
-                                <img src="https://drive.google.com/thumbnail?id=${file.id}&sz=w1400"
+                                <img loading="lazy" src="https://drive.google.com/thumbnail?id=${file.id}&sz=w1400"
                                      alt="Страница ${index + 1}" class="img-fluid menu-item"/>
                             </div>
                         </div>
