@@ -1,0 +1,10 @@
+gmp-map {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.map {
+    min-height: 310px;
+    height: 70%;
+}
