@@ -68,7 +68,7 @@ async function loadDriveImages() {
                     <div class="card-body">
                         <div class="text-center">
                             <div class="bg-light rounded-4">
-                                <img src="https://drive.google.com/thumbnail?id=${file.id}&sz=w1400"
+                                <img loading="lazy" src="https://drive.google.com/thumbnail?id=${file.id}&sz=w1400"
                                      alt="Изображение ${index + 1}" class="img-fluid menu-item" style="cursor:pointer;"/>
                             </div>
                         </div>
