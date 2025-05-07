@@ -17,6 +17,7 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="src/css/styles.css" rel="stylesheet" />
         <link href="src/css/trunche.css" rel="stylesheet" />
+        <link href="src/css/contact.css" rel="stylesheet" />
     </head>
     <body class="d-flex flex-column">
     <div class="background"></div>
@@ -46,20 +47,17 @@
                 <div class="container px-5">
                     <!-- Contact form-->
                     <div class="bg-light rounded-4 py-5 px-4 px-md-5">
-                        <div class="text-center mb-5">
+                        <div class="text-center mb-2 mb-md-5">
                             <div class="feature bg-primary bg-gradient-primary-to-secondary text-white rounded-3 mb-3"><i class="bi bi-envelope"></i></div>
                             <h1 class="fw-bolder" id="title">Попитай ни</h1>
                             <p class="lead fw-normal text-muted mb-0" id="subtitle">Празнувай с нас!</p>
+                            <div class="d-flex justify-content-center fs-2 gap-4">
+                                <a class="text-gradient" href="https://www.facebook.com/profile.php?id=100033687105031"><i class="bi bi-facebook"></i></a>
+                                <a class="text-gradient" href="https://www.instagram.com/detski.kut.trunche"><i class="bi bi-instagram"></i></a>
+                            </div>
                         </div>
                         <div class="row gx-5 justify-content-center">
-                            <div class="col-lg-8 col-xl-6">
-                                <!-- * * * * * * * * * * * * * * *-->
-                                <!-- * * SB Forms Contact Form * *-->
-                                <!-- * * * * * * * * * * * * * * *-->
-                                <!-- This form is pre-integrated with SB Forms.-->
-                                <!-- To make this form functional, sign up at-->
-                                <!-- https://startbootstrap.com/solution/contact-forms-->
-                                <!-- to get an API token!-->
+                            <div class="col-lg-6 col-xl-6 col-sm-12">
                                 <form id="contactForm" action="https://formspree.io/f/xldbbkzp" method="POST" novalidate>
                                     <!-- Name input-->
                                     <div class="form-floating mb-3">
@@ -94,6 +92,17 @@
 
 
                             </div>
+                            <div class="col-lg-6 col-xl-6 col-sm-12 mt-5  mt-md-0">
+
+                                <p class="lead fw-normal text-muted mb-0" >Адрес</p> <p>гр.София, кв.Горна баня, ул.Тихи кът 10</p>
+                                <p class="lead fw-normal text-muted mb-0" >Телефон</p> <a href="tel:0895415287">+359895415287</a>
+                                <div class="map mt-4">
+                                    <gmp-map center="42.67734146118164,23.23501205444336" zoom="16" map-id="TRUNCHE_MAP">
+                                        <gmp-advanced-marker position="42.67734146118164,23.23501205444336" title="Trunche location"></gmp-advanced-marker>
+                                    </gmp-map>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -118,6 +127,7 @@
         <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     <script src="src/js/send-message.js"></script>
-
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNVJE-Ob29G5regkxSdS5atuteh2GaX_A&callback=console.debug&libraries=maps,marker&v=beta">
+    </script>
     </body>
 </html>
