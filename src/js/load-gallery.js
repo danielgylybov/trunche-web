@@ -50,7 +50,7 @@ async function loadDriveImages() {
         sortedSections.forEach(sectionData => {
             const { title, files } = sectionData;
 
-            let html = `<h2 class="display-10 fw-bolder mb-3 mt-5 mx-auto text-center">
+            let html = `<h2 class="display-10 fw-bolder mb-3 mt-1 mx-auto text-center">
                             <span class="text-gradient d-inline">${title}</span>
                         </h2>
                         <section class="row g-4 align-items-center justify-content-center mb-4">`;
@@ -62,7 +62,7 @@ async function loadDriveImages() {
                             <div class="card-body">
                                 <div class="text-center">
                                     <div class="bg-light rounded-4">
-                                        <img loading="lazy" src="https://drive.google.com/thumbnail?id=${file.id}&sz=w1400"
+                                        <img loading="lazy" src="https://drive.google.com/thumbnail?id=${file.id}&sz=w500"
                                             alt="Изображение ${index + 1}" class="img-fluid menu-item" style="cursor:pointer;"/>
                                     </div>
                                 </div>
@@ -76,7 +76,7 @@ async function loadDriveImages() {
             if (!firstTitle) firstTitle = title;
 
             const button = document.createElement("button");
-            button.className = "btn btn-outline-primary m-1";
+            button.className = "btn btn-outline-primary btn-lg px-5 py-3 me-sm-3 fs-6 mb-3 fw-bolder";
             button.innerText = title;
             button.onclick = () => {
                 viewer.innerHTML = sectionHTML[title];
@@ -98,6 +98,71 @@ async function loadDriveImages() {
             viewer.innerHTML = sectionHTML[firstTitle];
             updateActiveButton(firstTitle);
         }
+
+        // Overlay feature
+        const overlay = document.createElement("div");
+        overlay.id = "image-overlay";
+        overlay.style.cssText = `
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 100000;
+        `;
+
+        const overlayImg = document.createElement("img");
+        overlayImg.id = "overlay-image";
+        overlayImg.style.cssText = `
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            cursor: pointer;
+        `;
+
+        overlay.appendChild(overlayImg);
+        document.body.appendChild(overlay);
+
+        document.addEventListener("click", function (event) {
+            if (event.target.classList.contains("menu-item")) {
+                const fullImgUrl = event.target.src.replace("w500", "w2000");
+                overlayImg.src = fullImgUrl;
+                overlay.style.display = "flex";
+            }
+        });
+
+        overlay.addEventListener("click", () => {
+         const isDesktop = window.innerWidth >= 990;
+         if (!isDesktop) return;
+         overlay.style.display = "none";
+        });
+
+        const closeButton = document.createElement("div");
+        closeButton.innerHTML = "×";
+        closeButton.style.cssText = `
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            z-index: 100001;
+            user-select: none;
+        `;
+        overlay.appendChild(closeButton);
+
+        closeButton.addEventListener("click", () => {
+            overlay.style.display = "none";
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                overlay.style.display = "none";
+            }
+        });
 
     } catch (error) {
         console.error("Error loading images:", error);
