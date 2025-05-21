@@ -1,6 +1,6 @@
 async function loadDriveImages() {
-    const folderId = "1MBmXh2hcp-VdEXaT2E4PBypS1bs_YuG_"; // Your Google Drive folder ID
-    const apiKey = "AIzaSyCsRaSAqTpHtz-KZf35qDpBro9jn-VQ5zM"; // Your Google API key
+    const folderId = "13J2m8eeg9g0WNddp2IsGUgdMWnS4UXvF"; // Your Google Drive folder ID
+    const apiKey = "AIzaSyD_PBO70tO0uA2HFo0wHGS-IWyHwFfVZxA"; // Your Google API key
 
     const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents&key=${apiKey}&fields=files(id,name)`;
 

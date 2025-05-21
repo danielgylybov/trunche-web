@@ -14,7 +14,7 @@ document.getElementById("contactForm").addEventListener("submit", function(event
 
     submitButton.disabled = true;  // Деактивира бутон за изпращане, докато чакаме отговор
 
-    fetch("https://formspree.io/f/xldbbkzp", {
+    fetch("https://formspree.io/f/xpwdeape", {
       method: 'POST',
       body: formData,
       mode: 'no-cors'
