@@ -1,6 +1,6 @@
 async function loadDriveImages() {
-    const folderId = "1WRLsMVOc23EF397B2CI5CEoVG9eNbiWg";
-    const apiKey = "AIzaSyCsRaSAqTpHtz-KZf35qDpBro9jn-VQ5zM";
+    const folderId = "1d0EOV6f4Lmnn0ni0RPEUAW9jpFgT0P3U";
+    const apiKey = "AIzaSyD_PBO70tO0uA2HFo0wHGS-IWyHwFfVZxA";
     const viewer = document.querySelector("#section-viewer");
     const buttonContainer = document.querySelector("#section-buttons");
 
