@@ -18,7 +18,7 @@ async function loadDriveImages() {
         const sections = {};
 
         data.files.forEach(file => {
-            const match = file.name.match(/^(\d+)?_?([^_]+)_/); // [номер]_име_
+            const match = file.name.match(/^(\d+)?_?(.+?)_/);
             if (!match) return;
 
             const order = match[1] ? parseInt(match[1], 10) : null;
@@ -55,7 +55,9 @@ async function loadDriveImages() {
                         </h2>
                         <section class="row g-4 align-items-center justify-content-center mb-4">`;
 
-            files.forEach((file, index) => {
+            files
+            .sort((a, b) => a.name.localeCompare(b.name, 'bg', { numeric: true }))
+            .forEach((file, index) => {
                 html += `
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 justify-content-center">
                         <div class="card shadow border-0 rounded-4">
