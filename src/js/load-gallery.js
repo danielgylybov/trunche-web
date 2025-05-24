@@ -143,29 +143,50 @@ async function loadDriveImages() {
             user-select: none;
         `;
 
-        const prevBtn = document.createElement("div");
-        prevBtn.innerHTML = "&#10094;";
-        prevBtn.style.cssText = `
-            position: absolute;
-            left: 30px;
-            font-size: 40px;
-            color: white;
-            cursor: pointer;
-            z-index: 100001;
-            user-select: none;
-        `;
+const prevBtn = document.createElement("div");
+prevBtn.innerHTML = "&lt;";
+prevBtn.style.cssText = `
+    position: absolute;
+    left: 0px;
+    top: 50%;
+    transform: translateY(-50%) scaleY(1.5);
+    height: 200px;
+    width: 60px;
+    font-size: 48px;
+    color: white;
+    background: rgba(0, 0, 0, 0.3);  /* slightly dark translucent bg */
+    cursor: pointer;
+    z-index: 100001;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;   /* optional, soften edges */
+    box-shadow: 0 0 15px 16px rgba(0, 0, 0, 0.3); /* soft blurry shadow */
+`;
 
-        const nextBtn = document.createElement("div");
-        nextBtn.innerHTML = "&#10095;";
-        nextBtn.style.cssText = `
-            position: absolute;
-            right: 30px;
-            font-size: 40px;
-            color: white;
-            cursor: pointer;
-            z-index: 100001;
-            user-select: none;
-        `;
+const nextBtn = document.createElement("div");
+nextBtn.innerHTML = "&gt;";
+nextBtn.style.cssText = `
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translateY(-50%) scaleY(1.5);
+    height: 200px;
+    width: 60px;
+    font-size: 48px;
+    color: white;
+    background: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    z-index: 100001;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    box-shadow: 0 0 15px 16px rgba(0, 0, 0, 0.3);
+`;
+
 
         overlay.appendChild(overlayImg);
         overlay.appendChild(closeButton);
@@ -194,11 +215,7 @@ async function loadDriveImages() {
             }
         });
 
-        overlay.addEventListener("click", () => {
-            const isDesktop = window.innerWidth >= 990;
-            if (!isDesktop) return;
-            overlay.style.display = "none";
-        });
+
 
         closeButton.addEventListener("click", () => {
             overlay.style.display = "none";
