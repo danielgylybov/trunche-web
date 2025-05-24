@@ -11714,7 +11714,7 @@ html {
   }
   .profile .kids-logo-img {
     height: 35vw;
-    z-index: 100000;
+    z-index: 100;
   }
   .profile .dots-1 {
     width: 1.5vw;

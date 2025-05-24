@@ -6,6 +6,9 @@ async function loadDriveImages() {
 
     const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents&key=${apiKey}&fields=files(id,name)`;
 
+    let currentSectionImages = [];
+    let currentImageIndex = 0;
+
     try {
         const response = await fetch(url);
         const data = await response.json();
@@ -56,22 +59,22 @@ async function loadDriveImages() {
                         <section class="row g-4 align-items-center justify-content-center mb-4">`;
 
             files
-            .sort((a, b) => a.name.localeCompare(b.name, 'bg', { numeric: true }))
-            .forEach((file, index) => {
-                html += `
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 justify-content-center">
-                        <div class="card shadow border-0 rounded-4">
-                            <div class="card-body">
-                                <div class="text-center">
-                                    <div class="bg-light rounded-4">
-                                        <img loading="lazy" src="https://drive.google.com/thumbnail?id=${file.id}&sz=w500"
-                                            alt="Изображение ${index + 1}" class="img-fluid menu-item" style="cursor:pointer;"/>
+                .sort((a, b) => a.name.localeCompare(b.name, 'bg', { numeric: true }))
+                .forEach((file, index) => {
+                    html += `
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 justify-content-center">
+                            <div class="card shadow border-0 rounded-4">
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <div class="bg-light rounded-4">
+                                            <img loading="lazy" src="https://drive.google.com/thumbnail?id=${file.id}&sz=w500"
+                                                alt="Изображение ${index + 1}" class="img-fluid menu-item" style="cursor:pointer;"/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>`;
-            });
+                        </div>`;
+                });
 
             html += "</section>";
             sectionHTML[title] = html;
@@ -84,6 +87,7 @@ async function loadDriveImages() {
                 viewer.innerHTML = sectionHTML[title];
                 updateActiveButton(title);
                 viewer.scrollIntoView({ behavior: "smooth", block: "start" });
+                currentSectionImages = sections[title.toLowerCase()].files;
             };
 
             buttonContainer.appendChild(button);
@@ -99,9 +103,10 @@ async function loadDriveImages() {
         if (firstTitle) {
             viewer.innerHTML = sectionHTML[firstTitle];
             updateActiveButton(firstTitle);
+            currentSectionImages = sections[firstTitle.toLowerCase()].files;
         }
 
-        // Overlay feature
+        // Overlay
         const overlay = document.createElement("div");
         overlay.id = "image-overlay";
         overlay.style.cssText = `
@@ -125,23 +130,6 @@ async function loadDriveImages() {
             cursor: pointer;
         `;
 
-        overlay.appendChild(overlayImg);
-        document.body.appendChild(overlay);
-
-        document.addEventListener("click", function (event) {
-            if (event.target.classList.contains("menu-item")) {
-                const fullImgUrl = event.target.src.replace("w500", "w2000");
-                overlayImg.src = fullImgUrl;
-                overlay.style.display = "flex";
-            }
-        });
-
-        overlay.addEventListener("click", () => {
-         const isDesktop = window.innerWidth >= 990;
-         if (!isDesktop) return;
-         overlay.style.display = "none";
-        });
-
         const closeButton = document.createElement("div");
         closeButton.innerHTML = "×";
         closeButton.style.cssText = `
@@ -154,14 +142,78 @@ async function loadDriveImages() {
             z-index: 100001;
             user-select: none;
         `;
+
+        const prevBtn = document.createElement("div");
+        prevBtn.innerHTML = "&#10094;";
+        prevBtn.style.cssText = `
+            position: absolute;
+            left: 30px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            z-index: 100001;
+            user-select: none;
+        `;
+
+        const nextBtn = document.createElement("div");
+        nextBtn.innerHTML = "&#10095;";
+        nextBtn.style.cssText = `
+            position: absolute;
+            right: 30px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            z-index: 100001;
+            user-select: none;
+        `;
+
+        overlay.appendChild(overlayImg);
         overlay.appendChild(closeButton);
+        overlay.appendChild(prevBtn);
+        overlay.appendChild(nextBtn);
+        document.body.appendChild(overlay);
+
+        function showImageAt(index) {
+            if (index < 0 || index >= currentSectionImages.length) return;
+            const fileId = currentSectionImages[index].id;
+            overlayImg.src = `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`;
+            currentImageIndex = index;
+        }
+
+        document.addEventListener("click", function (event) {
+            if (event.target.classList.contains("menu-item")) {
+                const src = event.target.src;
+                const fullImgUrl = src.replace("w500", "w2000");
+                const match = src.match(/id=([^&]+)/);
+                if (match) {
+                    const id = match[1];
+                    currentImageIndex = currentSectionImages.findIndex(img => img.id === id);
+                }
+                overlayImg.src = fullImgUrl;
+                overlay.style.display = "flex";
+            }
+        });
+
+        overlay.addEventListener("click", () => {
+            const isDesktop = window.innerWidth >= 990;
+            if (!isDesktop) return;
+            overlay.style.display = "none";
+        });
 
         closeButton.addEventListener("click", () => {
             overlay.style.display = "none";
         });
 
+        prevBtn.onclick = () => showImageAt(currentImageIndex - 1);
+        nextBtn.onclick = () => showImageAt(currentImageIndex + 1);
+
         document.addEventListener("keydown", function (event) {
-            if (event.key === "Escape") {
+            if (overlay.style.display !== "flex") return;
+            if (event.key === "ArrowLeft") {
+                showImageAt(currentImageIndex - 1);
+            } else if (event.key === "ArrowRight") {
+                showImageAt(currentImageIndex + 1);
+            } else if (event.key === "Escape") {
                 overlay.style.display = "none";
             }
         });
