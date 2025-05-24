@@ -98,21 +98,17 @@
     overlay.style.display = 'none';
   };
 
-  function formatAgeOccasion(age) {
-    const lastDigit = age % 10;
-    const lastTwoDigits = age % 100;
-    let suffix = 'ти';
+function formatAgeOccasion(age) {
+  const lastTwoDigits = age % 100;
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+    return `${age}-ти`;
+  }
 
-    if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
-      suffix = 'ти';
-    } else if (lastDigit === 1) {
-      suffix = 'ви';
-    } else if (lastDigit === 2) {
-      suffix = 'ри';
-    } else if (lastDigit === 3) {
-      suffix = 'ти';
-    }
-
-    return `${age}-${suffix}`;
+  switch (age % 10) {
+    case 1: return `${age}-ви`;
+    case 2: return `${age}-ри`;
+    case 7:
+    case 8: return `${age}-ми`;
+    default: return `${age}-ти`;
   }
 })();
