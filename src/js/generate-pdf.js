@@ -111,4 +111,5 @@ function formatAgeOccasion(age) {
     case 8: return `${age}-ми`;
     default: return `${age}-ти`;
   }
+}
 })();
