@@ -2,7 +2,8 @@
 #modal {
   display: none;
   position: fixed;
-  top: 50%; left: 50%;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
   background: white;
   padding: 20px 30px;
@@ -10,6 +11,9 @@
   z-index: 1001;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
   width: 350px;
+
+  max-height: 100vh;
+  overflow-y: auto;
 }
   #modal textarea {
     width: 100%;
