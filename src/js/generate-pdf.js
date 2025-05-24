@@ -50,22 +50,23 @@
       });
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (img.height * pdfWidth) / img.width;
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
       pdf.addImage(img, 'PNG', 0, 0, pdfWidth, pdfHeight);
 
       pdf.setFontSize(20);
       pdf.setTextColor('#be321b');
       const maxWidth = pdfWidth - 200;
-      pdf.text(`${occasion}`, 250, 275, { maxWidth });
-      pdf.text(`${formattedDate}`, 190, 299, { maxWidth });
+      pdf.text(`${occasion}`, 250, 277, { maxWidth });
+      pdf.text(`${formattedDate}`, 190, 300, { maxWidth });
       pdf.setTextColor('#497b35');
-      pdf.text(`${time}`, 316.3, 332, { maxWidth });
+      pdf.text(`${time}`, 316.3, 333, { maxWidth });
 
       pdf.setFontSize(34);
       pdf.setTextColor(103, 193, 72);
-      pdf.text(`${from}`, 155, 544, { maxWidth });
+      pdf.text(`${from}`, 155, 545, { maxWidth });
       pdf.setTextColor('#ff3017');
-      pdf.text(`${to}`, 170, 579, { maxWidth });
+      pdf.text(`${to}`, 170, 584, { maxWidth });
 
       pdf.save(`покана-за-${to}.pdf`);
 
