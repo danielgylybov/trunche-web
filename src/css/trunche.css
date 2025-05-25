@@ -198,21 +198,25 @@ font-size: 23px;
 
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.4s ease, transform 0.3s ease;;
+
 }
 
-/* Активно състояние - бутонът се показва плавно */
+.call-button:hover {
+    color: #fff !important;
+    transform: scale(1.2);
+}
+
 .call-button.visible {
     opacity: 1;
     visibility: visible;
 }
 
-/* Показва се само на мобилни */
 @media (min-width: 768px) {
     .call-button {
         opacity: 0 !important;
         visibility: hidden !important;
-        pointer-events: none !important; /* за да не може да се кликва */
+        pointer-events: none !important;
     }
 }
 
