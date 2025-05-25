@@ -151,32 +151,36 @@ body, html {
     z-index: -1;
 }
 
-@media (max-width: 991px) {
 .navbar-collapse {
+  overflow: hidden;
+}
+
+@media (max-width: 991px) {
+  .navbar-collapse {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.5s ease-out;
-}
+  }
 
+  .navbar-collapse.show {
+    max-height: 600px; /* adjust to your menu height */
+  }
 
-.navbar-collapse.show {
-    max-height: 500px;
-}
-
-.navbar-nav .nav-item {
+  .navbar-nav .nav-item {
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.4s ease, transform 0.4s ease;
-}
+    /* Remove transition-delay here */
+  }
 
-.navbar-collapse.show .nav-item {
+  .navbar-collapse.show .nav-item {
     opacity: 1;
     transform: translateY(0);
-}
+  }
 
-.nav-item {
-font-size: 23px;
-}
+  .nav-item {
+    font-size: 23px;
+  }
 }
 
 
