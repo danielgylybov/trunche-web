@@ -51,3 +51,154 @@
       opacity: 0;
     }
   }
+
+section {
+
+  /* Заглавие на категорията */
+  h3.fw-bold {
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, #3a3f51, #2b2f3a);
+      color: #fff;
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      user-select: none;
+  }
+
+  /* Карта / кутия с условието */
+  .card.shadow {
+      background: #f8f9fa;
+      border-radius: 12px;
+      box-shadow:
+          0 4px 6px rgba(50,50,93,.11),
+          0 1px 3px rgba(0,0,0,.08);
+      padding: 1rem 1.5rem;
+      transition: box-shadow 0.3s ease;
+  }
+
+  .card.shadow:hover {
+      box-shadow:
+          0 8px 20px rgba(50,50,93,.2),
+          0 4px 10px rgba(0,0,0,.12);
+  }
+
+  /* Тяло на картата */
+  .card-body {
+      font-size: 0.95rem;
+      color: #333;
+      line-height: 1.5;
+  }
+
+  /* Списък */
+  ul.small {
+      list-style: none; /* махаме стандартните точки */
+      padding-left: 0;
+      margin-bottom: 0;
+  }
+
+  /* Всеки елемент в списъка */
+  ul.small li {
+      background: #fff;
+      margin-bottom: 0.75rem;
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      transition: background-color 0.3s ease;
+      text-align: start;
+  }
+
+  /* Икона - първия символ (емоджи) */
+  ul.small li::before {
+      content: attr(data-icon);
+      font-size: 1.3rem;
+      margin-right: 12px;
+      line-height: 1;
+  }
+
+  /* Текст в елемента */
+  ul.small li > br {
+      margin-bottom: 6px;
+  }
+
+  /* При задържане на мишката върху елемент */
+  ul.small li:hover {
+      background-color: #e7f1ff;
+      cursor: default;
+  }
+
+  /* Връзка в списъка */
+  ul.small a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 600;
+  }
+
+  ul.small a:hover {
+      text-decoration: underline;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+
+  .price-label {
+      display: inline-block;
+      background-color: #ffc107; /* Жълто, съответстващо на bg-warning */
+      color: #212529; /* Тъмен текст за контраст */
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      font-size: 1rem;
+      user-select: none;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+  }
+
+  .price-tag {
+      display: inline-block;
+      background: linear-gradient(135deg, #007bff, #0056b3); /* син градиент за bg-primary */
+      color: #fff;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 12px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+      font-size: 0.9rem;
+      transform: rotate(-3deg);
+      user-select: none;
+      margin-bottom: 10px;
+      transition: transform 0.3s ease;
+  }
+
+  .price-tag:hover {
+      transform: rotate(0deg) scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.35);
+      cursor: default;
+  }
+
+  .price-tag-alt {
+      display: inline-block;
+      background: #f8d7a8;
+      color: #5a3e1b;
+      font-weight: bold;
+      padding: 5px 12px;
+      border: 2px dashed #c39258;
+      border-radius: 10px 0 10px 0;
+      font-size: 0.85rem;
+      transform: rotate(2deg);
+      box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+  }
+
+  .price-tag-alt:hover {
+      transform: rotate(0deg) scale(1.04);
+      background: #ffe8c8;
+      cursor: default;
+  }
+
+ }
