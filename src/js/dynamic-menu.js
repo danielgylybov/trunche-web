@@ -30,6 +30,10 @@ document.addEventListener("DOMContentLoaded", function () {
         buttons.forEach(btn => {
             btn.classList.toggle("active", btn.dataset.category === category);
         });
+
+        document.querySelector('.menu-section').scrollIntoView({
+            behavior: 'smooth'
+        });
     }
 
     // Слушаме за кликове по бутоните

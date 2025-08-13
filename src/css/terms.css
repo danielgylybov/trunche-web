@@ -201,4 +201,10 @@ section {
       cursor: default;
   }
 
+  .price {
+    display: inline;
+    flex: none;
+    align-self: auto
+  }
+
  }
