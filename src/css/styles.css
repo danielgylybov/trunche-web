@@ -11733,3 +11733,18 @@ html {
     left: -2vw;
   }
 }
+
+  .nav-link {
+    background: linear-gradient(145deg, #ffdf7e, #ffb347);
+    border-radius: 50px;
+    padding: 10px 20px;
+    color: white !important;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    margin-bottom: 15px;
+  }
+  .nav-link:hover {
+    transform: scale(1.1);
+    background: linear-gradient(145deg, #ffd65e, #ff9933);
+  }
