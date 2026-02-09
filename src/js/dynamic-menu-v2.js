@@ -72,12 +72,10 @@ function stripCurrencyFromUnit(unit) {
 function normalizeUnitCurrencySymbols(unit) {
   // When dualCurrency is OFF:
   // if unit contains EUR -> ensure it uses "€" (not "EUR")
-  // Keep any suffix like "/ литър"
   const u = safeText(unit);
   const cur = detectCurrency(u);
   if (cur !== "EUR") return safeText(unit).trim();
 
-  // Remove any existing currency tokens, then add "€" + suffix
   const suffix = stripCurrencyFromUnit(u); // e.g. "/ литър"
   return `€${suffix ? ` ${suffix}` : ""}`.trim();
 }
@@ -156,7 +154,6 @@ function formatPrice(price, unit) {
   const uRaw = safeText(unit).trim();
   if (!uRaw) return p;
 
-  // FINAL REQUIREMENT:
   // If dual currency is OFF, and unit is EUR, always show "€" (not "EUR")
   if (!MENU_SETTINGS.dualCurrencyEnabled && detectCurrency(uRaw) === "EUR") {
     const normalizedUnit = normalizeUnitCurrencySymbols(uRaw);
@@ -265,6 +262,12 @@ function renderCategory(categoryId, rows) {
     return ul;
   };
 
+  const readField = (row, base, idx) => {
+    // supports: left2/right2, left3/right3, ... up to 6 (change if you want)
+    const key = idx === 1 ? base : `${base}${idx}`;
+    return safeText(row[key]).trim();
+  };
+
   rows.forEach(r => {
     const type = safeText(r.type).trim().toLowerCase();
     const title = safeText(r.title);
@@ -325,8 +328,9 @@ function renderCategory(categoryId, rows) {
       const facebook = safeText(r.facebook).trim();
       const website = safeText(r.website).trim();
 
+      // Partner layout: triggered when image exists
       if (image) {
-        const header = el("div", "d-flex justify-content-around mb-5");
+        const header = el("div", "d-flex justify-content-around mb-4");
 
         const img = document.createElement("img");
         img.src = image;
@@ -339,22 +343,38 @@ function renderCategory(categoryId, rows) {
         const rightBox = el("div", "");
         rightBox.appendChild(el("h5", "card-title fw-bold", title || ""));
 
-        const left = safeText(r.left).trim();
-        const rightVal = convertAnyCurrencyInText(r, r.right);
-        if (left || rightVal) {
-          rightBox.appendChild(
-            el("p", "mb-1", `<span class="price-tag">${left ? left + " – " : ""}${rightVal}</span>`)
-          );
+        // ✅ Multiple prices for partners:
+        // left/right + left2/right2 + left3/right3 ... (up to 6)
+        const lines = [];
+        for (let i = 1; i <= 6; i++) {
+          const l = readField(r, "left", i);
+          const rr = convertAnyCurrencyInText(r, readField(r, "right", i));
+          if (l || rr) lines.push({ l, r: rr });
+        }
+
+        if (lines.length > 0) {
+          lines.forEach((ln, idx) => {
+            rightBox.appendChild(
+              el(
+                "p",
+                idx === 0 ? "mb-1" : "mb-1",
+                `<span class="price-tag">${ln.l ? ln.l + " – " : ""}${ln.r}</span>`
+              )
+            );
+          });
         } else {
+          // fallback to structured price/unit if no left/right lines
           const pr = formatPriceMaybeDual(r, price, unit);
           if (pr) rightBox.appendChild(el("p", "mb-1", `<span class="price-tag">${pr}</span>`));
         }
 
         if (subtitle) rightBox.appendChild(el("p", "small mb-1", subtitle));
+
         header.appendChild(img);
         header.appendChild(rightBox);
         body.appendChild(header);
       } else {
+        // Standard item layout
         body.appendChild(el("h5", "card-title fw-bold", title || ""));
         const pr = formatPriceMaybeDual(r, price, unit);
         if (pr) body.appendChild(el("span", "price-tag mx-auto", pr));
@@ -363,6 +383,7 @@ function renderCategory(categoryId, rows) {
 
       if (note) body.appendChild(el("p", "small text-muted mt-2", note));
 
+      // Contacts
       if (phone || facebook || website) {
         const p = el("p", "small text-muted mt-auto");
         if (facebook) {
@@ -385,7 +406,7 @@ function renderCategory(categoryId, rows) {
       return;
     }
 
-    // list: now converts currency inside list text too (e.g. "8бр / 32лв")
+    // list: also converts currency inside list text (e.g. "8бр / 32лв")
     if (type === "list") {
       const text = title || note || "";
       if (!text) return;
@@ -394,12 +415,12 @@ function renderCategory(categoryId, rows) {
 
       if (lastItemBody) {
         const ul = ensureList(lastItemBody, "small mb-3");
-        ul.appendChild(el("li", "", html));
+        ul.appendChild(el("li", "", `<span class="list-text">${html}</span>`));
       } else {
         const card = el("div", "card shadow h-100");
         const body = el("div", "card-body");
         const ul = el("ul", "small mb-0");
-        ul.appendChild(el("li", "", html));
+        ul.appendChild(el("li", "", `<span class="list-text">${html}</span>`));
         body.appendChild(ul);
         card.appendChild(body);
         addCardCol(toColClass(col || 12), card);

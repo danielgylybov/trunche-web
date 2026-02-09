@@ -140,6 +140,12 @@ section {
       text-decoration: underline;
   }
 
+  .list-text {
+      display: inline;
+      max-width: 100%;
+      word-break: break-word;
+  }
+
   .card-body {
     display: flex;
     flex-direction: column;
