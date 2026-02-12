@@ -69,6 +69,15 @@ html {
   -webkit-text-fill-color: transparent;
 }
 
+/* Ensure icon fonts remain visible in Safari/iOS where text-fill-color can hide them */
+.text-gradient .bi,
+.text-gradient i {
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: currentColor;
+  color: #ea0a6f;
+}
+
 .navbar-collapse {
   text-align: center;
 }
