@@ -385,11 +385,11 @@ function renderCategory(categoryId, rows) {
 
       // Contacts
       if (phone || facebook || website) {
-        const p = el("p", "small text-muted mt-auto");
+        const p = el("p", "small text-muted mt-auto contact-links");
         if (facebook) {
           p.insertAdjacentHTML(
             "beforeend",
-            `<a class="text-gradient" href="${facebook}" target="_blank" rel="noopener"><i class="bi bi-facebook"></i></a><br>`
+            `<a class="text-gradient contact-social-link contact-social-link--facebook" href="${facebook}" target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook" aria-hidden="true"></i><span class="contact-social-label">Facebook</span></a><br>`
           );
         }
         if (phone) p.insertAdjacentHTML("beforeend", `Тел: <a href="tel:${phone}">${phone}</a><br>`);

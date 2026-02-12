@@ -214,3 +214,52 @@ section {
   }
 
  }
+
+.contact-social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  line-height: 1;
+}
+
+.contact-social-link--facebook {
+  padding: 0.45rem 0.75rem;
+  margin-bottom: 0.4rem;
+  border-radius: 999px;
+  background: rgba(234, 10, 111, 0.1);
+  border: 1px solid rgba(234, 10, 111, 0.2);
+  text-decoration: none;
+  font-weight: 700;
+  color: #ea0a6f;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: currentColor;
+}
+
+.contact-social-link--facebook .bi-facebook {
+  font-size: 1.15rem;
+}
+
+.contact-social-label {
+  display: inline;
+  font-size: 0.9rem;
+  color: #ea0a6f;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: currentColor;
+}
+
+@media (max-width: 767.98px) {
+  .contact-links {
+    margin-top: 0.75rem;
+  }
+
+  .contact-social-link--facebook {
+    min-height: 44px;
+    padding: 0.55rem 0.85rem;
+  }
+
+  .contact-social-link--facebook .bi-facebook {
+    font-size: 1.35rem;
+  }
+
+  .contact-social-label { font-size: 0.95rem; }
+}
