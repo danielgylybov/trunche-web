@@ -218,6 +218,47 @@ html {
   transition: opacity 0.4s ease, transform 0.3s ease;
 }
 
+.nav-new-menu-link {
+  position: relative;
+  display: inline-block;
+  padding-right: 2.2rem;
+}
+
+.nav-new-badge {
+  position: absolute;
+  top: -0.45rem;
+  right: 0.1rem;
+  display: inline-block;
+  padding: 0.12rem 0.38rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: #fff;
+  background: #ea0a6f;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transform: rotate(-8deg);
+  animation: navNewPulse 2.2s ease-in-out infinite;
+}
+
+@keyframes navNewPulse {
+  0%, 100% {
+    transform: rotate(-8deg) scale(1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    transform: rotate(-8deg) scale(1.08);
+    box-shadow: 0 4px 10px rgba(234, 10, 111, 0.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-new-badge {
+    animation: none;
+  }
+}
+
 .call-button:hover {
   color: #fff !important;
   transform: scale(1.2);
