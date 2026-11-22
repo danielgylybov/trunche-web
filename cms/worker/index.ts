@@ -464,7 +464,7 @@ async function adminRoute(request: Request, env: Env, path: string) {
       "SELECT id,mime,size,width,height,created_at FROM media WHERE state='ready' ORDER BY created_at DESC LIMIT 2000",
     ).all();
     return json({
-      user,
+      user: { ...user, environment: env.ENVIRONMENT },
       entities: await list(env),
       media: media.results,
       state,
@@ -643,18 +643,26 @@ export default {
     try {
       const path = new URL(request.url).pathname;
       if (path === "/api/content" || path.startsWith("/media/")) {
+        if (env.ENVIRONMENT === "staging") await authenticate(request, env);
         if (request.method !== "GET" && request.method !== "HEAD")
           throw new HttpError(405, "Непозволен метод.");
         const useCache =
           env.ENVIRONMENT === "production" && !new URL(request.url).search;
         const cacheKey = new Request(request.url, { method: "GET" });
         let response = useCache
-          ? await (caches as CacheStorage & { default: Cache }).default.match(cacheKey)
+          ? await (caches as CacheStorage & { default: Cache }).default.match(
+              cacheKey,
+            )
           : undefined;
         if (!response) {
           response = security(await publicRoute(request, env, path));
           if (useCache && response.ok)
-            ctx.waitUntil((caches as CacheStorage & { default: Cache }).default.put(cacheKey, response.clone()));
+            ctx.waitUntil(
+              (caches as CacheStorage & { default: Cache }).default.put(
+                cacheKey,
+                response.clone(),
+              ),
+            );
         }
         return request.method === "HEAD"
           ? new Response(null, response)

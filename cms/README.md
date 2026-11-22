@@ -94,3 +94,20 @@ pnpm --dir cms test:integration
 Unit тестове: евроцентове, схема/дати/URL, публичен snapshot, скрити родители, JWT подписи и членство, Origin и dev изолация. Integration: реални локални D1/R2, конфликтни версии, upload, непублична чернова-снимка, публикация, повторена публикация с един ключ, soft delete и restore.
 
 Документация на платформата: [Access за Workers](https://developers.cloudflare.com/workers/configuration/cloudflare-access/), [Custom Domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/), [защита преди static assets](https://developers.cloudflare.com/workers/static-assets/binding/), [R2 setup](https://developers.cloudflare.com/r2/get-started/).
+
+## Отделна dev среда без промяна на домейна
+
+`build:staging` подготвя един отделен Worker `trunche-cms-dev` на `workers.dev`: `/` е панелът, `/site/index.html` е редизайнът. HTML копията включват CMS адаптера към същия origin, dev надпис и `noindex`; контактната форма не изпраща истински писма. Първоначалните публични HTML файлове не се променят от пакетирането.
+
+Dev използва собствена база `trunche-cms-dev` и частен bucket `trunche-cms-dev-media`. Копирай `wrangler.staging.example.jsonc` в игнорирания `wrangler.staging.jsonc`, въведи действителните bindings, workers.dev origin, Access team URL и отделен application AUD. Защити **целия** dev Worker / hostname с Access allowlist на одобрените тестери, включително публичния преглед. В staging Worker-ът изисква валиден JWT и членство и за `/api/content` и `/media/*`; изключването на Access на edge не отваря скрито данните.
+
+```sh
+pnpm --dir cms build:staging
+node cms/scripts/export-staging.mjs
+# След потвърдени отделни Cloudflare dev ресурси и реален Access:
+pnpm --dir cms exec wrangler d1 migrations apply trunche-cms-dev --remote --config wrangler.staging.jsonc
+node cms/scripts/import-staging.mjs APPROVED_OWNER_EMAIL
+pnpm --dir cms deploy:staging
+```
+
+Експортът чете само локалния CMS и копира активните записи и използваните снимки с проверка на SHA-256 в игнорирания `.wrangler/staging-import/`. Членове и credentials не се копират. Импортът записва само в изрично именуваните dev ресурси, добавя одобрения owner и не презаписва съществуващи записи. След импорта публикувай от dev панела. `check-staging.mjs` отказва production bindings/routes и локален auth bypass. Реалната Access политика се проверява отделно в акаунта.

@@ -1151,7 +1151,11 @@ export default function App() {
     if (
       !confirm(
         "Да публикуваме всички запазени чернови?" +
-          (state.user.local ? " Това е само локална публикация." : ""),
+          (state.user.local
+            ? " Това е само локална публикация."
+            : state.user.environment === "staging"
+              ? " Това е публикация само в dev средата."
+              : ""),
       )
     )
       return;
@@ -1181,7 +1185,9 @@ export default function App() {
       setNotice(
         state.user.local
           ? "Локалната публикация е готова. Публичният сайт не е променен."
-          : "Публикацията е активна.",
+          : state.user.environment === "staging"
+            ? "Dev публикацията е активна. trunche.com не е променен."
+            : "Публикацията е активна.",
       );
     } catch (e) {
       setNotice("Грешка: " + (e as Error).message);
@@ -1264,9 +1270,10 @@ export default function App() {
         </div>
       </aside>
       <div className="main-shell">
-        {state.user.local && (
+        {(state.user.local || state.user.environment === "staging") && (
           <div className="local-banner">
-            Локална работна версия · промените тук не променят trunche.com
+            {state.user.local ? "Локална работна версия" : "Dev среда"} ·
+            промените тук не променят trunche.com
           </div>
         )}
         <header className="topbar">
@@ -1560,11 +1567,15 @@ export default function App() {
                         </div>
                         <div className="product-title">
                           <h2>{p.data.title}</h2>
-                          {['product','package','partner'].includes(p.data.kind) && <strong>{money(p.data.priceCents)}</strong>}
+                          {["product", "package", "partner"].includes(
+                            p.data.kind,
+                          ) && <strong>{money(p.data.priceCents)}</strong>}
                         </div>
                         <p>
                           {p.data.portion ||
-                            p.data.description || p.data.note || p.data.inclusions?.join(" · ") ||
+                            p.data.description ||
+                            p.data.note ||
+                            p.data.inclusions?.join(" · ") ||
                             "Добави описание за гостите."}
                         </p>
                         <footer>
@@ -1986,7 +1997,11 @@ export default function App() {
         <footer className="app-footer">
           <span>
             Трънче ·{" "}
-            {state.user.local ? "Локална среда" : "Управление на съдържанието"}
+            {state.user.local
+              ? "Локална среда"
+              : state.user.environment === "staging"
+                ? "Dev среда"
+                : "Управление на съдържанието"}
           </span>
           <span>
             {(state.media.reduce((n, m) => n + m.size, 0) / 1_000_000).toFixed(
@@ -2067,7 +2082,9 @@ export default function App() {
                             />
                           )}
                           <h3>{p.data.title}</h3>
-                          {['product','package','partner'].includes(p.data.kind) && <strong>{money(p.data.priceCents)}</strong>}
+                          {["product", "package", "partner"].includes(
+                            p.data.kind,
+                          ) && <strong>{money(p.data.priceCents)}</strong>}
                           <p>{p.data.description}</p>
                           {p.data.inclusions.map((line: string, i: number) => (
                             <p className="included" key={i}>

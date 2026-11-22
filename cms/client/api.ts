@@ -7,7 +7,12 @@ export type Media = {
   height: number;
 };
 export type State = {
-  user: { email: string; role: "owner" | "editor"; local: boolean };
+  user: {
+    email: string;
+    role: "owner" | "editor";
+    local: boolean;
+    environment?: string;
+  };
   entities: Entity[];
   media: Media[];
   state: {
