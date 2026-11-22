@@ -236,6 +236,7 @@ function renderCategory(categoryId, rows) {
   rows.sort((a, b) => Number(a.sort || 0) - Number(b.sort || 0));
 
   const wrapper = el("div", "menu-category d-none");
+  wrapper.setAttribute("role", "region");
   wrapper.id = categoryId;
 
   let currentRowContainer = null;
@@ -249,6 +250,7 @@ function renderCategory(categoryId, rows) {
   const addCardCol = (colClass, cardEl) => {
     if (!currentRowContainer) startNewRow();
     const col = el("div", colClass);
+    col.dataset.menuCard = "";
     col.appendChild(cardEl);
     currentRowContainer.appendChild(col);
   };
@@ -328,14 +330,29 @@ function renderCategory(categoryId, rows) {
       const facebook = safeText(r.facebook).trim();
       const website = safeText(r.website).trim();
 
-      // Partner layout: triggered when image exists
-      if (image) {
-        const header = el("div", "d-flex justify-content-around mb-4");
+      // Explicit imageType wins; contact fields preserve existing partner entries.
+      const isPartner = safeText(r.imageType).trim().toLowerCase() === "partner" ||
+        (safeText(r.imageType).trim().toLowerCase() !== "product" && Boolean(phone || facebook || website));
+      const imageUrl = safeImageUrl(image);
+      if (imageUrl && !isPartner) {
+        const photo = document.createElement("img");
+        photo.src = imageUrl;
+        photo.alt = title;
+        photo.loading = "lazy";
+        photo.decoding = "async";
+        photo.className = "product-image";
+        photo.addEventListener("error", () => photo.remove(), { once: true });
+        card.appendChild(photo);
+      }
+      if (imageUrl && isPartner) {
+        const header = el("div", "partner-header mb-4");
 
         const img = document.createElement("img");
-        img.src = image;
+        img.src = imageUrl;
+        img.loading = "lazy";
+        img.addEventListener("error", () => img.remove(), { once: true });
         img.alt = title || "";
-        img.className = "rounded-circle me-3";
+        img.className = "partner-image";
         img.style.width = "80px";
         img.style.height = "80px";
         img.style.objectFit = "cover";
@@ -469,68 +486,116 @@ function renderCategory(categoryId, rows) {
   return wrapper;
 }
 
-// -------------------- UI (buttons + switching) --------------------
-function setupCategoryButtons(categories) {
-  const buttonsRoot = document.getElementById("menuButtons");
-  if (!buttonsRoot) throw new Error("Missing #menuButtons in HTML");
-  buttonsRoot.innerHTML = "";
+// -------------------- UI --------------------
+function safeImageUrl(value) {
+  if (!value.trim()) return "";
+  try {
+    const url = new URL(value, location.href);
+    return ["https:", "http:"].includes(url.protocol) ? url.href : "";
+  } catch { return ""; }
+}
 
+function setupCategoryButtons(categories) {
+  const root = document.getElementById("menuButtons");
+  root.replaceChildren();
   categories.forEach(c => {
-    const b = el(
-      "button",
-      "btn btn-outline-primary btn-lg px-5 py-3 me-sm-3 fs-6 mb-3 fw-bolder",
-      c.label
-    );
-    b.dataset.category = c.id;
-    buttonsRoot.appendChild(b);
+    const button = el("button", "btn btn-outline-primary", "");
+    button.type = "button";
+    button.textContent = c.label;
+    button.dataset.category = c.id;
+    button.setAttribute("aria-controls", c.id);
+    button.setAttribute("aria-pressed", "false");
+    root.appendChild(button);
   });
 }
 
 async function loadAllCategories(categories) {
   const root = document.getElementById("menuRoot");
-  if (!root) throw new Error("Missing #menuRoot in HTML");
-  root.innerHTML = "";
+  const rendered = await Promise.allSettled(categories.map(async c => {
+    const res = await fetch(sheetUrl(c.id));
+    if (!res.ok) throw new Error(`Failed to load sheet tab: ${c.id}`);
+    const rows = parseGvizResponse(await res.text());
+    const node = renderCategory(c.id, rows);
+    node.setAttribute("aria-label", c.label);
+    return node;
+  }));
+  root.replaceChildren();
+  rendered.forEach((result, index) => {
+    if (result.status === "fulfilled") {
+      root.appendChild(result.value);
+    } else {
+      const node = el("div", "menu-category d-none");
+      node.id = categories[index].id;
+      node.appendChild(errorNotice("Тази категория не можа да се зареди."));
+      root.appendChild(node);
+    }
+  });
+}
 
-  const rendered = await Promise.all(
-    categories.map(async c => {
-      const res = await fetch(sheetUrl(c.id));
-      if (!res.ok) throw new Error(`Failed to load sheet tab: ${c.id}`);
-      const text = await res.text();
-      const rows = parseGvizResponse(text);
-      return renderCategory(c.id, rows);
-    })
-  );
-
-  rendered.forEach(node => root.appendChild(node));
+function errorNotice(message) {
+  const notice = el("div", "menu-status");
+  notice.setAttribute("role", "alert");
+  const text = el("p");
+  text.textContent = message + " Можеш да опиташ отново или да ни се обадиш на 0895 415 287.";
+  const retry = el("button", "btn btn-outline-dark");
+  retry.type = "button";
+  retry.textContent = "Опитай отново";
+  retry.addEventListener("click", () => location.reload());
+  notice.append(text, retry);
+  return notice;
 }
 
 function setupSwitching(categories) {
   const buttons = document.querySelectorAll("#menuButtons button");
   const sections = document.querySelectorAll("#menuRoot .menu-category");
-
-  function showSection(category) {
-    sections.forEach(s => s.classList.add("d-none"));
-    const active = document.getElementById(category);
-    if (active) active.classList.remove("d-none");
-
-    buttons.forEach(btn => btn.classList.toggle("active", btn.dataset.category === category));
-    document.querySelector(".menu-section")?.scrollIntoView({ behavior: "smooth" });
+  const search = document.getElementById("menuSearch");
+  const empty = document.getElementById("menuEmpty");
+  const normalize = value => value.toLocaleLowerCase("bg").normalize("NFC");
+  function filter() {
+    const active = document.querySelector("#menuRoot .menu-category:not(.d-none)");
+    const query = normalize(search.value.trim());
+    const cards = [...(active?.querySelectorAll("[data-menu-card]") || [])];
+    cards.forEach(card => card.hidden = Boolean(query) && !normalize(card.textContent).includes(query));
+    // Section headings don't describe a filtered set reliably.
+    active?.querySelectorAll(":scope > div:not(.row)").forEach(node => {
+      if (node.querySelector("h3")) node.hidden = Boolean(query);
+    });
+    empty.hidden = !cards.length || cards.some(card => !card.hidden);
   }
-
-  buttons.forEach(btn => btn.addEventListener("click", () => showSection(btn.dataset.category)));
-  showSection(categories[0]?.id || "");
+  function showSection(category, userAction = false) {
+    sections.forEach(section => section.classList.toggle("d-none", section.id !== category));
+    buttons.forEach(button => {
+      const selected = button.dataset.category === category;
+      button.classList.toggle("active", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    const label = categories.find(c => c.id === category)?.label || "Меню";
+    document.getElementById("menu-title").textContent = label;
+    search.value = "";
+    filter();
+    if (userAction) {
+      history.replaceState(null, "", "#" + encodeURIComponent(category));
+      document.querySelector(".menu-section").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
+    }
+  }
+  search.addEventListener("input", filter);
+  buttons.forEach(button => button.addEventListener("click", () => showSection(button.dataset.category, true)));
+  const initial = categories.find(c => "#" + encodeURIComponent(c.id) === location.hash);
+  showSection(initial?.id || categories[0]?.id || "");
 }
 
-// -------------------- Start --------------------
 document.addEventListener("DOMContentLoaded", async () => {
+  const root = document.getElementById("menuRoot");
   try {
     const categories = await loadIndexCategories();
+    if (!categories.length) throw new Error("No menu categories");
     setupCategoryButtons(categories);
     await loadAllCategories(categories);
     setupSwitching(categories);
-  } catch (e) {
-    console.error(e);
-    const root = document.getElementById("menuRoot");
-    if (root) root.innerHTML = `<div class="alert alert-danger">Грешка при зареждане на менюто.</div>`;
+  } catch (error) {
+    console.error(error);
+    root.replaceChildren(errorNotice("Менюто не можа да се зареди."));
+  } finally {
+    root.setAttribute("aria-busy", "false");
   }
 });

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="Галерия на детски кът Трънче – вдъхновете се от нашата декорация, кетъринг, зони за игри и комфортни места за настаняване.">
+    <meta name="description" content="Меню и цени на детски кът Трънче — детски куверти, храна, напитки и условия за вашия празник.">
     <meta name="author" content="Детски кът Трънче">
     <meta property="og:title" content="Детски кът на открито „Трънче“ – рожден ден сред природата в София" />
     <meta property="og:description" content="Организираме детски събития, които оставят незабравими спомени! Уютно място за игри и рождени дни сред природата." />
@@ -17,77 +17,56 @@
     <!-- Custom Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Shantell+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&family=Shantell+Sans:wght@600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap icons-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="src/css/styles.css" rel="stylesheet" />
     <link href="src/css/trunche.css" rel="stylesheet" />
     <link href="src/css/terms.css" rel="stylesheet" />
+    <link href="src/css/refresh.css" rel="stylesheet" />
 </head>
 <body class="d-flex flex-column h-100 bg-light">
 <div class="background"></div>
 <div class="content">
-    <main class="flex-shrink-0">
+    <main id="main-content" class="flex-shrink-0">
         <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
-            <div class="container px-5 flex flex-column">
-                <div class="header-img-container flex flex-row">
-                    <img class="baloons baloons-left" src="src/assets/baloons-left.png"/>
-                    <a class="navbar-brand" href="index.html"><img class="header-logo" src="src/assets/Logo.svg" alt="Logo"></a>
-                    <img class="baloons baloons-right" src="src/assets/baloons-right.png"/>
-                </div>
-                <button id="navbar-toggler" class="navbar-toggler balloon-button" type="button" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto mt-5 mt-lg-0 mb-0 mb-lg-0 small fw-bolder">
-                        <li class="nav-item"><a class="nav-link" href="index.html">🏠 Начало</a></li>
-                        <li class="nav-item"><a class="nav-link" href="gallery.html">📷 Галерия</a></li>
-                        <li class="nav-item"><a class="nav-link nav-new-menu-link" href="terms.html">📋 Меню <span data-menu-year></span><span class="nav-new-badge">NEW</span></a></li>
-                        <li class="nav-item"><a class="nav-link" href="contact.html">📞 Контакти</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.html#about">💡 За нас</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        <a class="skip-link" href="#main-content">Към съдържанието</a>
+<nav class="navbar navbar-expand-lg site-nav" aria-label="Основна навигация">
+ <div class="container nav-shell">
+  <a class="navbar-brand" href="index.html"><img class="header-logo" src="src/assets/Logo.svg" alt="Трънче — начало" width="160" height="80"></a>
+  <button id="navbar-toggler" class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Отвори навигацията"><span class="navbar-toggler-icon"></span></button>
+  <div class="navbar-collapse" id="navbarSupportedContent"><ul class="navbar-nav">
+   <li class="nav-item"><a class="nav-link" href="index.html">Начало</a></li>
+   <li class="nav-item"><a class="nav-link" href="terms.html">Меню и цени</a></li>
+   <li class="nav-item"><a class="nav-link" href="gallery.html">Галерия</a></li>
+   <li class="nav-item"><a class="nav-link" href="index.html#about">За Трънче</a></li>
+   <li class="nav-item"><a class="nav-link nav-contact" href="contact.html">Планирай празник</a></li>
+  </ul></div>
+ </div>
+</nav>
         <!-- Header-->
         <!-- Page Content-->
 
-        <div class="menu-buttons text-center mt-5" id="menuButtons"></div>
-
-        <section class="menu-section my-5 text-center">
-            <div class="container px-lg-5 px-xs-0 px-sm-0 my-5">
-                <div class="mb-5">
-                    <h2 id="menu-title" class="fw-bolder text-gradient mt-55">Меню 2025</h2>
-                </div>
-
-                <!-- Тук ще инжектираме категориите -->
-                <div id="menuRoot"></div>
-            </div>
+        <header class="page-intro container"><p class="eyebrow">ПРИГОТВЕНО С ЛЮБОВ</p><h1>Вкусната страна<br>на <em>празника.</em></h1><p>За малките гости и големите им приятели. Разгледай предложенията и условията за вашето събитие.</p></header>
+        <div class="menu-toolbar"><div class="container"><div class="menu-buttons" id="menuButtons" role="group" aria-label="Категории на менюто"></div></div></div>
+        <section class="menu-section container" aria-labelledby="menu-title">
+          <div class="menu-heading"><div><p class="eyebrow">ИЗБЕРИ НЕЩО ВКУСНО</p><h2 id="menu-title">Меню</h2></div><div class="menu-search"><label for="menuSearch">Търси в категорията</label><input id="menuSearch" type="search" placeholder="Напр. пица, сок…" autocomplete="off"></div></div>
+          <div id="menuRoot" aria-busy="true"><p class="menu-status" role="status">Зареждаме предложенията…</p></div>
+          <p id="menuEmpty" class="menu-status" role="status" hidden>Няма съвпадения в тази категория. Опитай с друга дума.</p>
+          <noscript>За зареждане на менюто е необходим JavaScript. Свържи се с нас на <a href="tel:+359895415287">0895 415 287</a>.</noscript>
         </section>
-
 
 
 
     </main>
     <!-- Footer-->
-    <footer class="bg-white py-4 mt-auto">
-        <div class="container px-5">
-            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
-                <div class="col-auto"><div class="small m-0">Copyright &copy; Trunche 2026</div></div>
-            </div>
-        </div>
-    </footer>
+    <footer class="site-footer mt-auto"><div class="container footer-shell"><div><strong>Малки хора. Големи спомени.</strong><p>Детски кът „Трънче“ · Горна баня, София</p></div><a href="tel:+359895415287">0895 415 287</a><span>© Трънче <span data-menu-year></span></span></div></footer>
 </div>
 <a id="scrollTopButton" href="#" class="scroll-top-button d-lg-none" aria-label="Върни се горе">
     <i class="bi bi-chevron-up"></i>
 </a>
-<script>
-    const year = new Date().getFullYear();
-    document.getElementById('menu-title').textContent = `Меню ${year}`;
-</script>
+
 
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

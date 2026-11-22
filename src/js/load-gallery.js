@@ -11,6 +11,7 @@ async function loadDriveImages() {
 
     try {
         const response = await fetch(url);
+        if (!response.ok) throw new Error("Gallery request failed");
         const data = await response.json();
 
         if (!data.files || data.files.length === 0) {
@@ -237,6 +238,7 @@ nextBtn.style.cssText = `
 
     } catch (error) {
         console.error("Error loading images:", error);
+        viewer.textContent = "Снимките не можаха да се заредят. Моля, презареди страницата или опитай по-късно.";
     }
 }
 
