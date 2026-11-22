@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 570" fill="none">
+<g stroke="#392664" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+<!-- sky, bunting and little surprises -->
+<path d="M57 122C155 188 437 163 587 66" stroke-dasharray="1 0"/>
+<path d="m99 145 16 45 28-33" fill="#F18EB3"/><path d="m173 163 19 43 25-39" fill="#A8D7BB"/><path d="m254 170 25 39 19-41" fill="#FFDE71"/><path d="m339 158 30 34 10-42" fill="#F18EB3"/><path d="m422 137 30 26 4-41" fill="#FFDE71"/><path d="m498 104 34 21-3-42" fill="#A8D7BB"/>
+<path d="M83 76c-16-30-55-8-42 11l34 24 31-30c18-24-14-44-23-5Z" fill="#F18EB3"/>
+<path d="m520 203 7-21 8 21 23 3-18 14 5 23-18-13-19 13 6-23-18-14Z" fill="#FFDE71"/>
+<path d="m190 70 7-15m17 32 15-4m-50 23-12 7"/>
+<!-- meadow -->
+<path d="M31 449c92-54 165-12 274-35 116-25 202-11 302 38v75H31Z" fill="#AADABD"/>
+<ellipse cx="314" cy="509" rx="271" ry="36" fill="#7BC39D" stroke="none"/>
+<!-- tree -->
+<path d="m105 442 10-155 25-2 14 157" fill="#DFA479"/>
+<path d="m126 346-33-32m38 8 33-35"/>
+<path d="M68 280c-38-23-19-68 11-73-11-47 49-62 70-32 39-16 76 20 55 53 40 24 18 72-17 69-8 35-53 39-70 14-34 19-64-3-49-31Z" fill="#84C59D"/>
+<path d="M87 257c12 9 19 8 28 0m24-34c10 8 18 8 27-1"/>
+<!-- slide -->
+<path d="M395 293h51v193h-20V323h-31Z" fill="#F18EB3"/>
+<path d="m398 315-61 171h-23l63-171Z" fill="#F18EB3"/>
+<path d="M356 425h65m-50-39h50m-36-39h36"/>
+<path d="M440 308c55 0 50 133 119 140l26 3v33h-38c-100-6-86-143-113-145Z" fill="#BCADF1"/>
+<path d="M444 294c56 4 62 128 114 136l29 4" stroke="#392664" stroke-width="7"/>
+<!-- child on slide -->
+<path d="m451 305 18 41 34 10" stroke-width="13"/>
+<path d="m461 339-24 13" stroke-width="13"/>
+<path d="m453 290 16 19 22-15m-40-1-23 15" stroke-width="10"/>
+<path d="M440 265h22l10 51h-40Z" fill="#FFDE71"/>
+<circle cx="451" cy="245" r="27" fill="#E9B18B"/>
+<path d="M425 240c1-31 46-39 54-4-12 4-26-1-32-12-4 9-11 14-22 16Z" fill="#392664"/>
+<path d="m440 247 1 0m19 0 1 0m-16 11c5 4 10 3 13-1" stroke-width="3"/>
+<!-- party table -->
+<path d="M183 417h170v25H183Z" fill="#BCADF1"/>
+<path d="m200 442-9 59m143-59 9 59" stroke-width="10"/>
+<path d="M191 434h153v29l-20-11-19 11-19-11-18 11-19-11-19 11-19-11-20 11Z" fill="#F18EB3"/>
+<!-- cake -->
+<path d="M229 383h78v34h-78Z" fill="#FFDE71"/>
+<path d="M229 384c8-18 15 9 25-1s15 13 24 0 18 14 29 0" fill="#FFF9EE"/>
+<path d="M241 381v-22m26 22v-22m27 22v-22" stroke="#F18EB3" stroke-width="6"/>
+<path d="M238 351q-1-13 5-16 9 12-1 17m22-1q-1-13 5-16 9 12-1 17m22-1q-1-13 5-16 9 12-1 17" fill="#FFBC5A" stroke-width="2"/>
+<!-- child and balloons -->
+<path d="m171 413-13 61m21-61 18 61" stroke-width="13"/>
+<path d="M143 360h45l11 63h-67Z" fill="#F18EB3"/>
+<path d="m147 370-29 20-25-24m94 5 23 16" stroke="#E9B18B" stroke-width="11"/>
+<circle cx="165" cy="334" r="29" fill="#E9B18B"/>
+<path d="M136 334c-13-39 54-49 57-12l-18-7-11 9-14-4-14 14Z" fill="#784C38"/>
+<path d="m153 336 1 0m19 0 1 0m-18 11q10 10 18-1" stroke-width="3"/>
+<path d="m136 311 19-37 25 32Z" fill="#FFDE71"/>
+<circle cx="155" cy="274" r="5" fill="#BCADF1"/>
+<path d="M92 364c-19-22 11-44 0-82m0 34c-32-18-10-53-30-70" stroke-width="2"/>
+<ellipse cx="92" cy="251" rx="26" ry="34" fill="#BCADF1" transform="rotate(8 92 251)"/>
+<ellipse cx="57" cy="218" rx="24" ry="32" fill="#FFDE71" transform="rotate(-12 57 218)"/>
+<!-- flowers / confetti -->
+<path d="m490 492 1 22m-1-7-10-8"/>
+<path d="M489 493c-23 4-19-20-6-15-10-18 14-24 14-7 13-13 27 7 9 12 18 11-4 26-11 11Z" fill="#F18EB3"/>
+<path d="m65 486 8 11m-20 3 12 2m515-124 10-8m-17-21-8-11"/>
+<circle cx="329" cy="239" r="8" fill="#F18EB3"/><circle cx="569" cy="294" r="6" fill="#FFDE71"/>
+</g></svg>

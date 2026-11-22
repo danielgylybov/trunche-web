@@ -15,15 +15,13 @@
     <!-- Favicon-->
     <link rel="icon" type="image/png" href="src/assets/cactus.png" />
     <!-- Custom Google font-->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&family=Shantell+Sans:wght@600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap icons-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="src/css/styles.css" rel="stylesheet" />
     <link href="src/css/trunche.css" rel="stylesheet" />
     <link href="src/css/terms.css" rel="stylesheet" />
+    <link rel="preload" href="src/assets/fonts/Nunito-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
     <link href="src/css/refresh.css" rel="stylesheet" />
 </head>
 <body class="d-flex flex-column h-100 bg-light">
@@ -48,20 +46,23 @@
         <!-- Header-->
         <!-- Page Content-->
 
-        <header class="page-intro container"><p class="eyebrow">ПРИГОТВЕНО С ЛЮБОВ</p><h1>Вкусната страна<br>на <em>празника.</em></h1><p>За малките гости и големите им приятели. Разгледай предложенията и условията за вашето събитие.</p></header>
-        <div class="menu-toolbar"><div class="container"><div class="menu-buttons" id="menuButtons" role="group" aria-label="Категории на менюто"></div></div></div>
-        <section class="menu-section container" aria-labelledby="menu-title">
-          <div class="menu-heading"><div><p class="eyebrow">ИЗБЕРИ НЕЩО ВКУСНО</p><h2 id="menu-title">Меню</h2></div><div class="menu-search"><label for="menuSearch">Търси в категорията</label><input id="menuSearch" type="search" placeholder="Напр. пица, сок…" autocomplete="off"></div></div>
-          <div id="menuRoot" aria-busy="true"><p class="menu-status" role="status">Зареждаме предложенията…</p></div>
-          <p id="menuEmpty" class="menu-status" role="status" hidden>Няма съвпадения в тази категория. Опитай с друга дума.</p>
-          <noscript>За зареждане на менюто е необходим JavaScript. Свържи се с нас на <a href="tel:+359895415287">0895 415 287</a>.</noscript>
-        </section>
+        <header class="menu-intro"><div class="container"><div><p class="eyebrow">ЗА ГЛАДНИ ПРИКЛЮЧЕНЦИ И ТЕХНИТЕ РОДИТЕЛИ</p><h1>М-м-м… <span>празник!</span></h1><p>Избери нещо вкусно. Ние добавяме щипка вълшебство.</p></div><svg aria-hidden="true"><use href="src/assets/play-icons.svg#cake"/></svg></div></header>
+        <div class="container menu-workspace">
+          <aside class="menu-sidebar" aria-label="Избери категория"><p class="sidebar-label">КАКВО ТИ СЕ ХАПВА?</p><div id="menuButtons" role="group" aria-label="Категории на менюто"><div class="category-skeleton" aria-hidden="true"></div><div class="category-skeleton" aria-hidden="true"></div><div class="category-skeleton" aria-hidden="true"></div><div class="category-skeleton" aria-hidden="true"></div><div class="category-skeleton" aria-hidden="true"></div><div class="category-skeleton" aria-hidden="true"></div></div><a class="menu-help" href="contact.html"><strong>Да измислим празника заедно?</strong><span>Пиши ни, ще помогнем.</span></a></aside>
+          <section class="menu-section" aria-labelledby="menu-title">
+            <div class="menu-search"><label for="menuSearch">Намери любимия вкус</label><div class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg><input id="menuSearch" type="search" placeholder="Търси в цялото меню…" autocomplete="off"><button id="clearSearch" type="button" aria-label="Изчисти търсенето" hidden>×</button></div></div>
+            <div class="menu-heading"><div><h2 id="menu-title">Подготвяме вкусотиите…</h2><p id="categoryDescription">Съвсем скоро сме готови за празник.</p></div><span id="menuCount" class="result-count" role="status" aria-live="polite"></span></div>
+            <div id="menuRoot" aria-busy="true"><div class="menu-loading" role="status"><div class="bouncing-snacks" aria-hidden="true"><svg><use href="src/assets/play-icons.svg#pizza"/></svg><svg><use href="src/assets/play-icons.svg#sweet"/></svg><svg><use href="src/assets/play-icons.svg#drink"/></svg></div><p>Подреждаме вкусотиите…</p></div><div class="skeleton-grid" aria-hidden="true"><div class="skeleton-card"><i></i><i></i><i></i></div><div class="skeleton-card"><i></i><i></i><i></i></div><div class="skeleton-card"><i></i><i></i><i></i></div><div class="skeleton-card"><i></i><i></i><i></i></div></div></div>
+            <div id="menuEmpty" class="menu-empty" role="status" hidden><span aria-hidden="true">⌕</span><h3>Тази вкусотия се е скрила!</h3><p>Опитай с друга дума, например „пица“ или „сок“.</p><button id="resetSearch" type="button" class="btn btn-outline-dark">Покажи менюто</button></div>
+            <noscript>За зареждане на менюто е необходим JavaScript. Обади ни се на <a href="tel:+359895415287">0895 415 287</a>.</noscript>
+          </section>
+        </div>
 
 
 
     </main>
     <!-- Footer-->
-    <footer class="site-footer mt-auto"><div class="container footer-shell"><div><strong>Малки хора. Големи спомени.</strong><p>Детски кът „Трънче“ · Горна баня, София</p></div><a href="tel:+359895415287">0895 415 287</a><span>© Трънче <span data-menu-year></span></span></div></footer>
+    <footer class="site-footer mt-auto"><div class="container footer-shell"><div><strong>Малки хора. Големи спомени.</strong><p>Детски кът „Трънче“ · Горна баня, София</p></div><a href="tel:+359895415287">0895 415 287</a><div class="footer-social"><a href="https://www.facebook.com/profile.php?id=100033687105031">Facebook</a><a href="https://www.instagram.com/detski.kut.trunche">Instagram</a></div><span>© Трънче <span data-menu-year></span></span></div></footer>
 </div>
 <a id="scrollTopButton" href="#" class="scroll-top-button d-lg-none" aria-label="Върни се горе">
     <i class="bi bi-chevron-up"></i>

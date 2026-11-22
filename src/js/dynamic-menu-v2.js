@@ -117,7 +117,7 @@ function shouldShowDualCurrency(row) {
 function convertAnyCurrencyInText(row, text) {
   const s = safeText(text).trim();
   if (!s) return s;
-  if (!shouldShowDualCurrency(row)) return s;
+  if (!shouldShowDualCurrency(row)) return s.replace(/(\d+(?:[.,]\d+)?)\s*eur\b/gi, "$1 €");
 
   // IMPORTANT: no \b, so it matches "32лв", "32лв.", "32лв/бр.", "32лв)"
   const re = /(\d+(?:[.,]\d+)?)\s*(лв\.?|bgn|€|eur)/gi;
@@ -198,7 +198,7 @@ function toColClass(col) {
 
 // -------------------- Load categories (+ settings) from _index --------------------
 async function loadIndexCategories() {
-  const res = await fetch(sheetUrl(INDEX_SHEET));
+  const res = await fetch(sheetUrl(INDEX_SHEET), {signal: AbortSignal.timeout(15000)});
   if (!res.ok) throw new Error("Failed to load _index sheet");
   const text = await res.text();
   const rows = parseGvizResponse(text);
@@ -232,370 +232,242 @@ async function loadIndexCategories() {
 }
 
 // -------------------- Rendering --------------------
-function renderCategory(categoryId, rows) {
-  rows.sort((a, b) => Number(a.sort || 0) - Number(b.sort || 0));
-
-  const wrapper = el("div", "menu-category d-none");
-  wrapper.setAttribute("role", "region");
-  wrapper.id = categoryId;
-
-  let currentRowContainer = null;
-  let lastItemBody = null;
-
-  const startNewRow = () => {
-    currentRowContainer = el("div", "row g-4 justify-content-center");
-    wrapper.appendChild(currentRowContainer);
-  };
-
-  const addCardCol = (colClass, cardEl) => {
-    if (!currentRowContainer) startNewRow();
-    const col = el("div", colClass);
-    col.dataset.menuCard = "";
-    col.appendChild(cardEl);
-    currentRowContainer.appendChild(col);
-  };
-
-  const ensureList = (body, className) => {
-    let ul = body.querySelector("ul." + className.split(" ").join("."));
-    if (!ul) {
-      ul = el("ul", className);
-      body.appendChild(ul);
-    }
-    return ul;
-  };
-
-  const readField = (row, base, idx) => {
-    // supports: left2/right2, left3/right3, ... up to 6 (change if you want)
-    const key = idx === 1 ? base : `${base}${idx}`;
-    return safeText(row[key]).trim();
-  };
-
-  rows.forEach(r => {
-    const type = safeText(r.type).trim().toLowerCase();
-    const title = safeText(r.title);
-    const subtitle = safeText(r.subtitle);
-    const price = safeText(r.price);
-    const unit = safeText(r.unit);
-    const note = safeText(r.note);
-    const badge = safeText(r.badge);
-    const image = safeText(r.image);
-    const col = r.col;
-
-    if (type === "section") {
-      const section = el("div", "mb-5");
-      const h3Class = `fw-bold mb-4 mt-4 text-center ${badge || "bg-warning"} p-2 rounded`;
-      section.appendChild(el("h3", h3Class, title || ""));
-      wrapper.appendChild(section);
-      currentRowContainer = null;
-      lastItemBody = null;
-      return;
-    }
-
-    if (type === "info") {
-      const card = el("div", "card shadow h-100");
-      const body = el("div", "card-body");
-      body.appendChild(el("h5", "card-title fw-bold", title || "🚨 Важно"));
-      if (note || subtitle) body.appendChild(el("p", "fst-italic small", note || subtitle));
-      card.appendChild(body);
-      addCardCol(toColClass(col || 12), card);
-      lastItemBody = null;
-      return;
-    }
-
-    if (type === "hours") {
-      const left = safeText(r.left);
-      const right = safeText(r.right);
-
-      const card = el("div", "card shadow h-100");
-      const body = el("div", "card-body");
-
-      body.appendChild(el("h6", "fw-bold mx-auto text-center", title || "🕙 Работно време"));
-
-      const row = el("div", "mx-auto my-auto d-flex justify-content-center flex-wrap");
-      if (left) row.appendChild(el("span", "price-tag-alt m-2", left));
-      if (right) row.appendChild(el("span", "price-tag-alt m-2", right));
-      body.appendChild(row);
-
-      card.appendChild(body);
-      addCardCol(toColClass(col || 12), card);
-      lastItemBody = null;
-      return;
-    }
-
-    if (type === "item") {
-      const card = el("div", "card shadow h-100");
-      const body = el("div", "card-body d-flex flex-column");
-
-      const phone = safeText(r.phone).trim();
-      const facebook = safeText(r.facebook).trim();
-      const website = safeText(r.website).trim();
-
-      // Explicit imageType wins; contact fields preserve existing partner entries.
-      const isPartner = safeText(r.imageType).trim().toLowerCase() === "partner" ||
-        (safeText(r.imageType).trim().toLowerCase() !== "product" && Boolean(phone || facebook || website));
-      const imageUrl = safeImageUrl(image);
-      if (imageUrl && !isPartner) {
-        const photo = document.createElement("img");
-        photo.src = imageUrl;
-        photo.alt = title;
-        photo.loading = "lazy";
-        photo.decoding = "async";
-        photo.className = "product-image";
-        photo.addEventListener("error", () => photo.remove(), { once: true });
-        card.appendChild(photo);
-      }
-      if (imageUrl && isPartner) {
-        const header = el("div", "partner-header mb-4");
-
-        const img = document.createElement("img");
-        img.src = imageUrl;
-        img.loading = "lazy";
-        img.addEventListener("error", () => img.remove(), { once: true });
-        img.alt = title || "";
-        img.className = "partner-image";
-        img.style.width = "80px";
-        img.style.height = "80px";
-        img.style.objectFit = "cover";
-
-        const rightBox = el("div", "");
-        rightBox.appendChild(el("h5", "card-title fw-bold", title || ""));
-
-        // ✅ Multiple prices for partners:
-        // left/right + left2/right2 + left3/right3 ... (up to 6)
-        const lines = [];
-        for (let i = 1; i <= 6; i++) {
-          const l = readField(r, "left", i);
-          const rr = convertAnyCurrencyInText(r, readField(r, "right", i));
-          if (l || rr) lines.push({ l, r: rr });
-        }
-
-        if (lines.length > 0) {
-          lines.forEach((ln, idx) => {
-            rightBox.appendChild(
-              el(
-                "p",
-                idx === 0 ? "mb-1" : "mb-1",
-                `<span class="price-tag">${ln.l ? ln.l + " – " : ""}${ln.r}</span>`
-              )
-            );
-          });
-        } else {
-          // fallback to structured price/unit if no left/right lines
-          const pr = formatPriceMaybeDual(r, price, unit);
-          if (pr) rightBox.appendChild(el("p", "mb-1", `<span class="price-tag">${pr}</span>`));
-        }
-
-        if (subtitle) rightBox.appendChild(el("p", "small mb-1", subtitle));
-
-        header.appendChild(img);
-        header.appendChild(rightBox);
-        body.appendChild(header);
-      } else {
-        // Standard item layout
-        body.appendChild(el("h5", "card-title fw-bold", title || ""));
-        const pr = formatPriceMaybeDual(r, price, unit);
-        if (pr) body.appendChild(el("span", "price-tag mx-auto", pr));
-        if (subtitle) body.appendChild(el("p", "small mt-2", subtitle));
-      }
-
-      if (note) body.appendChild(el("p", "small text-muted mt-2", note));
-
-      // Contacts
-      if (phone || facebook || website) {
-        const p = el("p", "small text-muted mt-auto contact-links");
-        if (facebook) {
-          p.insertAdjacentHTML(
-            "beforeend",
-            `<a class="text-gradient contact-social-link contact-social-link--facebook" href="${facebook}" target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook" aria-hidden="true"></i><span class="contact-social-label">Facebook</span></a><br>`
-          );
-        }
-        if (phone) p.insertAdjacentHTML("beforeend", `Тел: <a href="tel:${phone}">${phone}</a><br>`);
-        if (website) {
-          const label = website.replace(/^https?:\/\//, "");
-          p.insertAdjacentHTML("beforeend", `<a href="${website}" target="_blank" rel="noopener">${label}</a>`);
-        }
-        body.appendChild(p);
-      }
-
-      card.appendChild(body);
-      addCardCol(toColClass(col || 6), card);
-      lastItemBody = body;
-      return;
-    }
-
-    // list: also converts currency inside list text (e.g. "8бр / 32лв")
-    if (type === "list") {
-      const text = title || note || "";
-      if (!text) return;
-
-      const html = convertAnyCurrencyInText(r, text);
-
-      if (lastItemBody) {
-        const ul = ensureList(lastItemBody, "small mb-3");
-        ul.appendChild(el("li", "", `<span class="list-text">${html}</span>`));
-      } else {
-        const card = el("div", "card shadow h-100");
-        const body = el("div", "card-body");
-        const ul = el("ul", "small mb-0");
-        ul.appendChild(el("li", "", `<span class="list-text">${html}</span>`));
-        body.appendChild(ul);
-        card.appendChild(body);
-        addCardCol(toColClass(col || 12), card);
-      }
-      return;
-    }
-
-    if (type === "line") {
-      const left = safeText(r.left || r.title).trim();
-      const right = convertAnyCurrencyInText(r, r.right);
-
-      if (!left && !right) return;
-
-      const liHtml = `
-        <li class="d-flex align-items-start">
-          <p class="m-0">${left}</p>
-          ${right ? `<span class="price-tag-alt ms-auto">${right}</span>` : ""}
-        </li>
-      `;
-
-      if (lastItemBody) {
-        const ul = ensureList(lastItemBody, "small mb-3");
-        ul.insertAdjacentHTML("beforeend", liHtml);
-      } else {
-        const card = el("div", "card shadow h-100");
-        const body = el("div", "card-body");
-        const ul = el("ul", "small mb-0");
-        ul.insertAdjacentHTML("beforeend", liHtml);
-        body.appendChild(ul);
-        card.appendChild(body);
-        addCardCol(toColClass(col || 12), card);
-      }
-      return;
-    }
-
-    if (type === "html") {
-      const card = el("div", "card shadow h-100");
-      const body = el("div", "card-body", note || subtitle || "");
-      card.appendChild(body);
-      addCardCol(toColClass(col || 12), card);
-      lastItemBody = null;
-      return;
-    }
+// Display labels are deliberately short; source category IDs remain stable.
+const CATEGORY_UI = {
+  kuverti: {label:'Детско меню', title:'За малките гости', description:'Куверти и любими хапки за гладни приключенци.', icon:'cake',tone:'#ffde71'},
+  soleni: {label:'Солени хапки', title:'Нещо солено', description:'Споделени плата и вкусни предложения за големите.',icon:'pizza',tone:'#b9e5ce'},
+  sladki: {label:'Сладки неща', title:'Животът е по-сладък тук', description:'За онова специално място, което винаги пазим за десерт.',icon:'sweet',tone:'#ffc1d6'},
+  napitki: {label:'Напитки', title:'Глътка свежест', description:'За малки глътки, големи наздравици и всичко между тях.',icon:'drink',tone:'#cce9fa'},
+  animacia: {label:'За празника', title:'Още малко вълшебство', description:'Анимация, фотография и декорация за вашия празник.',icon:'party',tone:'#d9cef9'},
+  uslovia: {label:'Условия', title:'Добре е да знаеш', description:'Важните подробности за един спокоен и щастлив празник.',icon:'rules',tone:'#ffe6b6'}
+};
+const cleanTitle = value => safeText(value).replace(/<[^>]*>/g,'').replace(/\p{Extended_Pictographic}|\uFE0F|\u200D|\u20E3/gu,'').trim();
+function categoryUI(category) {
+  return CATEGORY_UI[category.id] || {label:cleanTitle(category.label),title:cleanTitle(category.label),description:'Предложения за вашия празник.',icon:'party',tone:'#d9cef9'};
+}
+function escapeHtml(value) {
+  return safeText(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function safeImageUrl(value) {
+  if (!safeText(value).trim()) return '';
+  try { const url = new URL(value,location.href); return ['https:','http:'].includes(url.protocol) ? url.href : ''; }
+  catch { return ''; }
+}
+function renderPrice(row) {
+  const raw = safeText(row.price).trim();
+  if (!raw) return null;
+  const currency = detectCurrency(row.unit);
+  const number = Number(raw.replace(',','.'));
+  const amount = currency && Number.isFinite(number) ? number.toFixed(2) : raw;
+  const price = el('div','menu-price');
+  price.innerHTML = formatPriceMaybeDual(row,amount,currency || row.unit).replace(/(\d)\.(\d{2})/g,'$1,$2');
+  const unit = currency ? stripCurrencyFromUnit(row.unit) : '';
+  if (unit) {
+    const suffix = el('span','price-unit');
+    suffix.textContent = unit;
+    price.appendChild(suffix);
+  }
+  return price;
+}
+function photoNode(row, partner) {
+  const url = safeImageUrl(row.image);
+  if (!url) return null;
+  const image = document.createElement('img');
+  image.src = url;
+  image.alt = cleanTitle(row.title);
+  image.className = partner ? 'partner-image' : 'product-image';
+  image.loading = 'lazy'; image.decoding = 'async';
+  image.addEventListener('load',()=>{image.classList.add('is-loaded');image.parentElement?.classList.add('is-loaded');},{once:true});
+  image.addEventListener('error',()=>{const frame=image.closest('.menu-photo-frame');if(frame)frame.remove();else image.remove();},{once:true});
+  return image;
+}
+function appendDetails(body, lines) {
+  if (!lines.length) return;
+  const list = el('ul','menu-details');
+  lines.forEach(row=>{
+    const li = el('li');
+    const text = el('span');
+    text.innerHTML = convertAnyCurrencyInText(row,cleanTitle(row.type === 'line' ? row.left || row.title : row.title || row.note));
+    li.appendChild(text);
+    if (row.type === 'line' && row.right) li.appendChild(el('span','detail-price',convertAnyCurrencyInText(row,row.right)));
+    list.appendChild(li);
   });
-
+  body.appendChild(list);
+}
+function renderMenuCard(record, categoryId) {
+  const row = record.row;
+  const type = safeText(row.type).trim().toLowerCase();
+  const partner = safeText(row.imageType).toLowerCase() === 'partner' ||
+    (safeText(row.imageType).toLowerCase() !== 'product' && Boolean(row.phone || row.facebook || row.website));
+  const isInformation = type === 'item' && !partner && !row.price && /информаци|важно|услови|правила/i.test(cleanTitle(row.title));
+  const isPackage = categoryId === 'kuverti' && type === 'item' && /куверт/i.test(row.title);
+  const card = el('article','menu-card' + (isInformation ? ' menu-card--info' : type !== 'item' ? ` menu-card--${type === 'list' || type === 'line' || type === 'html' ? 'text' : type}` : partner ? ' menu-card--partner' : isPackage ? ' menu-card--package' : ' menu-card--product'));
+  card.dataset.menuCard = '';
+  card.dataset.kind = type;
+  if (type === 'item' && !isInformation) card.dataset.product = '';
+  const body = el('div','menu-card-body');
+  const heading = el('div','menu-item-heading');
+  const title = el('h4','menu-item-title');
+  title.textContent = cleanTitle(row.title) || (type === 'info' ? 'Важно за празника' : type === 'hours' ? 'Работно време' : '');
+  if (title.textContent) heading.appendChild(title);
+  if (type === 'item' && !partner) {
+    const price = renderPrice(row); if (price) heading.appendChild(price);
+  }
+  if (partner) {
+    const header = el('div','partner-header');
+    const photo = photoNode(row,true); if (photo) header.appendChild(photo);
+    header.appendChild(heading); body.appendChild(header);
+    const rates = el('div','partner-rates');
+    for (let i=1;i<=6;i++) {
+      const left = row[i === 1 ? 'left' : `left${i}`];
+      const right = row[i === 1 ? 'right' : `right${i}`];
+      if (left || right) rates.appendChild(el('div','',`${escapeHtml(left || '')}${left && right ? ' · ' : ''}<strong>${convertAnyCurrencyInText(row,right)}</strong>`));
+    }
+    if (rates.children.length) body.appendChild(rates);
+    else { const price = renderPrice(row); if (price) body.appendChild(price); }
+  } else {
+    if (type === 'item') { const photo = photoNode(row,false); if (photo) {const frame=el('div','menu-photo-frame');frame.appendChild(photo);card.appendChild(frame);} }
+    body.appendChild(heading);
+  }
+  if (type === 'hours') {
+    const values = el('div','hours-values');
+    [row.left,row.right].filter(Boolean).forEach(value=>values.appendChild(el('span','',value)));
+    body.appendChild(values);
+  }
+  if (type === 'html') body.appendChild(el('div','menu-rich-text',row.note || row.subtitle || ''));
+  else {
+    if (row.subtitle) body.appendChild(el('p','menu-item-description',row.subtitle));
+    appendDetails(body,record.lines);
+    if (row.note && row.note !== row.subtitle) body.appendChild(el('p','menu-item-note',row.note));
+  }
+  if (row.phone || row.facebook || row.website) {
+    const contacts = el('p','contact-links');
+    if (row.phone) {
+      const link = el('a');link.href = 'tel:' + safeText(row.phone).replace(/[^+\d]/g,'');link.textContent = safeText(row.phone);contacts.appendChild(link);
+    }
+    [['facebook','Facebook'],['website','Уебсайт']].forEach(([field,label])=>{
+      const url = safeImageUrl(safeText(row[field])); if (!url) return;
+      const link = el('a');link.href=url;link.textContent=label;link.target='_blank';link.rel='noopener';contacts.appendChild(link);
+    });
+    body.appendChild(contacts);
+  }
+  card.appendChild(body);
+  return card;
+}
+function renderCategory(categoryId, rows) {
+  const wrapper = el('div','menu-category');wrapper.id=categoryId;wrapper.hidden=true;
+  wrapper.setAttribute('role','region');
+  let group, grid, lastRecord;
+  function newGroup(title) {
+    group=el('div','menu-group');
+    if (title) { const heading=el('h3','menu-group-heading');heading.textContent=cleanTitle(title);group.appendChild(heading); }
+    grid=el('div','menu-card-grid');group.appendChild(grid);wrapper.appendChild(group);
+  }
+  // Attach subordinate lines to their item before rendering, preserving sheet order.
+  const blocks=[];
+  [...rows].sort((a,b)=>Number(a.sort||0)-Number(b.sort||0)).forEach(row=>{
+    const type=safeText(row.type).trim().toLowerCase();
+    if (type === 'section') {blocks.push({section:row.title});lastRecord=null;return;}
+    if (!['item','info','hours','list','line','html'].includes(type)) return;
+    if ((type === 'list' || type === 'line') && !cleanTitle(row.title || row.note || row.left) && !row.right) return;
+    if ((type === 'list' || type === 'line') && lastRecord) {lastRecord.lines.push({...row,type});return;}
+    const record={row:{...row,type},lines:[]};
+    if (type === 'list' || type === 'line') {record.row={type:'list'};record.lines.push({...row,type});}
+    blocks.push(record);lastRecord=type === 'item' ? record : null;
+  });
+  blocks.forEach(record=>{
+    if ('section' in record) {newGroup(record.section);return;}
+    if (!grid) newGroup();
+    grid.appendChild(renderMenuCard(record,categoryId));
+  });
   return wrapper;
 }
-
-// -------------------- UI --------------------
-function safeImageUrl(value) {
-  if (!value.trim()) return "";
-  try {
-    const url = new URL(value, location.href);
-    return ["https:", "http:"].includes(url.protocol) ? url.href : "";
-  } catch { return ""; }
-}
-
 function setupCategoryButtons(categories) {
-  const root = document.getElementById("menuButtons");
-  root.replaceChildren();
-  categories.forEach(c => {
-    const button = el("button", "btn btn-outline-primary", "");
-    button.type = "button";
-    button.textContent = c.label;
-    button.dataset.category = c.id;
-    button.setAttribute("aria-controls", c.id);
-    button.setAttribute("aria-pressed", "false");
+  const root=document.getElementById('menuButtons');root.replaceChildren();
+  categories.forEach(category=>{
+    const ui=categoryUI(category);
+    const button=el('button','category-button');button.type='button';button.dataset.category=category.id;
+    button.setAttribute('aria-controls',category.id);button.setAttribute('aria-pressed','false');
+    button.innerHTML=`<span class="category-icon" style="--tone:${ui.tone}" aria-hidden="true"><svg><use href="src/assets/play-icons.svg#${ui.icon}"/></svg></span><span>${escapeHtml(ui.label)}</span><span class="category-number" aria-hidden="true"></span>`;
     root.appendChild(button);
   });
 }
-
+function errorNotice(message) {
+  const notice=el('div','menu-status');notice.setAttribute('role','alert');
+  const text=el('p');text.textContent=message+' Опитай отново или ни се обади на 0895 415 287.';
+  const retry=el('button','btn btn-outline-dark');retry.type='button';retry.textContent='Опитай отново';
+  retry.addEventListener('click',()=>location.reload());notice.append(text,retry);return notice;
+}
 async function loadAllCategories(categories) {
-  const root = document.getElementById("menuRoot");
-  const rendered = await Promise.allSettled(categories.map(async c => {
-    const res = await fetch(sheetUrl(c.id));
-    if (!res.ok) throw new Error(`Failed to load sheet tab: ${c.id}`);
-    const rows = parseGvizResponse(await res.text());
-    const node = renderCategory(c.id, rows);
-    node.setAttribute("aria-label", c.label);
-    return node;
+  const root=document.getElementById('menuRoot');
+  const results=await Promise.allSettled(categories.map(async category=>{
+    const response=await fetch(sheetUrl(category.id),{signal:AbortSignal.timeout(15000)});
+    if (!response.ok) throw new Error('Category request failed');
+    const node=renderCategory(category.id,parseGvizResponse(await response.text()));
+    node.setAttribute('aria-label',categoryUI(category).title);
+    const searchHeading=el('h3','search-category-title');searchHeading.textContent=categoryUI(category).title;searchHeading.hidden=true;
+    node.prepend(searchHeading);return node;
   }));
-  root.replaceChildren();
-  rendered.forEach((result, index) => {
-    if (result.status === "fulfilled") {
-      root.appendChild(result.value);
-    } else {
-      const node = el("div", "menu-category d-none");
-      node.id = categories[index].id;
-      node.appendChild(errorNotice("Тази категория не можа да се зареди."));
-      root.appendChild(node);
-    }
+  const nodes=results.map((result,index)=>{
+    if (result.status === 'fulfilled') return result.value;
+    const node=el('div','menu-category');node.id=categories[index].id;node.hidden=true;node.dataset.failed='true';node.appendChild(errorNotice('Тази категория не можа да се зареди.'));return node;
+  });
+  root.replaceChildren(...nodes);
+  categories.forEach(category=>{
+    const count=document.getElementById(category.id).querySelectorAll('[data-product]').length;
+    document.querySelectorAll('#menuButtons button').forEach(button=>{
+      if (button.dataset.category === category.id && count) button.querySelector('.category-number').textContent=count;
+    });
   });
 }
-
-function errorNotice(message) {
-  const notice = el("div", "menu-status");
-  notice.setAttribute("role", "alert");
-  const text = el("p");
-  text.textContent = message + " Можеш да опиташ отново или да ни се обадиш на 0895 415 287.";
-  const retry = el("button", "btn btn-outline-dark");
-  retry.type = "button";
-  retry.textContent = "Опитай отново";
-  retry.addEventListener("click", () => location.reload());
-  notice.append(text, retry);
-  return notice;
-}
-
 function setupSwitching(categories) {
-  const buttons = document.querySelectorAll("#menuButtons button");
-  const sections = document.querySelectorAll("#menuRoot .menu-category");
-  const search = document.getElementById("menuSearch");
-  const empty = document.getElementById("menuEmpty");
-  const normalize = value => value.toLocaleLowerCase("bg").normalize("NFC");
-  function filter() {
-    const active = document.querySelector("#menuRoot .menu-category:not(.d-none)");
-    const query = normalize(search.value.trim());
-    const cards = [...(active?.querySelectorAll("[data-menu-card]") || [])];
-    cards.forEach(card => card.hidden = Boolean(query) && !normalize(card.textContent).includes(query));
-    // Section headings don't describe a filtered set reliably.
-    active?.querySelectorAll(":scope > div:not(.row)").forEach(node => {
-      if (node.querySelector("h3")) node.hidden = Boolean(query);
+  const buttons=[...document.querySelectorAll('#menuButtons button')];
+  const sections=[...document.querySelectorAll('#menuRoot .menu-category')];
+  const search=document.getElementById('menuSearch');
+  const clear=document.getElementById('clearSearch');
+  const empty=document.getElementById('menuEmpty');
+  const count=document.getElementById('menuCount');
+  const title=document.getElementById('menu-title');
+  const description=document.getElementById('categoryDescription');
+  const normalize=value=>value.toLocaleLowerCase('bg').normalize('NFC');
+  let selected=categories.find(category=>'#'+encodeURIComponent(category.id)===location.hash)?.id || categories[0].id;
+  function update() {
+    const query=normalize(search.value.trim());let matches=0;let failed=0;
+    sections.forEach(section=>{
+      if (section.dataset.failed) {section.hidden=Boolean(query) || section.id!==selected;failed++;return;}
+      const cards=[...section.querySelectorAll('[data-menu-card]')];
+      cards.forEach(card=>{
+        card.hidden=Boolean(query) && !normalize(card.textContent).includes(query);
+        if (!card.hidden && (query || section.id===selected) && (query || card.dataset.product !== undefined)) matches++;
+      });
+      section.querySelectorAll('.menu-group').forEach(group=>group.hidden=![...group.querySelectorAll('[data-menu-card]')].some(card=>!card.hidden));
+      section.hidden=query ? !cards.some(card=>!card.hidden) : section.id!==selected;
+      const heading=section.querySelector('.search-category-title');if (heading) heading.hidden=!query;
     });
-    empty.hidden = !cards.length || cards.some(card => !card.hidden);
+    buttons.forEach(button=>{const active=!query && button.dataset.category===selected;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
+    const ui=categoryUI(categories.find(category=>category.id===selected));
+    title.textContent=query ? 'Намерихме ли любимото?' : ui.title;
+    description.textContent=query ? 'Резултати от всички категории'+(failed ? ' · Някои категории не са заредени.' : '') : ui.description;
+    count.textContent=matches ? `${matches} ${query ? (matches === 1 ? 'резултат' : 'резултата') : (matches === 1 ? 'предложение' : 'предложения')}` : '';
+    empty.hidden=!query || matches>0;clear.hidden=!search.value;
   }
-  function showSection(category, userAction = false) {
-    sections.forEach(section => section.classList.toggle("d-none", section.id !== category));
-    buttons.forEach(button => {
-      const selected = button.dataset.category === category;
-      button.classList.toggle("active", selected);
-      button.setAttribute("aria-pressed", String(selected));
-    });
-    const label = categories.find(c => c.id === category)?.label || "Меню";
-    document.getElementById("menu-title").textContent = label;
-    search.value = "";
-    filter();
-    if (userAction) {
-      history.replaceState(null, "", "#" + encodeURIComponent(category));
-      document.querySelector(".menu-section").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
-    }
-  }
-  search.addEventListener("input", filter);
-  buttons.forEach(button => button.addEventListener("click", () => showSection(button.dataset.category, true)));
-  const initial = categories.find(c => "#" + encodeURIComponent(c.id) === location.hash);
-  showSection(initial?.id || categories[0]?.id || "");
+  function reset(){search.value='';update();search.focus();}
+  search.addEventListener('input',update);clear.addEventListener('click',reset);document.getElementById('resetSearch').addEventListener('click',reset);
+  buttons.forEach(button=>button.addEventListener('click',()=>{
+    selected=button.dataset.category;search.value='';update();history.replaceState(null,'','#'+encodeURIComponent(selected));
+    if (matchMedia('(max-width: 767px)').matches) document.querySelector('.menu-section').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',block:'start'});
+  }));
+  update();
 }
-
-document.addEventListener("DOMContentLoaded", async () => {
-  const root = document.getElementById("menuRoot");
+document.addEventListener('DOMContentLoaded',async()=>{
+  const root=document.getElementById('menuRoot');
   try {
-    const categories = await loadIndexCategories();
-    if (!categories.length) throw new Error("No menu categories");
-    setupCategoryButtons(categories);
-    await loadAllCategories(categories);
-    setupSwitching(categories);
-  } catch (error) {
-    console.error(error);
-    root.replaceChildren(errorNotice("Менюто не можа да се зареди."));
-  } finally {
-    root.setAttribute("aria-busy", "false");
-  }
+    const categories=await loadIndexCategories();if (!categories.length) throw new Error('No categories');
+    setupCategoryButtons(categories);await loadAllCategories(categories);setupSwitching(categories);
+  } catch(error) {
+    console.error(error);root.replaceChildren(errorNotice('Вкусотиите още не са пристигнали.'));
+    document.getElementById('menu-title').textContent='Ще опитаме ли отново?';
+    document.getElementById('categoryDescription').textContent='В момента няма връзка с менюто.';
+    document.getElementById('menuButtons').replaceChildren();
+  } finally {root.setAttribute('aria-busy','false');}
 });

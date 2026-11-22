@@ -10,7 +10,7 @@ async function loadDriveImages() {
     let currentImageIndex = 0;
 
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, {signal: AbortSignal.timeout(15000)});
         if (!response.ok) throw new Error("Gallery request failed");
         const data = await response.json();
 
@@ -238,7 +238,7 @@ nextBtn.style.cssText = `
 
     } catch (error) {
         console.error("Error loading images:", error);
-        viewer.textContent = "Снимките не можаха да се заредят. Моля, презареди страницата или опитай по-късно.";
+        viewer.innerHTML = '<div class="menu-status" role="alert"><h3>Спомените още пътуват…</h3><p>Снимките не можаха да се заредят. Моля, опитай отново по-късно.</p><a class="btn btn-outline-dark" href="contact.html">Свържи се с нас</a></div>';
     }
 }
 
