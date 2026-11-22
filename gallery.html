@@ -14,65 +14,50 @@
     <!-- Favicon-->
     <link rel="icon" type="image/png" href="src/assets/cactus.png" />
     <!-- Custom Google font-->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="canonical" href="https://trunche.com/gallery.html" />
-    <link href="https://fonts.googleapis.com/css2?family=Shantell+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <!-- Bootstrap icons-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="src/css/styles.css" rel="stylesheet" />
     <link href="src/css/trunche.css" rel="stylesheet" />
     <link href="src/css/gallery.css" rel="stylesheet" />
+    <link rel="preload" href="src/assets/fonts/Nunito-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+    <link href="src/css/refresh.css" rel="stylesheet" />
 </head>
 <body class="d-flex flex-column h-100 bg-light">
 <div class="background"></div>
 <div class="content">
-    <main class="flex-shrink-0">
+    <main id="main-content" class="flex-shrink-0">
         <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
-            <div class="container px-5 flex flex-column">
-                <div class="header-img-container flex flex-row">
-                    <img class="baloons baloons-left" src="src/assets/baloons-left.png"/>
-                    <a class="navbar-brand" href="index.html"><img class="header-logo" src="src/assets/Logo.svg" alt="Logo"></a>
-                    <img class="baloons baloons-right" src="src/assets/baloons-right.png"/>
-                </div>
-                <button id="navbar-toggler" class="navbar-toggler balloon-button" type="button" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto mt-5 mt-lg-0 mb-0 mb-lg-0 small fw-bolder">
-                        <li class="nav-item"><a class="nav-link" href="index.html">🏠 Начало</a></li>
-                        <li class="nav-item"><a class="nav-link" href="gallery.html">📷 Галерия</a></li>
-                        <li class="nav-item"><a class="nav-link nav-new-menu-link" href="terms.html">📋 Меню <span data-menu-year></span><span class="nav-new-badge">NEW</span></a></li>
-                        <li class="nav-item"><a class="nav-link" href="contact.html">📞 Контакти</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.html#about">💡 За нас</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        <a class="skip-link" href="#main-content">Към съдържанието</a>
+<nav class="navbar navbar-expand-lg site-nav" aria-label="Основна навигация">
+ <div class="container nav-shell">
+  <a class="navbar-brand" href="index.html"><img class="header-logo" src="src/assets/Logo.svg" alt="Трънче — начало" width="160" height="80"></a>
+  <button id="navbar-toggler" class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Отвори навигацията"><span class="burger-lines" aria-hidden="true"><span></span><span></span><span></span></span></button>
+  <div class="navbar-collapse" id="navbarSupportedContent"><p class="nav-welcome" aria-hidden="true">Накъде, приключенец? <span>✦</span></p><ul class="navbar-nav">
+   <li class="nav-item"><a class="nav-link" href="index.html"><span class="nav-symbol" aria-hidden="true"><svg><use href="src/assets/play-icons.svg#home"/></svg></span><span class="nav-copy"><span>Начало</span><small>Да поиграем!</small></span></a></li>
+   <li class="nav-item"><a class="nav-link" href="terms.html"><span class="nav-symbol" aria-hidden="true"><svg><use href="src/assets/play-icons.svg#cake"/></svg></span><span class="nav-copy"><span>Меню и цени</span><small>Нещо вкусно</small></span></a></li>
+   <li class="nav-item"><a class="nav-link" href="gallery.html"><span class="nav-symbol" aria-hidden="true"><svg><use href="src/assets/play-icons.svg#camera"/></svg></span><span class="nav-copy"><span>Галерия</span><small>Нашето място</small></span></a></li>
+   <li class="nav-item"><a class="nav-link" href="index.html#about"><span class="nav-symbol" aria-hidden="true"><svg><use href="src/assets/play-icons.svg#sun"/></svg></span><span class="nav-copy"><span>За Трънче</span><small>Малко за нас</small></span></a></li>
+   <li class="nav-item"><a class="nav-link nav-contact" href="contact.html"><span class="nav-symbol" aria-hidden="true"><svg><use href="src/assets/play-icons.svg#party"/></svg></span><span class="nav-copy"><span>Планирай празник</span><small>Да стане вълшебно</small></span></a></li>
+  </ul></div>
+ </div>
+</nav>
         <!-- Header-->
         <!-- Page Content-->
         <div class="container px-lg-5 px-xs-0 px-sm-0 my-5">
-            <div class="text-center mb-5">
-                <h1 class="display-5 fw-bolder mb-10"><span class="text-gradient d-inline">Галерия</span></h1>
+            <div class="section-heading gallery-heading">
+                <h1 class="display-5 fw-bolder mb-10"><span class="text-gradient d-inline">Ето къде растат усмивките.</span></h1>
             </div>
             <div class="gx-5 justify-content-center" id="dynamic-sections-container">
-                <h2 class="display-5 fw-bolder mb-5 mx-auto text-center">🐝 <span class="text-gradient d-inline">Жужи веселба във "Трънче", като пчеличка в ранно слънце! </span>🌞</h2>
+                <h2 class="display-5 fw-bolder mb-5 mx-auto text-center"><span class="gallery-description">Място за игри. Поводи за усмивки.</span></h2>
                 <div id="section-buttons" class="text-center mb-4"></div>
-                <div id="section-viewer"></div>
+                <div id="section-viewer"><div class="menu-loading" role="status"><div class="loading-flower" aria-hidden="true">✿</div><p>Събираме спомените…</p></div></div>
             </div>
         </div>
     </main>
     <!-- Footer-->
-    <footer class="bg-white py-4 mt-auto">
-        <div class="container px-5">
-            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
-                <div class="col-auto"><div class="small m-0">Copyright &copy; Trunche 2025</div></div>
-            </div>
-        </div>
-    </footer>
+    <footer class="site-footer mt-auto"><div class="container footer-shell"><div><strong>Малки хора. Големи спомени.</strong><p>Детски кът „Трънче“ · Горна баня, София</p></div><a href="tel:+359895415287">0895 415 287</a><div class="footer-social"><a href="https://www.facebook.com/profile.php?id=100033687105031"><svg class="social-icon" aria-hidden="true"><use href="src/assets/social-icons.svg#facebook"/></svg><span>Facebook</span></a><a href="https://www.instagram.com/detski.kut.trunche"><svg class="social-icon" aria-hidden="true"><use href="src/assets/social-icons.svg#instagram"/></svg><span>Instagram</span></a></div><span>© Трънче <span data-menu-year></span></span></div></footer>
 </div>
 
 <a id="scrollTopButton" href="#" class="scroll-top-button d-lg-none" aria-label="Върни се горе">
