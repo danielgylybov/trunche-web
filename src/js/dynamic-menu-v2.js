@@ -347,7 +347,7 @@ function renderMenuCard(record, categoryId) {
     }
     [['facebook','Facebook'],['website','Уебсайт']].forEach(([field,label])=>{
       const url = safeImageUrl(safeText(row[field])); if (!url) return;
-      const link = el('a');link.href=url;link.textContent=label;link.target='_blank';link.rel='noopener';contacts.appendChild(link);
+      const link = el('a');link.href=url;link.innerHTML=(field==='facebook' ? '<svg class="social-icon" aria-hidden="true"><use href="src/assets/social-icons.svg#facebook"/></svg> ' : '')+label;link.target='_blank';link.rel='noopener';contacts.appendChild(link);
     });
     body.appendChild(contacts);
   }

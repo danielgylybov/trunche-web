@@ -5,8 +5,12 @@ This is a repo that hosts the code of the trunche.com website
 ## Local preview
 
 Run `python3 -m http.server 8080` from the repository and open
-`http://localhost:8080`. No build step is needed. The menu and gallery still
-require access to their existing Google services.
+`http://localhost:8080`. No build step is needed. The menu requires access to its existing Google Sheets source. The gallery
+uses a bundled public photo listing on localhost, because the existing Drive
+API key only accepts the production origin. Photos still load from public Drive
+thumbnail URLs. In production, the live API is tried first (including pagination),
+with `src/data/gallery.json` as the fallback. The snapshot was exported on
+2026-11-22; refresh it when the Drive album changes to keep the fallback current.
 
 ## 2026 refresh
 

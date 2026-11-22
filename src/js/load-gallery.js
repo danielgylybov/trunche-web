@@ -1,245 +1,132 @@
-async function loadDriveImages() {
-    const folderId = "1d0EOV6f4Lmnn0ni0RPEUAW9jpFgT0P3U";
-    const apiKey = "AIzaSyD_PBO70tO0uA2HFo0wHGS-IWyHwFfVZxA";
-    const viewer = document.querySelector("#section-viewer");
-    const buttonContainer = document.querySelector("#section-buttons");
+(() => {
+  const FOLDER_ID = '1d0EOV6f4Lmnn0ni0RPEUAW9jpFgT0P3U';
+  // Existing public, origin-restricted key. The local preview uses the bundled snapshot.
+  const API_KEY = 'AIzaSyD_PBO70tO0uA2HFo0wHGS-IWyHwFfVZxA';
+  const SNAPSHOT_URL = 'src/data/gallery.json';
+  const imageUrl = (id, size) => `https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w${size}`;
+  const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents&key=${apiKey}&fields=files(id,name)`;
-
-    let currentSectionImages = [];
-    let currentImageIndex = 0;
-
+  async function loadSnapshot() {
+    const response = await fetch(SNAPSHOT_URL, {signal: AbortSignal.timeout(8000)});
+    if (!response.ok) throw new Error('Gallery snapshot unavailable');
+    return (await response.json()).files;
+  }
+  async function loadFiles() {
+    const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+    if (local) return loadSnapshot();
     try {
-        const response = await fetch(url, {signal: AbortSignal.timeout(15000)});
-        if (!response.ok) throw new Error("Gallery request failed");
+      const files = [];
+      let pageToken = '';
+      do {
+        const url = new URL('https://www.googleapis.com/drive/v3/files');
+        url.searchParams.set('q', `'${FOLDER_ID}' in parents and trashed = false and mimeType contains 'image/'`);
+        url.searchParams.set('key', API_KEY);
+        url.searchParams.set('pageSize', '1000');
+        url.searchParams.set('fields', 'nextPageToken,files(id,name)');
+        if (pageToken) url.searchParams.set('pageToken', pageToken);
+        const response = await fetch(url, {signal: AbortSignal.timeout(8000)});
+        if (!response.ok) throw new Error('Drive gallery unavailable');
         const data = await response.json();
-
-        if (!data.files || data.files.length === 0) {
-            viewer.innerHTML = "<p>Няма налични снимки.</p>";
-            return;
-        }
-
-        const sections = {};
-
-        data.files.forEach(file => {
-            const match = file.name.match(/^(\d+)?_?(.+?)_/);
-            if (!match) return;
-
-            const order = match[1] ? parseInt(match[1], 10) : null;
-            const rawTitle = match[2].toLowerCase();
-
-            if (!sections[rawTitle]) {
-                sections[rawTitle] = {
-                    title: rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1),
-                    order: order !== null ? order : 9999,
-                    files: []
-                };
-            }
-
-            sections[rawTitle].files.push(file);
-            if (order !== null && order < sections[rawTitle].order) {
-                sections[rawTitle].order = order;
-            }
-        });
-
-        const sortedSections = Object.values(sections).sort((a, b) => {
-            if (a.order !== b.order) return a.order - b.order;
-            return a.title.localeCompare(b.title, 'bg');
-        });
-
-        const sectionHTML = {};
-        const buttons = {};
-        let firstTitle = null;
-
-        sortedSections.forEach(sectionData => {
-            const { title, files } = sectionData;
-
-            let html = `<h2 class="display-10 fw-bolder mb-3 mt-1 mx-auto text-center">
-                            <span class="text-gradient d-inline">${title}</span>
-                        </h2>
-                        <section class="row g-4 align-items-center justify-content-center mb-4">`;
-
-            files
-                .sort((a, b) => a.name.localeCompare(b.name, 'bg', { numeric: true }))
-                .forEach((file, index) => {
-                    html += `
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 justify-content-center">
-                            <div class="card shadow border-0 rounded-4">
-                                <div class="card-body">
-                                    <div class="text-center">
-                                        <div class="bg-light rounded-4">
-                                            <img loading="lazy" src="https://drive.google.com/thumbnail?id=${file.id}&sz=w500"
-                                                alt="Изображение ${index + 1}" class="img-fluid menu-item" style="cursor:pointer;"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`;
-                });
-
-            html += "</section>";
-            sectionHTML[title] = html;
-            if (!firstTitle) firstTitle = title;
-
-            const button = document.createElement("button");
-            button.className = "btn btn-outline-primary btn-lg px-5 py-3 me-sm-3 fs-6 mb-3 fw-bolder";
-            button.innerText = title;
-            button.onclick = () => {
-                viewer.innerHTML = sectionHTML[title];
-                updateActiveButton(title);
-                viewer.scrollIntoView({ behavior: "smooth", block: "start" });
-                currentSectionImages = sections[title.toLowerCase()].files;
-            };
-
-            buttonContainer.appendChild(button);
-            buttons[title] = button;
-        });
-
-        function updateActiveButton(activeTitle) {
-            for (const [title, btn] of Object.entries(buttons)) {
-                btn.classList.toggle("active", title === activeTitle);
-            }
-        }
-
-        if (firstTitle) {
-            viewer.innerHTML = sectionHTML[firstTitle];
-            updateActiveButton(firstTitle);
-            currentSectionImages = sections[firstTitle.toLowerCase()].files;
-        }
-
-        // Overlay
-        const overlay = document.createElement("div");
-        overlay.id = "image-overlay";
-        overlay.style.cssText = `
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            justify-content: center;
-            align-items: center;
-            z-index: 100000;
-        `;
-
-        const overlayImg = document.createElement("img");
-        overlayImg.id = "overlay-image";
-        overlayImg.style.cssText = `
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            cursor: pointer;
-        `;
-
-        const closeButton = document.createElement("div");
-        closeButton.innerHTML = "×";
-        closeButton.style.cssText = `
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            font-size: 40px;
-            color: white;
-            cursor: pointer;
-            z-index: 100001;
-            user-select: none;
-        `;
-
-const prevBtn = document.createElement("div");
-prevBtn.innerHTML = "&lt;";
-prevBtn.style.cssText = `
-    position: absolute;
-    left: 0px;
-    top: 50%;
-    transform: translateY(-50%) scaleY(1.5);
-    height: 200px;
-    width: 60px;
-    font-size: 48px;
-    color: white;
-    background: rgba(0, 0, 0, 0.3);  /* slightly dark translucent bg */
-    cursor: pointer;
-    z-index: 100001;
-    user-select: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;   /* optional, soften edges */
-    box-shadow: 0 0 15px 16px rgba(0, 0, 0, 0.3); /* soft blurry shadow */
-`;
-
-const nextBtn = document.createElement("div");
-nextBtn.innerHTML = "&gt;";
-nextBtn.style.cssText = `
-    position: absolute;
-    right: 0px;
-    top: 50%;
-    transform: translateY(-50%) scaleY(1.5);
-    height: 200px;
-    width: 60px;
-    font-size: 48px;
-    color: white;
-    background: rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    z-index: 100001;
-    user-select: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    box-shadow: 0 0 15px 16px rgba(0, 0, 0, 0.3);
-`;
-
-
-        overlay.appendChild(overlayImg);
-        overlay.appendChild(closeButton);
-        overlay.appendChild(prevBtn);
-        overlay.appendChild(nextBtn);
-        document.body.appendChild(overlay);
-
-        function showImageAt(index) {
-            if (index < 0 || index >= currentSectionImages.length) return;
-            const fileId = currentSectionImages[index].id;
-            overlayImg.src = `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`;
-            currentImageIndex = index;
-        }
-
-        document.addEventListener("click", function (event) {
-            if (event.target.classList.contains("menu-item")) {
-                const src = event.target.src;
-                const fullImgUrl = src.replace("w500", "w2000");
-                const match = src.match(/id=([^&]+)/);
-                if (match) {
-                    const id = match[1];
-                    currentImageIndex = currentSectionImages.findIndex(img => img.id === id);
-                }
-                overlayImg.src = fullImgUrl;
-                overlay.style.display = "flex";
-            }
-        });
-
-
-
-        closeButton.addEventListener("click", () => {
-            overlay.style.display = "none";
-        });
-
-        prevBtn.onclick = () => showImageAt(currentImageIndex - 1);
-        nextBtn.onclick = () => showImageAt(currentImageIndex + 1);
-
-        document.addEventListener("keydown", function (event) {
-            if (overlay.style.display !== "flex") return;
-            if (event.key === "ArrowLeft") {
-                showImageAt(currentImageIndex - 1);
-            } else if (event.key === "ArrowRight") {
-                showImageAt(currentImageIndex + 1);
-            } else if (event.key === "Escape") {
-                overlay.style.display = "none";
-            }
-        });
-
-    } catch (error) {
-        console.error("Error loading images:", error);
-        viewer.innerHTML = '<div class="menu-status" role="alert"><h3>Спомените още пътуват…</h3><p>Снимките не можаха да се заредят. Моля, опитай отново по-късно.</p><a class="btn btn-outline-dark" href="contact.html">Свържи се с нас</a></div>';
+        files.push(...(data.files || []));
+        pageToken = data.nextPageToken || '';
+      } while (pageToken);
+      return files;
+    } catch {
+      // A known-good, public photo listing keeps previews and outages usable.
+      return loadSnapshot();
     }
-}
-
-window.onload = loadDriveImages;
+  }
+  function groupFiles(files) {
+    const groups = new Map();
+    files.forEach(file => {
+      if (!/^[\w-]+$/.test(file.id) || !file.name) return;
+      const match = file.name.match(/^(\d+)?_?(.+?)_/);
+      const label = (match?.[2] || 'Спомени').trim();
+      const key = label.toLocaleLowerCase('bg');
+      const order = match?.[1] ? Number(match[1]) : 9999;
+      if (!groups.has(key)) groups.set(key, {title: label.charAt(0).toLocaleUpperCase('bg') + label.slice(1), order, files: []});
+      const group = groups.get(key);
+      group.order = Math.min(group.order, order);
+      group.files.push(file);
+    });
+    return [...groups.values()].sort((a,b) => a.order-b.order || a.title.localeCompare(b.title,'bg')).map(group => ({...group, files:group.files.sort((a,b) => a.name.localeCompare(b.name,'bg',{numeric:true}))}));
+  }
+  function makeButton(label, className) {
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = className; button.textContent = label;
+    return button;
+  }
+  function setupLightbox() {
+    const dialog = document.createElement('dialog');
+    dialog.className = 'gallery-lightbox';
+    dialog.setAttribute('aria-label','Преглед на снимка');
+    const close = makeButton('×','lightbox-close'); close.setAttribute('aria-label','Затвори снимката');
+    const prev = makeButton('‹','lightbox-prev'); prev.setAttribute('aria-label','Предишна снимка');
+    const next = makeButton('›','lightbox-next'); next.setAttribute('aria-label','Следваща снимка');
+    const image = document.createElement('img');
+    const caption = document.createElement('p'); caption.className = 'lightbox-caption';caption.setAttribute('aria-live','polite');
+    const status = document.createElement('p'); status.className='lightbox-status';status.setAttribute('role','status');
+    dialog.append(close,prev,image,next,status,caption); document.body.appendChild(dialog);
+    let files = [], index = 0, title = '', opener;
+    function show(target) {
+      index = target; status.textContent='Зареждаме снимката…';image.hidden=true;
+      image.alt = `${title} — снимка ${index+1}`;
+      image.src = imageUrl(files[index].id,1600);
+      caption.textContent = `${title} · ${index+1} / ${files.length}`;
+      prev.disabled=index===0;next.disabled=index===files.length-1;
+    }
+    image.addEventListener('load',()=>{image.hidden=false;status.textContent='';});
+    image.addEventListener('error',()=>{status.textContent='Снимката не можа да се зареди. Опитай следващата.';});
+    close.addEventListener('click',()=>dialog.close());
+    dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
+    prev.addEventListener('click',()=>show(index-1));next.addEventListener('click',()=>show(index+1));
+    dialog.addEventListener('keydown',event=>{
+      if(event.key==='ArrowLeft'&&index>0){event.preventDefault();show(index-1);}
+      if(event.key==='ArrowRight'&&index<files.length-1){event.preventDefault();show(index+1);}
+    });
+    dialog.addEventListener('close',()=>{document.body.classList.remove('lightbox-open');opener?.focus();});
+    return (group,target,button)=>{
+      files=group.files;title=group.title;opener=button;show(target);
+      document.body.classList.add('lightbox-open');dialog.showModal();close.focus();
+    };
+  }
+  async function initGallery() {
+    const viewer=document.getElementById('section-viewer');
+    const buttonsRoot=document.getElementById('section-buttons');
+    if(!viewer||!buttonsRoot)return;
+    viewer.setAttribute('aria-busy','true');
+    try {
+      const groups=groupFiles(await loadFiles());
+      if(!groups.length){viewer.textContent='Скоро тук ще има още усмихнати спомени.';return;}
+      const openPhoto=setupLightbox();const buttons=[];
+      function showGroup(group,index,userAction=false) {
+        buttons.forEach((button,i)=>{button.classList.toggle('active',i===index);button.setAttribute('aria-pressed',String(i===index));});
+        const heading=document.createElement('h2');heading.className='gallery-album-title';heading.textContent=group.title;
+        const count=document.createElement('p');count.className='gallery-album-count';count.textContent=`${group.files.length} снимки от нашето щастливо място`;
+        const grid=document.createElement('div');grid.className='gallery-grid';
+        group.files.forEach((file,i)=>{
+          const button=makeButton('','gallery-photo');button.setAttribute('aria-label',`${group.title} — отвори снимка ${i+1}`);
+          const image=document.createElement('img');image.alt=`${group.title} — снимка ${i+1}`;image.loading=i<4?'eager':'lazy';image.decoding='async';
+          const spinner=document.createElement('span');spinner.className='photo-loading';spinner.textContent='✿';spinner.setAttribute('aria-hidden','true');
+          image.addEventListener('load',()=>{button.classList.add('is-loaded');spinner.remove();});
+          image.addEventListener('error',()=>{button.classList.add('photo-error');spinner.textContent='Опитай отново';});
+          image.src=imageUrl(file.id,800);
+          button.append(image,spinner);button.addEventListener('click',()=>openPhoto(group,i,button));grid.appendChild(button);
+        });
+        viewer.replaceChildren(heading,count,grid);
+        if(userAction)viewer.scrollIntoView({behavior:reducedMotion()?'instant':'smooth',block:'start'});
+      }
+      groups.forEach((group,index)=>{
+        const button=makeButton(`${group.title} · ${group.files.length}`,'btn btn-outline-primary');
+        button.setAttribute('aria-controls','section-viewer');button.setAttribute('aria-pressed','false');
+        button.addEventListener('click',()=>showGroup(group,index,true));buttons.push(button);buttonsRoot.appendChild(button);
+      });
+      showGroup(groups[0],0);
+    } catch(error) {
+      console.error('Gallery could not load');
+      viewer.innerHTML='<div class="menu-status" role="alert"><h3>Спомените още пътуват…</h3><p>В момента няма връзка с галерията.</p></div>';
+      const retry=makeButton('Опитай отново','btn btn-outline-dark');retry.addEventListener('click',()=>location.reload());viewer.firstElementChild.appendChild(retry);
+    } finally {viewer.setAttribute('aria-busy','false');}
+  }
+  document.addEventListener('DOMContentLoaded',initGallery);
+})();
