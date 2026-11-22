@@ -1,6 +1,6 @@
 # Трънче CMS — Cloudflare
 
-Работеща локална реализация на React админ панел, Worker API, D1 база и частно R2 хранилище. Няма създадени production ресурси и няма промяна на DNS или текущия сайт.
+Работеща локална и отделна dev реализация на React админ панел, Worker API, D1 база и частно R2 хранилище. Няма създадени production ресурси и няма промяна на DNS или текущия сайт.
 
 ## Какво работи
 
@@ -111,3 +111,14 @@ pnpm --dir cms deploy:staging
 ```
 
 Експортът чете само локалния CMS и копира активните записи и използваните снимки с проверка на SHA-256 в игнорирания `.wrangler/staging-import/`. Членове и credentials не се копират. Импортът записва само в изрично именуваните dev ресурси, добавя одобрения owner и не презаписва съществуващи записи. След импорта публикувай от dev панела. `check-staging.mjs` отказва production bindings/routes и локален auth bypass. Реалната Access политика се проверява отделно в акаунта.
+
+
+### Публикувана dev среда — 23 ноември 2026
+
+- Панел: https://trunche-cms-dev.detskikuttrunche.workers.dev/
+- Редизайн: https://trunche-cms-dev.detskikuttrunche.workers.dev/site/index.html
+- Меню: `/site/terms.html`; галерия: `/site/gallery.html`.
+- Отделни D1 и частен R2: 152 активни записа, 91 снимки (67,9 MB), първа публикувана версия. Няма production/DNS промени.
+- Access е настроен чрез Cloudflare identity provider; в момента входът е с одобрения Cloudflare профил, а не с имейл OTP. Същият одобрен профил е owner в dev D1.
+- Проверени са пренасочванията към Access за панела, публичния преглед, admin API, content API и снимките без сесия. Допълнителните preview URLs и публичният R2 dev URL са изключени. Пълната проверка на екраните в онлайн средата след интерактивен вход остава за първата потребителска сесия.
+- Действителният акаунт, bindings и Access audience са в игнорирания `wrangler.staging.jsonc`; OAuth credentials не са в репото. Текущата версия на Worker е `4b8d9b57-21a3-4f29-a36d-4316b7a9b8b3`.
