@@ -3,7 +3,7 @@
   // Existing public, origin-restricted key. The local preview uses the bundled snapshot.
   const API_KEY = 'AIzaSyD_PBO70tO0uA2HFo0wHGS-IWyHwFfVZxA';
   const SNAPSHOT_URL = 'src/data/gallery.json';
-  const imageUrl = (id, size) => `https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w${size}`;
+  const imageUrl = (id, size) => window.TruncheCMS?.enabled ? window.TruncheCMS.media(id) : `https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w${size}`;
   const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   async function loadSnapshot() {
@@ -12,6 +12,7 @@
     return (await response.json()).files;
   }
   async function loadFiles() {
+    if(window.TruncheCMS?.enabled)return window.TruncheCMS.galleryFiles();
     const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
     if (local) return loadSnapshot();
     try {
@@ -70,9 +71,9 @@
     let files = [], index = 0, title = '', opener;
     function show(target) {
       index = target; status.textContent='Зареждаме снимката…';image.hidden=true;
-      image.alt = `${title} — снимка ${index+1}`;
+      image.alt = files[index].alt || `${title} — снимка ${index+1}`;
       image.src = imageUrl(files[index].id,1600);
-      caption.textContent = `${title} · ${index+1} / ${files.length}`;
+      caption.textContent = `${files[index].caption || title} · ${index+1} / ${files.length}`;
       prev.disabled=index===0;next.disabled=index===files.length-1;
     }
     image.addEventListener('load',()=>{image.hidden=false;status.textContent='';});
@@ -106,7 +107,7 @@
         const grid=document.createElement('div');grid.className='gallery-grid';
         group.files.forEach((file,i)=>{
           const button=makeButton('','gallery-photo');button.setAttribute('aria-label',`${group.title} — отвори снимка ${i+1}`);
-          const image=document.createElement('img');image.alt=`${group.title} — снимка ${i+1}`;image.loading=i<4?'eager':'lazy';image.decoding='async';
+          const image=document.createElement('img');image.alt=file.alt || `${group.title} — снимка ${i+1}`;image.loading=i<4?'eager':'lazy';image.decoding='async';
           const spinner=document.createElement('span');spinner.className='photo-loading';spinner.textContent='✿';spinner.setAttribute('aria-hidden','true');
           image.addEventListener('load',()=>{button.classList.add('is-loaded');spinner.remove();});
           image.addEventListener('error',()=>{button.classList.add('photo-error');spinner.textContent='Опитай отново';});

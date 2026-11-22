@@ -183,3 +183,14 @@ R2 таксува над безплатните квоти и няма обещ�
 - [R2: безплатни квоти и таксуване над тях](https://developers.cloudflare.com/r2/pricing/)
 - [Access: еднократен код по имейл](https://developers.cloudflare.com/cloudflare-one/integrations/identity-providers/one-time-pin/)
 - [Access: проверка на JWT в origin приложението](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/)
+
+
+## Реализация — 23 ноември 2026
+
+Локалният панел и API вече са в `cms/`: меню с цени в евро и снимки, категории, галерия/албуми, основни страници/контакти и съобщения, чернови, публикуване на версии и кошче. Импортирани и проверени локално: 55 предложения и 87 снимки, плюс четири партньорски изображения. Три временни Facebook адреса изискват оригинални файлове.
+
+Публичният адаптер `src/js/cms-source.js` използва публикуван Cloudflare snapshot при изрична конфигурация. Production все още използва стария CMS. Cloudflare акаунтът съществува, но домейнът още не е добавен; няма създадени remote D1/R2 ресурси, настроен Access или deployment.
+
+За да не блокира Access публичното меню, предвидени са два hostnames: защитен `admin.trunche.com` и публичен `content.trunche.com`. Worker-ът проверява JWT и членството при всеки admin endpoint независимо от hostname.
+
+Текущи инструкции, проверки и оставащи production задачи: [cms/README.md](../cms/README.md). Нужни са production импорт, пълен backup/restore на файловете, почистване на версии/неизползвани изображения, account квоти и реална проверка на OTP входа. Локалната реализация не е завършена production миграция.

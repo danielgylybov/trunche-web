@@ -1,0 +1,8 @@
+node_modules/
+cms/dist/
+cms/.wrangler/
+cms/.dev.vars*
+cms/.env*
+!cms/.env.example
+*.log
+.DS_Store

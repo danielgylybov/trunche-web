@@ -1,0 +1,61 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "trunche-cms",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-11-19",
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true,
+  },
+  "vars": {
+    "ENVIRONMENT": "production",
+    "ACCESS_TEAM_DOMAIN": "",
+    "ACCESS_AUDIENCE": "",
+    "ADMIN_ORIGIN": "https://admin.trunche.com",
+    "PUBLIC_ORIGIN": "https://trunche.com",
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "trunche-cms",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "trunche-cms-media",
+    },
+  ],
+  "env": {
+    "local": {
+      "vars": {
+        "ENVIRONMENT": "development",
+        "DEV_AUTH": "local-only",
+        "ADMIN_ORIGIN": "http://127.0.0.1:5173",
+        "PUBLIC_ORIGIN": "http://localhost:8080",
+        "ACCESS_TEAM_DOMAIN": "",
+        "ACCESS_AUDIENCE": "",
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "trunche-cms",
+          "database_id": "00000000-0000-0000-0000-000000000000",
+          "migrations_dir": "migrations",
+        },
+      ],
+      "r2_buckets": [
+        {
+          "binding": "MEDIA",
+          "bucket_name": "trunche-cms-media",
+        },
+      ],
+    },
+  },
+}
