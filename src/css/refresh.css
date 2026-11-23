@@ -127,3 +127,11 @@ button,input,textarea,select{font:inherit}a{color:var(--purple)}a:hover{color:va
  .ribbon-group{width:100%;flex-wrap:wrap;justify-content:center;gap:.8rem 1rem;padding:0 1rem;white-space:normal}
  .ribbon-copy{display:none}
 }
+
+/* The web export retains the complete brand with tighter transparent bounds. */
+.site-nav .header-logo{width:180px;height:auto;aspect-ratio:686/378;max-width:100%;object-fit:contain}
+.brand-loader{display:block;width:min(240px,65vw);height:auto;margin:0 auto;aspect-ratio:563.5/142.5}
+@media(max-width:991px){.site-nav .header-logo{width:160px}}
+@media(max-width:767px){.site-nav .header-logo{width:148px}}
+
+.photo-loading{animation:none}#section-viewer .gallery-photo .thumbnail-brand-loader{width:min(112px,calc(100% - 24px));height:auto;opacity:1;object-fit:contain;transition:none}

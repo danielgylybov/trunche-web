@@ -149,3 +149,9 @@ Contacts and working hours update existing marked links, contact rows and the ma
 ## Optional row prices
 
 Commercial offer rows support either plain text or `{title, priceCents, portionSpec}`. Both quantity and price are optional; null means no amount is shown, while zero remains an explicit price. Legacy rows ending in an exact EUR amount (for example `Cream — 8бр / 19 EUR`) are parsed conservatively by `offer-lines.mjs` during normalization. Narrative information, minimum prices and ambiguous expressions remain unchanged. The editor, preview, public renderer and diff use the same values. Opening or saving the converted representation does not report a price change when the amount is unchanged.
+
+## Web brand assets
+
+The original `src/assets/Logo.svg` remains unchanged. `logo-web.webp` is a lossless 2x export with the transparent outer canvas reduced to viewBox `7 3 686 378`; it keeps the complete frame, cactus, lettering and colors. The export is 85,322 bytes, compared with the 1,528,440-byte original. Visible pixels were compared against a source SVG render with zero differences. Headers use the cropped asset at 180px desktop, 160px tablet and 148px mobile widths.
+
+`logo-loading.svg` uses the six original colored letter outlines (source paths 12–22), with a sequential hop and a reduced-motion fallback. Keep the coordinate transforms on child groups: moving them to the animated groups lets CSS override the SVG transforms and hides the letters. It is used in menu/gallery initial loading, gallery image placeholders and the admin startup screen.

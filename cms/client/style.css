@@ -1686,3 +1686,5 @@ svg {
 .contact-summary>div{display:grid;grid-template-columns:minmax(100px,160px) minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid #eee}.contact-summary dt{font-weight:800}.contact-summary dd{margin:0;overflow-wrap:anywhere}.content-row .text-button{display:inline-block;margin-top:8px}
 
 .offer-line{border:1px solid #dfd6ed;border-radius:14px;padding:14px;margin:12px 0}.offer-line legend{font-size:.8rem;font-weight:800;color:#716184}.offer-line label{display:block;font-size:.85rem;font-weight:700}.offer-line-options{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;gap:12px;align-items:end;margin-top:12px}.offer-line input{width:100%;min-width:0}.offer-line-options .icon-btn{margin-bottom:4px}@media(max-width:600px){.offer-line-options{grid-template-columns:minmax(0,1fr) auto}.offer-line-options>label:first-child{grid-column:1/-1}}
+
+.brand img{width:165px;height:auto;aspect-ratio:686/378}.brand-loader{display:block;width:min(240px,65vw);height:auto;margin:0 auto;aspect-ratio:563.5/142.5}

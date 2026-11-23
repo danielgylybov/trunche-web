@@ -1,4 +1,5 @@
 (() => {
+  const brandLoaderURL = new URL('../assets/logo-loading.svg', document.currentScript.src).href;
   const FOLDER_ID = '1d0EOV6f4Lmnn0ni0RPEUAW9jpFgT0P3U';
   // Existing public, origin-restricted key. The local preview uses the bundled snapshot.
   const API_KEY = 'AIzaSyD_PBO70tO0uA2HFo0wHGS-IWyHwFfVZxA';
@@ -108,7 +109,7 @@
         group.files.forEach((file,i)=>{
           const button=makeButton('','gallery-photo');button.setAttribute('aria-label',`${group.title} — отвори снимка ${i+1}`);
           const image=document.createElement('img');image.alt=file.alt || `${group.title} — снимка ${i+1}`;image.loading=i<4?'eager':'lazy';image.decoding='async';
-          const spinner=document.createElement('span');spinner.className='photo-loading';const mark=document.createElementNS('http://www.w3.org/2000/svg','svg');mark.setAttribute('viewBox','0 0 64 64');mark.classList.add('decoration-icon');const rays=document.createElementNS('http://www.w3.org/2000/svg','path');rays.setAttribute('d','M32 5v54M5 32h54M13 13l38 38M13 51l38-38');rays.setAttribute('fill','none');rays.setAttribute('stroke','currentColor');rays.setAttribute('stroke-width','3');mark.append(rays);spinner.append(mark);spinner.setAttribute('aria-hidden','true');
+          const spinner=document.createElement('span');spinner.className='photo-loading';const mark=document.createElement('img');mark.src=brandLoaderURL;mark.alt='';mark.className='brand-loader thumbnail-brand-loader';spinner.append(mark);spinner.setAttribute('aria-hidden','true');
           image.addEventListener('load',()=>{button.classList.add('is-loaded');spinner.remove();});
           image.addEventListener('error',()=>{button.classList.add('photo-error');spinner.textContent='Опитай отново';});
           image.src=imageUrl(file.id,800);

@@ -74,7 +74,8 @@ import {
 import { RowList, TimeSlotsEditor, PortionEditor } from "./StructuredFields";
 import { ImagePosition } from "./ImagePosition";
 import { PurgeDialog, DeleteMedia, finishFileCleanup } from "./PurgeDialog";
-import logo from "../../src/assets/Logo.svg";
+import logo from "../../src/assets/logo-web.webp";
+import logoLoading from "../../src/assets/logo-loading.svg";
 const nav = [
   ["home", "Начало", LayoutDashboard],
   ["menu", "Меню и цени", UtensilsCrossed],
@@ -1575,7 +1576,7 @@ export default function App() {
           </>
         ) : (
           <>
-            <LoaderCircle className="spin" size={38} />
+            <img className="brand-loader" src={logoLoading} width="240" height="61" alt="" aria-hidden="true"/>
             <h1>Подготвяме работното място…</h1>
           </>
         )}
