@@ -143,3 +143,6 @@ button,input,textarea,select{font:inherit}a{color:var(--purple)}a:hover{color:va
 .site-nav .navbar-brand:after{content:'';position:absolute;inset:-4px 0;z-index:-1;background:url('../assets/cactus-garden.webp') center bottom/100% 100% no-repeat;pointer-events:none}
 .site-nav .navbar-brand .header-logo{position:relative;z-index:0;width:152px;height:62px;aspect-ratio:686/334;object-fit:contain}
 @media(max-width:767px){.site-nav .navbar-brand{padding:0 20px;height:56px}.site-nav .navbar-brand .header-logo{width:136px;height:56px}}
+
+/* Clear a soft pocket in the garden behind the yellow initial, keeping its brand color. */
+.site-nav .navbar-brand:after{-webkit-mask-image:linear-gradient(to right,#000 0 14%,transparent 22% 33%,#000 42% 100%);mask-image:linear-gradient(to right,#000 0 14%,transparent 22% 33%,#000 42% 100%)}
