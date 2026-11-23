@@ -1,3 +1,5 @@
+import {CalendarFields} from "./CalendarFields";
+import {calendarPeriods,isVacation} from "../../src/js/availability.mjs";
 import {OfferRows} from "./OfferRows";
 import {lineText} from "../../src/js/offer-lines.mjs";
 import {contactDefaults,normalizeSiteRecord} from "../../src/js/page-content.mjs";
@@ -82,6 +84,7 @@ const nav = [
   ["gallery", "Галерия", Images],
   ["pages", "Текстове на сайта", FileText],
   ["announcements", "Съобщения и отпуск", CalendarDays],
+  ["calendar", "Календар за заетост", CalendarDays],
   ["history", "История и кошче", History],
   ["settings", "Контакти и работно време", Settings],
 ] as const;
@@ -310,6 +313,7 @@ function PhotoPicker({
   );
 }
 function changeText(key: string, value: any, references: Entity[] = []) {
+  if(key==='availability')return value?.length?value.map((p:any)=>`${p.start} – ${p.end} · ${p.allDay?"Цял ден":p.startTime+" – "+p.endTime}`).join("; "):"Няма отбелязана заетост";
   if(key==='inclusions')return value?.map(lineText).join('; ')||'Празно';
   if (key === "timeSlots")
     return value?.length ? value.map(formatTimeSlot).join("; ") : "Няма часове";
@@ -872,6 +876,8 @@ function ProductForm({
   );
 }
 function SimpleForm({
+  calendarOnly = false,
+  announcements = [],
   pageKey = "home",
   type,
   entity,
@@ -884,6 +890,8 @@ function SimpleForm({
   canDeleteMedia = false,
 }: {
   pageKey?: string;
+  calendarOnly?: boolean;
+  announcements?: Entity[];
   type: EntityType;
   entity?: Entity;
   media: Media[];
@@ -962,7 +970,7 @@ function SimpleForm({
         ? { sections: sectionChoices(entity, products) }
         : {}),
       ...(type === "settings"
-        ? { timeSlots: timeSlotsFor(entity?.data || {}) }
+        ? { timeSlots: calendarOnly ? entity?.data.timeSlots || [] : timeSlotsFor(entity?.data || {}) }
         : {}),
     }),
     [error, setError] = useState(""),
@@ -1027,7 +1035,7 @@ function SimpleForm({
   return (
     <Modal
       title={
-        type === 'page' ? (pageSections[data.key]?.label||'Текстове на сайта') : type==='settings'?'Контакти и работно време':entity
+        type === 'page' ? (pageSections[data.key]?.label||'Текстове на сайта') : type==='settings'?(calendarOnly?'Календар за заетост':'Контакти и работно време'):entity
           ? "Редакция"
           : type === "album"
             ? "Нов албум"
@@ -1121,8 +1129,9 @@ function SimpleForm({
             <>
               <Field label="Шаблон за съобщението">
                 <select
-                  defaultValue="custom"
+                  value={isVacation(data)?"vacation":"custom"}
                   onChange={(e) => {
+                    update("blocksCalendar",e.target.value === "vacation");
                     if (e.target.value === "vacation") {
                       update("title", "В отпуск сме");
                       update(
@@ -1140,6 +1149,7 @@ function SimpleForm({
                   </option>
                 </select>
               </Field>
+              <label className="check"><input type="checkbox" checked={isVacation(data)} onChange={e=>update("blocksCalendar",e.target.checked)}/>Отпуск · отбелязвай периода в календара за заетост</label>
               {field("message", "Съобщение", true)}
               <div className="field-row">
                 {field("start", "От дата", false, "date")}
@@ -1181,7 +1191,8 @@ function SimpleForm({
               <label className="check"><input type="checkbox" checked={data.buttonEnabled!==false} onChange={e=>update('buttonEnabled',e.target.checked)}/>Показвай бутон за връзка</label>{data.buttonEnabled!==false&&<>{field("buttonLabel", "Текст на бутона")}{field("buttonUrl", "Връзка на бутона", false, "url")}</>}
             </>
           )}
-          {type === "settings" && (
+          {type === "settings" && calendarOnly && <CalendarFields data={data} update={update} announcements={announcements}/>}
+          {type === "settings" && !calendarOnly && (
             <>
               {field("phone", "Телефон", false, "tel")}
               <p className="muted">Тези данни обновяват контактното каре, картата, бутоните за обаждане и социалните връзки на всички страници. Контактите на партньорите в менюто остават отделни.</p>
@@ -1436,6 +1447,7 @@ export default function App() {
       entity?: Entity;
       duplicate?: boolean;
       pageKey?: string;
+      calendarOnly?: boolean;
     } | null>(null),
     [uploadAlbum, setUploadAlbum] = useState<Entity | null>(null),
     [publishing, setPublishing] = useState(false),
@@ -2267,6 +2279,12 @@ export default function App() {
             <div className="page-heading"><div><p className="eyebrow">ТЕКСТОВЕТЕ НА СВОЕТО МЯСТО</p><h1>Текстове на сайта</h1><p>Избери блока, който искаш да промениш. Менюто и снимките имат свои отделни раздели.</p></div></div>
             <div className="panel">{Object.entries(pageSections).map(([key,section])=>{const record=all.filter(e=>e.type==='page'&&e.data.key===key).sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt))[0];return <div className="content-row" key={key}><div><h2>{section.label}</h2><p>{section.location}</p><span className="record-status">{record?statusFor(record):'Текущите текстове от редизайна'}</span><p className="muted">{section.fields.length} конкретни полета</p>{(state.user.local||state.user.environment==='staging')&&<a className="text-button" target="_blank" rel="noopener" href={(state.user.local?'http://localhost:8080/':'/site/')+section.file+(state.user.local?'?cms=http://127.0.0.1:8787':'')+(key==='about'?'#about':'')}>Виж мястото в сайта ↗</a>}</div><button className="btn secondary" onClick={()=>setEditor({type:'page',entity:record,pageKey:key})}>Редактирай блока</button></div>})}</div>
           </>}
+          {view === "calendar" && (()=>{const record=all.find(e=>e.type==='settings');const periods=calendarPeriods(record?.data||{},all.filter(e=>e.type==='announcement'));return <>
+            <div className="page-heading"><div><p className="eyebrow">ДА НАМЕРИМ ДЕН ЗА ПРАЗНИК</p><h1>Календар за заетост</h1><p>Отбелязвай заети дни и часове. Отпуските се добавят автоматично от съобщенията.</p></div><button className="btn primary" onClick={()=>setEditor({type:'settings',entity:record,calendarOnly:true})}>Редактирай календара</button></div>
+            <section className="panel"><h2>Сега в сайта: {state.publishedContent?.find(e=>e.type==='settings')?.data.calendarEnabled?'включен':'скрит'}</h2><p><strong>Чернова: {record?.data.calendarEnabled?'включен':'скрит'}</strong>. Видимостта и периодите се променят в сайта след публикуване.</p><span className="record-status">{record?statusFor(record):'Календарът още не е включен'}</span>
+            <h3>Отбелязани периоди</h3>{!periods.length&&<p>Няма отбелязана заетост или отпуск.</p>}{periods.sort((a,b)=>a.start.localeCompare(b.start)).map((p,i)=><div className="content-row" key={p.id+String(i)}><div><strong>{p.kind==='vacation'?'Отпуск':'Заето'}</strong><p>{p.start} – {p.end} · {p.allDay?'Цял ден':p.startTime+' – '+p.endTime}</p></div>{p.kind==='vacation'&&<button className="text-button" onClick={()=>setView('announcements')}>Към отпуските</button>}</div>)}
+            </section>
+          </>})()}
           {["announcements", "settings"].includes(view) && (
             <>
               <div className="page-heading">
@@ -2517,6 +2535,8 @@ export default function App() {
           />
         ) : (
           <SimpleForm
+            announcements={all.filter(e=>e.type==='announcement')}
+            calendarOnly={editor.calendarOnly}
             pageKey={editor.pageKey}
             albums={albums}
             canDeleteMedia={state.user.role === "owner"}

@@ -1,6 +1,7 @@
+import {renderAvailability} from './availability-view.mjs';
 import {pageSections,pageDefaults} from './page-fields.mjs';
 import {formatTimeSlot,DEFAULT_MESSENGER} from './content-fields.mjs';
-export const contactDefaults={title:'Трънче',visible:true,sortOrder:0,mapQuery:'',phone:'0895 415 287',address:'гр.София, кв.Горна баня, ул.Тихи кът 10',facebook:'https://www.facebook.com/profile.php?id=100033687105031',instagram:'https://www.instagram.com/detski.kut.trunche',messenger:DEFAULT_MESSENGER,contactEmail:'',workingHours:'',timeSlots:[]};
+export const contactDefaults={title:'Трънче',visible:true,sortOrder:0,mapQuery:'',phone:'0895 415 287',address:'гр.София, кв.Горна баня, ул.Тихи кът 10',facebook:'https://www.facebook.com/profile.php?id=100033687105031',instagram:'https://www.instagram.com/detski.kut.trunche',messenger:DEFAULT_MESSENGER,contactEmail:'',workingHours:'',timeSlots:[],calendarEnabled:false,availability:[]};
 const normalized=value=>String(value??'').replace(/\s+/g,'').trim();
 function setText(node,value){
   if(!node)return;
@@ -18,6 +19,7 @@ function setText(node,value){
   if(node.matches('a,button')&&!node.closest('nav'))node.hidden=!text;
 }
 export function renderPageContent(document,content,file){
+  renderAvailability(document,content,file);
   const pages=content.filter(e=>e.type==='page'&&e.data.visible!==false);
   for(const [key,section] of Object.entries(pageSections)){
     if(key!=='footer'&&section.file!==file)continue;

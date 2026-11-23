@@ -40,6 +40,13 @@ const timeSlot = z
     message: "Крайният час трябва да е след началния.",
   });
 const timeSlots = z.array(timeSlot).max(40).default([]);
+const availabilityPeriod = z.object({
+  id: text(80).min(1), start: z.iso.date(), end: z.iso.date(),
+  allDay: z.boolean().default(true),
+  startTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/).default("10:00"),
+  endTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/).default("14:00"),
+}).refine(v=>v.end>=v.start,{message:"Крайната дата трябва да е след началната.",path:["end"]})
+.refine(v=>v.allDay || v.endTime>v.startTime,{message:"Крайният час трябва да е след началния.",path:["endTime"]});
 const crop = z
   .object({
     x: z.number().min(0).max(100).default(50),
@@ -116,6 +123,7 @@ export const schemas = {
   announcement: base
     .extend({
       message: text(4000),
+      blocksCalendar: z.boolean().optional(),
       start: z.iso.date(),
       end: z.iso.date(),
       banner: z.boolean().default(true),
@@ -132,6 +140,8 @@ export const schemas = {
       path: ["end"],
     }),
   settings: z.object({
+    calendarEnabled: z.boolean().default(false),
+    availability: z.array(availabilityPeriod).max(300).refine(v=>new Set(v.map(p=>p.id)).size===v.length,"Периодите трябва да имат различни идентификатори.").default([]),
     title: text().min(1),
     phone: text(40).default(""),
     address: text(500).default(""),

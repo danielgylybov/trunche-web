@@ -4,6 +4,9 @@ import { normalizeOffer } from "../../src/js/menu-view.mjs";
 import type { Entity } from "../worker/model";
 export const fieldLabels: Record<string, string> = {
   ...Object.fromEntries(Object.values(pageSections).flatMap(s=>s.fields.map(f=>[f.key,f.label]))),
+  calendarEnabled:"Публичен календар за заетост",
+  availability:"Заети дни и часове",
+  blocksCalendar:"Отпуск в календара",
   mapQuery:"Място на картата",
   title: "Заглавие",
   kind: "Вид предложение",
