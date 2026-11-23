@@ -1,3 +1,4 @@
+import {parsePricedLine,lineData} from "./offer-lines.mjs";
 import {
   formatPortion,
   parsePortion,
@@ -117,7 +118,7 @@ export function normalizeOffer(data = {}) {
     inclusions:
       kind === "hours" && timeSlotsFor(data).length
         ? []
-        : (data.inclusions || []).filter((line) => String(line).trim()),
+        : (data.inclusions || []).filter((line) => typeof line==='string'?line.trim():line?.title?.trim()).map(line=>rules.price?(parsePricedLine(line)||line):(typeof line==='string'?line:line.title)),
   };
 }
 export const offerMoney = (cents) =>
@@ -213,7 +214,13 @@ export function renderOffer(input, options = {}) {
       const list = node("ul", "menu-details");
       d.inclusions.forEach((line) => {
         const item = node("li");
-        item.append(node("span", "", cleanMenuTitle(line)));
+        const value=lineData(line);
+        const text=node('span','',cleanMenuTitle(value.title));
+        const quantity=formatPortion(value.portionSpec);
+        if(quantity)text.append(node('small','menu-line-portion',' · '+quantity));
+        item.append(text);
+        const amount=offerMoney(value.priceCents);
+        if(amount){item.classList.add('menu-priced-line');item.append(node('span','detail-price',amount));}
         list.append(item);
       });
       body.append(list);

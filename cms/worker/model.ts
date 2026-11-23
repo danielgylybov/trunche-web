@@ -80,7 +80,7 @@ export const schemas = {
     kind: z
       .enum(["product", "package", "partner", "info", "hours", "rich"])
       .default("product"),
-    inclusions: z.array(text(2000)).max(80).default([]),
+    inclusions: z.array(z.union([text(2000),z.object({title:text(2000).min(1),priceCents:z.number().int().min(0).max(100000000).nullable().default(null),portionSpec:z.object({quantity:z.number().positive().max(100000),unit:z.enum(['g','kg','ml','l','pcs'])}).nullable().default(null)})])).max(80).default([]),
     variants: z
       .array(
         z.object({

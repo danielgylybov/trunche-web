@@ -41,7 +41,7 @@ export function formatPortion(portion) {
     : "";
 }
 export function parseTimeSlots(value) {
-  const text = Array.isArray(value) ? value.join("\n") : String(value || "");
+  const text = Array.isArray(value) ? value.map(v=>typeof v==='string'?v:v?.title||'').join("\n") : String(value || "");
   const matches = [
     ...text.matchAll(
       /\b([01]?\d|2[0-3])[:.]([0-5]\d)\s*[–—-]\s*([01]?\d|2[0-3])[:.]([0-5]\d)/g,

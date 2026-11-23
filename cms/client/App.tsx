@@ -1,3 +1,5 @@
+import {OfferRows} from "./OfferRows";
+import {lineText} from "../../src/js/offer-lines.mjs";
 import {contactDefaults,normalizeSiteRecord} from "../../src/js/page-content.mjs";
 import {pageSections,pageDefaults} from "../../src/js/page-fields.mjs";
 import {
@@ -307,6 +309,7 @@ function PhotoPicker({
   );
 }
 function changeText(key: string, value: any, references: Entity[] = []) {
+  if(key==='inclusions')return value?.map(lineText).join('; ')||'Празно';
   if (key === "timeSlots")
     return value?.length ? value.map(formatTimeSlot).join("; ") : "Няма часове";
   if (key === "portionSpec") return formatPortion(value) || "Без количество";
@@ -662,7 +665,7 @@ function ProductForm({
                 {!timeSlotsFor(data).length && data.inclusions.length > 0 && (
                   <Field label="Допълнителни уточнения">
                     <RowList
-                      value={data.inclusions}
+                      value={data.inclusions.map((line:any)=>typeof line==='string'?line:line.title)}
                       onChange={(v) => update("inclusions", v)}
                       placeholder="Пояснение към часовете"
                     />
@@ -671,12 +674,7 @@ function ProductForm({
               </>
             ) : (
               <Field label={rules.listLabel}>
-                <RowList
-                  value={data.inclusions}
-                  onChange={(v) => update("inclusions", v)}
-                  placeholder={hint.row}
-                  label={rules.listLabel}
-                />
+                {rules.price?<OfferRows value={data.inclusions} onChange={v=>update('inclusions',v)} placeholder={hint.row} label={rules.listLabel}/>:<RowList value={data.inclusions.map((line:any)=>typeof line==='string'?line:line.title)} onChange={v=>update('inclusions',v)} placeholder={hint.row} label={rules.listLabel}/>}
               </Field>
             )}
             {rules.contacts && (
@@ -1994,7 +1992,7 @@ export default function App() {
                           {p.data.portion ||
                             p.data.description ||
                             p.data.note ||
-                            p.data.inclusions?.join(" · ") ||
+                            p.data.inclusions?.map(lineText).join(" · ") ||
                             "Добави описание за гостите."}
                         </p>
                         <footer>

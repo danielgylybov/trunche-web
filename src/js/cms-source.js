@@ -23,6 +23,7 @@
   window.TruncheCMS={enabled:true,origin,ready,media,entities,
     async categories(){return(await entities('category')).map(e=>({id:e.id,label:e.data.title,order:e.data.sortOrder,cms:e.data}));},
     async rows(categoryId){
+      const {lineText}=await import('./offer-lines.mjs');
       const rows=[];let section='';let order=0;
       for(const e of (await entities('product')).filter(e=>e.data.categoryId===categoryId)){
         const d=e.data;
@@ -33,7 +34,7 @@
           imageType:d.kind==='partner'?'partner':'product',phone:d.phone,website:d.website,facebook:d.facebook};
         if(d.kind==='rich')row.note=escape(d.description||d.note).replace(/\n/g,'<br>');
         rows.push(row);
-        for(const line of d.inclusions||[])rows.push({type:'list',title:escape(line),sort:order++});
+        for(const line of d.inclusions||[])rows.push({type:'list',title:escape(lineText(line)),sort:order++});
         for(const v of d.variants||[])rows.push({type:'line',left:escape([v.title,v.detail].filter(Boolean).join(' · ')),right:v.priceCents==null?'':(v.priceCents/100).toFixed(2)+' €',sort:order++});
       }
       return rows;

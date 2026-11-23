@@ -1,3 +1,4 @@
+import {useState} from "react";
 import {
   DAY_LABELS,
   PORTION_UNITS,
@@ -124,6 +125,7 @@ export function PortionEditor({
   value: { quantity: number; unit: string } | null;
   onChange: (v: { quantity: number; unit: string } | null) => void;
 }) {
+  const [unit,setUnit]=useState(value?.unit||'g');
   return (
     <div className="portion-editor">
       <input
@@ -137,16 +139,16 @@ export function PortionEditor({
         onChange={(e) =>
           onChange(
             e.target.value
-              ? { quantity: Number(e.target.value), unit: value?.unit || "g" }
+              ? { quantity: Number(e.target.value), unit: value?.unit || unit }
               : null,
           )
         }
       />
       <select
         aria-label="Мерна единица"
-        value={value?.unit || "g"}
+        value={value?.unit || unit}
         onChange={(e) =>
-          onChange(value ? { ...value, unit: e.target.value } : null)
+          (setUnit(e.target.value),onChange(value ? { ...value, unit: e.target.value } : null))
         }
       >
         {Object.entries(PORTION_UNITS).map(([v, l]) => (
