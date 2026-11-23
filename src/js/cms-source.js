@@ -10,7 +10,7 @@
   const origin=url.origin;
   const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const sort=(a,b)=>(a.data.sortOrder||0)-(b.data.sortOrder||0);
-  const ready=fetch(origin+'/api/content',{signal:AbortSignal.timeout(12000)}).then(async response=>{
+  const ready=fetch(origin+'/api/content',{cache:'no-store',signal:AbortSignal.timeout(12000)}).then(async response=>{
     if(!response.ok)throw new Error('Published CMS content unavailable');
     const data=await response.json();
     if(data.schemaVersion!==1||data.currency!=='EUR'||!Array.isArray(data.content))throw new Error('Unsupported content version');

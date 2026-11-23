@@ -112,6 +112,8 @@ describe.skipIf(!enabled)("real local D1 and R2 API", () => {
     ).toBe(1450);
     expect(JSON.stringify(content.body)).not.toContain("local@trunche.test");
     expect((await fetch(base + "/media/" + media.id)).status).toBe(200);
+    const baseline=(await call('/api/admin/state')).body.publishedContent;
+    expect(baseline.find((e:any)=>e.id===product.id).data.priceCents).toBe(1450);
     const repeated = await call(
       "/api/admin/publish",
       "POST",

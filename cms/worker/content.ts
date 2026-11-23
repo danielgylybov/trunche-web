@@ -1,5 +1,9 @@
+import { normalizeOffer } from "../../src/js/menu-view.mjs";
 import type { Entity } from "./model";
 export function publicSnapshot(entities: Entity[], readyMedia: Set<string>) {
+  entities = entities.map((e) =>
+    e.type === "product" ? { ...e, data: normalizeOffer(e.data) } : e,
+  );
   const categories = new Set(
     entities.filter((e) => e.type === "category").map((e) => e.id),
   );

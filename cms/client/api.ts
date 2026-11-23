@@ -14,6 +14,7 @@ export type State = {
     environment?: string;
   };
   entities: Entity[];
+  publishedContent: { id: string; type: string; data: Record<string, any> }[];
   media: Media[];
   state: {
     active_release: string | null;

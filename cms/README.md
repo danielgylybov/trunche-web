@@ -121,4 +121,15 @@ pnpm --dir cms deploy:staging
 - Отделни D1 и частен R2: 152 активни записа, 91 снимки (67,9 MB), първа публикувана версия. Няма production/DNS промени.
 - Access е настроен чрез Cloudflare identity provider; в момента входът е с одобрения Cloudflare профил, а не с имейл OTP. Същият одобрен профил е owner в dev D1.
 - Проверени са пренасочванията към Access за панела, публичния преглед, admin API, content API и снимките без сесия. Допълнителните preview URLs и публичният R2 dev URL са изключени. Пълната проверка на екраните в онлайн средата след интерактивен вход остава за първата потребителска сесия.
-- Действителният акаунт, bindings и Access audience са в игнорирания `wrangler.staging.jsonc`; OAuth credentials не са в репото. Текущата версия на Worker е `4b8d9b57-21a3-4f29-a36d-4316b7a9b8b3`.
+- Действителният акаунт, bindings и Access audience са в игнорирания `wrangler.staging.jsonc`; OAuth credentials не са в репото. Текущата версия на Worker е `fa3a6aa2-cd17-4756-89fe-a4614f8478f3`.
+
+
+### Offer editing and publication review
+
+Offer forms now expose applicable fields for products, child packages, partners, information, hours and terms. The same normalization runs on API writes and public snapshots. Empty prices produce no automatic price label. Information/hours/terms have no commercial fields. Legacy information blocks and partner inclusions are preserved.
+
+The public CMS menu and admin previews share `src/js/menu-view.mjs`. The preview uses public CSS in an isolated shadow root. Long category labels wrap within the sidebar instead of overlapping menu cards.
+
+Record badges compare drafts with the active publication, ignoring metadata/property order. Forms distinguish unsaved edits from saved drafts and show old/new field values. The publish dialog lists added, changed and removed visible records, including children of hidden categories/albums. A code deployment does not publish user drafts.
+
+Validation: 27 unit/integration tests passed; browser checks covered information without prices, edit/save/publish status transitions and layout at 1280 and 390 px. Local test prices and records were restored after validation. The deployed dev Worker version above includes these changes.

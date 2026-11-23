@@ -90,3 +90,7 @@ button,input,textarea,select{font:inherit}a{color:var(--purple)}a:hover{color:va
 @media(min-width:992px) and (max-width:1199px){.site-nav .navbar-nav{gap:.25rem}.site-nav .nav-link{font-size:.9375rem;gap:.3rem;padding:.45rem .5rem}.site-nav .nav-symbol{width:26px;height:26px}.site-nav .nav-symbol svg{width:26px;height:26px}.site-nav .nav-contact{padding:.5rem .6rem!important}}
 
 .cms-page-body{padding:1.5rem 0;font-size:1.1rem;line-height:1.8}.cms-announcement{background:#ffde71;padding:1rem;text-align:center}.cms-announcement p{margin:.3rem 0}.cms-notice-dialog{border:0;border-radius:24px;padding:2rem;max-width:min(90vw,540px)}.cms-notice-dialog::backdrop{background:#231b3b99}.cms-notice-dialog .btn{margin:.5rem}.cms-notice-dialog strong{font-size:1.5rem}
+
+/* Constrain labels to the sidebar track, including long CMS category names. */
+.menu-sidebar,#menuButtons,.category-button{min-width:0;max-width:100%}.category-button{box-sizing:border-box}.category-button>span:nth-child(2){flex:1;min-width:0;overflow-wrap:anywhere}.category-number{flex:0 0 auto}.menu-group-heading{min-width:0;overflow-wrap:anywhere}.menu-item-title,.menu-details li>span:first-child{min-width:0;overflow-wrap:anywhere}.menu-item-description,.menu-item-note{white-space:pre-line;overflow-wrap:anywhere}
+@media(min-width:992px){.menu-workspace{grid-template-columns:280px minmax(0,1fr);gap:2rem}.category-button{gap:.65rem;padding:.7rem .65rem}}

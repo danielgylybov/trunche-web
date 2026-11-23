@@ -244,7 +244,7 @@ const CATEGORY_UI = {
 };
 const cleanTitle = value => safeText(value).replace(/<[^>]*>/g,'').replace(/\p{Extended_Pictographic}|\uFE0F|\u200D|\u20E3/gu,'').trim();
 function categoryUI(category) {
-  if(category.cms)return {label:cleanTitle(category.cms.title),title:cleanTitle(category.cms.title),description:category.cms.description,icon:category.cms.icon,tone:CATEGORY_UI[category.id]?.tone||'#d9cef9'};
+  if(category.cms)return {label:cleanTitle(category.cms.title).replace(/,([А-Яа-яA-Za-z])/g,', $1'),title:cleanTitle(category.cms.title),description:category.cms.description,icon:category.cms.icon,tone:CATEGORY_UI[category.id]?.tone||'#d9cef9'};
   return CATEGORY_UI[category.id] || {label:cleanTitle(category.label),title:cleanTitle(category.label),description:'Предложения за вашия празник.',icon:'party',tone:'#d9cef9'};
 }
 function escapeHtml(value) {
@@ -403,10 +403,9 @@ function errorNotice(message) {
 async function loadAllCategories(categories) {
   const root=document.getElementById('menuRoot');
   const results=await Promise.allSettled(categories.map(async category=>{
-    let rows;
-    if(window.TruncheCMS?.enabled)rows=await window.TruncheCMS.rows(category.id);
-    else{const response=await fetch(sheetUrl(category.id),{signal:AbortSignal.timeout(15000)});if(!response.ok)throw new Error('Category request failed');rows=parseGvizResponse(await response.text());}
-    const node=renderCategory(category.id,rows);
+    let node;
+    if(window.TruncheCMS?.enabled){const {renderOfferCategory}=await import('./menu-view.mjs');node=renderOfferCategory(category.id,await window.TruncheCMS.entities('product'),{mediaURL:window.TruncheCMS.media});}
+    else{const response=await fetch(sheetUrl(category.id),{signal:AbortSignal.timeout(15000)});if(!response.ok)throw new Error('Category request failed');node=renderCategory(category.id,parseGvizResponse(await response.text()));}
     node.setAttribute('aria-label',categoryUI(category).title);
     const searchHeading=el('h3','search-category-title');searchHeading.textContent=categoryUI(category).title;searchHeading.hidden=true;
     node.prepend(searchHeading);return node;

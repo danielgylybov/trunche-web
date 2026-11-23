@@ -43,6 +43,19 @@ import {
   type Entity,
   type EntityType,
 } from "../worker/model";
+import {
+  offerKinds,
+  offerKind,
+  normalizeOffer,
+} from "../../src/js/menu-view.mjs";
+import { MenuPreview } from "./MenuPreview";
+import {
+  contentChanges,
+  changedFields,
+  fieldLabels,
+  recordStatus,
+  type PublishedRecord,
+} from "./content-changes";
 import logo from "../../src/assets/Logo.svg";
 const nav = [
   ["home", "Начало", LayoutDashboard],
@@ -53,14 +66,9 @@ const nav = [
   ["history", "История и кошче", History],
   ["settings", "Настройки", Settings],
 ] as const;
-const kindNames: Record<string, string> = {
-  product: "Продукт",
-  package: "Детски куверт",
-  partner: "Партньор / услуга",
-  info: "Важна информация",
-  hours: "Работно време",
-  rich: "Текст и условия",
-};
+const kindNames = Object.fromEntries(
+  Object.entries(offerKinds).map(([key, rules]) => [key, rules.label]),
+);
 const mediaURL = (id: string) => "/api/admin/media/" + id;
 const order = (a: Entity, b: Entity) =>
   (a.data.sortOrder || 0) - (b.data.sortOrder || 0) ||
@@ -250,6 +258,59 @@ function PhotoPicker({
     </div>
   );
 }
+function changeText(key: string, value: any, references: Entity[] = []) {
+  if (["categoryId", "albumId"].includes(key))
+    return references.find((e) => e.id === value)?.data.title || "Няма";
+  if (key === "priceCents") return value == null ? "Без цена" : money(value);
+  if (key === "kind") return kindNames[value] || value;
+  if (["imageId", "coverId"].includes(key))
+    return value ? "Има снимка" : "Без снимка";
+  if (typeof value === "boolean") return value ? "Да" : "Не";
+  if (Array.isArray(value))
+    return (
+      value
+        .map((v) =>
+          typeof v === "object"
+            ? [
+                v.title,
+                v.detail,
+                v.priceCents == null ? "" : money(v.priceCents),
+              ]
+                .filter(Boolean)
+                .join(" · ")
+            : v,
+        )
+        .join("; ") || "Празно"
+    );
+  if (value == null || value === "") return "Празно";
+  return String(value);
+}
+function FieldChanges({
+  before,
+  after,
+  references = [],
+}: {
+  before: Record<string, any>;
+  after: Record<string, any>;
+  references?: Entity[];
+}) {
+  const keys = changedFields(before, after);
+  return (
+    <dl className="field-changes">
+      {keys.map((key) => (
+        <div key={key}>
+          <dt>{fieldLabels[key] || key}</dt>
+          <dd>
+            <del>{changeText(key, before[key], references)}</del>
+            <span aria-hidden="true"> → </span>
+            <ins>{changeText(key, after[key], references)}</ins>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
 function ProductForm({
   entity,
   categories,
@@ -258,6 +319,7 @@ function ProductForm({
   onSaved,
   duplicate = false,
   initialCategoryId,
+  published,
 }: {
   initialCategoryId?: string;
   entity?: Entity;
@@ -266,8 +328,9 @@ function ProductForm({
   onClose: () => void;
   onSaved: () => Promise<void>;
   duplicate?: boolean;
+  published?: Record<string, any>;
 }) {
-  const initial = entity?.data || {};
+  const initial = normalizeOffer(entity?.data || { kind: "product" });
   const [data, setData] = useState<Record<string, any>>({
     title: "",
     categoryId: initialCategoryId || categories[0]?.id || "",
@@ -296,6 +359,7 @@ function ProductForm({
   const [error, setError] = useState(""),
     [saving, setSaving] = useState(false),
     [dirty, setDirty] = useState(false);
+  const rules = offerKinds[offerKind(data)];
   const update = (key: string, value: any) => {
     setData((d) => ({ ...d, [key]: value }));
     setDirty(true);
@@ -314,6 +378,15 @@ function ProductForm({
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
   }, [dirty]);
+  let previewPrice = null;
+  try {
+    previewPrice = rules.price && price.trim() ? parseEuro(price) : null;
+  } catch {}
+  const draft = normalizeOffer({ ...data, priceCents: previewPrice });
+  const edited = changedFields(initial, draft);
+  const liveChanges = published
+    ? changedFields(normalizeOffer(published), draft)
+    : [];
   async function submit(e: FormEvent) {
     e.preventDefault();
     setSaving(true);
@@ -321,7 +394,10 @@ function ProductForm({
     try {
       await save(
         "product",
-        { ...data, priceCents: price.trim() ? parseEuro(price) : null },
+        normalizeOffer({
+          ...data,
+          priceCents: rules.price && price.trim() ? parseEuro(price) : null,
+        }),
         duplicate ? undefined : entity,
       );
       setDirty(false);
@@ -349,17 +425,50 @@ function ProductForm({
         <div className="editor-layout">
           <div className="editor-fields">
             <p className="form-intro">
-              Любимите вкусове започват с няколко лесни полета.
+              {rules.price
+                ? "Предложение с описание, цена и снимка по желание."
+                : "Информационен запис — показва текст и подробности, без цена и снимка."}
             </p>
+            <div className="editing-state" role="status">
+              <strong>
+                {dirty
+                  ? "Незапазени промени във формата"
+                  : published
+                    ? liveChanges.length
+                      ? "Запазена чернова · непубликувани промени"
+                      : "Публикувано · няма непубликувани промени"
+                    : "Ново / непубликувано предложение"}
+              </strong>
+              <p>
+                {dirty && edited.length
+                  ? "Променени полета: " +
+                    edited.map((k) => fieldLabels[k] || k).join(", ")
+                  : "Записването като чернова не променя сайта."}
+              </p>
+              {published && liveChanges.length > 0 && (
+                <>
+                  <p>Разлики спрямо публикуваното в сайта:</p>
+                  <FieldChanges
+                    before={normalizeOffer(published)}
+                    after={draft}
+                    references={categories}
+                  />
+                </>
+              )}
+            </div>
             <ErrorBox message={error} />
-            <Field label="Име на предложението">
+            <Field label={rules.price ? "Име на предложението" : "Заглавие"}>
               <input
                 required
                 maxLength={200}
                 autoFocus
                 value={data.title}
                 onChange={(e) => update("title", e.target.value)}
-                placeholder="Например Пица Маргарита"
+                placeholder={
+                  rules.price
+                    ? "Например Пица Маргарита"
+                    : "Например Важно за празника"
+                }
               />
             </Field>
             <div className="field-row">
@@ -392,95 +501,166 @@ function ProductForm({
                 </select>
               </Field>
             </div>
-            <div className="field-row">
-              <Field
-                label="Цена в евро"
-                hint="Остави празно за цена по запитване."
-              >
-                <div className="price-input">
-                  <input
-                    inputMode="decimal"
-                    value={price}
-                    onChange={(e) => {
-                      setPrice(e.target.value);
-                      setDirty(true);
-                    }}
-                    placeholder="14,50"
-                  />
-                  <span>€</span>
-                </div>
-              </Field>
-              <Field label="Грамаж / порция">
-                <input
-                  value={data.portion}
-                  onChange={(e) => update("portion", e.target.value)}
-                  placeholder="Например 800 г или 8 броя"
-                />
-              </Field>
-            </div>
-            <Field label="Кратко описание">
+            {rules.price && (
+              <div className="field-row">
+                <Field
+                  label={
+                    data.kind === "package"
+                      ? "Цена на дете в евро"
+                      : data.kind === "partner"
+                        ? "Основна цена в евро (по желание)"
+                        : "Цена в евро"
+                  }
+                  hint="Празно поле = не се показва цена. Цените на вариантите са отделно."
+                >
+                  <div className="price-input">
+                    <input
+                      inputMode="decimal"
+                      value={price}
+                      onChange={(e) => {
+                        setPrice(e.target.value);
+                        setDirty(true);
+                      }}
+                      placeholder="14,50"
+                    />
+                    <span>€</span>
+                  </div>
+                </Field>
+                {rules.portion && (
+                  <Field label="Грамаж / порция">
+                    <input
+                      value={data.portion}
+                      onChange={(e) => update("portion", e.target.value)}
+                      placeholder="Например 800 г или 8 броя"
+                    />
+                  </Field>
+                )}
+              </div>
+            )}
+            <Field label={rules.bodyLabel}>
               <textarea
-                rows={3}
+                rows={rules.price ? 3 : 6}
                 maxLength={4000}
                 value={data.description}
                 onChange={(e) => update("description", e.target.value)}
-                placeholder="Какво има в това вкусно предложение?"
+                placeholder={
+                  rules.price
+                    ? "Разкажи за предложението."
+                    : "Текстът, който гостите ще прочетат в сайта."
+                }
               />
             </Field>
-            <Field
-              label="Какво включва"
-              hint="Всяко предложение на отделен ред."
-            >
+            <Field label={rules.listLabel} hint="Всеки запис на отделен ред.">
               <textarea
                 rows={4}
                 value={data.inclusions.join("\n")}
                 onChange={(e) =>
                   update("inclusions", e.target.value.split("\n"))
                 }
-                placeholder={"Чийзбургер\nПържени картофи\nСок или вода"}
+                placeholder={
+                  data.kind === "hours"
+                    ? "10:00 – 14:00 ч.\n16:30 – 20:30 ч."
+                    : data.kind === "package"
+                      ? "Чийзбургер\nПържени картофи\nСок или вода"
+                      : ""
+                }
               />
             </Field>
-            <details className="advanced">
-              <summary>Допълнителни подробности</summary>
-              <Field label="Подзаглавие в категорията">
-                <input
-                  value={data.section}
-                  onChange={(e) => update("section", e.target.value)}
-                  placeholder="Например Студени плата"
-                />
-              </Field>
-              <Field label="Важна бележка">
-                <textarea
-                  rows={3}
-                  value={data.note}
-                  onChange={(e) => update("note", e.target.value)}
-                />
-              </Field>
-              <Field label="Телефон">
-                <input
-                  type="tel"
-                  value={data.phone}
-                  onChange={(e) => update("phone", e.target.value)}
-                />
-              </Field>
-              <Field label="Facebook">
-                <input
-                  type="url"
-                  value={data.facebook}
-                  onChange={(e) => update("facebook", e.target.value)}
-                  placeholder="https://…"
-                />
-              </Field>
-              <Field label="Уебсайт">
-                <input
-                  type="url"
-                  value={data.website}
-                  onChange={(e) => update("website", e.target.value)}
-                  placeholder="https://…"
-                />
-              </Field>
-              <div className="variant-header">
-                <strong>Варианти и услуги</strong>
+            {rules.contacts && (
+              <fieldset className="offer-fieldset">
+                <legend>Контакти на партньора</legend>
+                <Field label="Телефон">
+                  <input
+                    type="tel"
+                    value={data.phone}
+                    onChange={(e) => update("phone", e.target.value)}
+                  />
+                </Field>
+                <Field label="Facebook">
+                  <input
+                    type="url"
+                    value={data.facebook}
+                    onChange={(e) => update("facebook", e.target.value)}
+                    placeholder="https://…"
+                  />
+                </Field>
+                <Field label="Уебсайт">
+                  <input
+                    type="url"
+                    value={data.website}
+                    onChange={(e) => update("website", e.target.value)}
+                    placeholder="https://…"
+                  />
+                </Field>
+              </fieldset>
+            )}
+            {rules.variants && (
+              <fieldset className="offer-fieldset">
+                <legend>
+                  {data.kind === "partner"
+                    ? "Услуги, продължителност и цени"
+                    : "Варианти и цени"}
+                </legend>
+                {data.variants.map((v: any, i: number) => (
+                  <div className="variant" key={i}>
+                    <input
+                      aria-label={`Име на вариант ${i + 1}`}
+                      value={v.title}
+                      placeholder={
+                        data.kind === "partner"
+                          ? "90 минути"
+                          : "Вид / количество"
+                      }
+                      onChange={(e) =>
+                        update(
+                          "variants",
+                          data.variants.map((r: any, n: number) =>
+                            n === i ? { ...r, title: e.target.value } : r,
+                          ),
+                        )
+                      }
+                    />
+                    <input
+                      aria-label={`Цена на вариант ${i + 1} в евро`}
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="€"
+                      value={v.priceCents == null ? "" : v.priceCents / 100}
+                      onChange={(e) =>
+                        update(
+                          "variants",
+                          data.variants.map((r: any, n: number) =>
+                            n === i
+                              ? {
+                                  ...r,
+                                  priceCents:
+                                    e.target.value === ""
+                                      ? null
+                                      : Math.round(
+                                          Number(e.target.value) * 100,
+                                        ),
+                                }
+                              : r,
+                          ),
+                        )
+                      }
+                    />
+                    <button
+                      type="button"
+                      className="icon-btn"
+                      aria-label="Премахни вариант"
+                      onClick={() =>
+                        update(
+                          "variants",
+                          data.variants.filter((_: any, n: number) => n !== i),
+                        )
+                      }
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ))}
                 <button
                   type="button"
                   className="text-button"
@@ -493,100 +673,51 @@ function ProductForm({
                 >
                   + Добави вариант
                 </button>
-              </div>
-              {data.variants.map((v: any, i: number) => (
-                <div className="variant" key={i}>
-                  <input
-                    aria-label={`Име на вариант ${i + 1}`}
-                    value={v.title}
-                    placeholder="90 минути"
-                    onChange={(e) =>
-                      update(
-                        "variants",
-                        data.variants.map((r: any, n: number) =>
-                          n === i ? { ...r, title: e.target.value } : r,
-                        ),
-                      )
-                    }
-                  />
-                  <input
-                    aria-label={`Цена на вариант ${i + 1} в евро`}
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    placeholder="€"
-                    value={v.priceCents === null ? "" : v.priceCents / 100}
-                    onChange={(e) =>
-                      update(
-                        "variants",
-                        data.variants.map((r: any, n: number) =>
-                          n === i
-                            ? {
-                                ...r,
-                                priceCents:
-                                  e.target.value === ""
-                                    ? null
-                                    : Math.round(Number(e.target.value) * 100),
-                              }
-                            : r,
-                        ),
-                      )
-                    }
-                  />
-                  <button
-                    type="button"
-                    className="icon-btn"
-                    aria-label="Премахни вариант"
-                    onClick={() =>
-                      update(
-                        "variants",
-                        data.variants.filter((_: any, n: number) => n !== i),
-                      )
-                    }
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-              ))}
-            </details>
+              </fieldset>
+            )}
+            <Field label="Подзаглавие в категорията">
+              <input
+                value={data.section}
+                onChange={(e) => update("section", e.target.value)}
+                placeholder="Например Студени плата"
+              />
+            </Field>
+            <Field label="Допълнителна бележка">
+              <textarea
+                rows={3}
+                value={data.note}
+                onChange={(e) => update("note", e.target.value)}
+              />
+            </Field>
             <label className="check">
               <input
                 type="checkbox"
                 checked={data.visible}
                 onChange={(e) => update("visible", e.target.checked)}
               />
-              Показвай в публичното меню
+              Показвай в публичното меню след публикуване
             </label>
           </div>
           <aside className="editor-preview">
-            <p className="eyebrow">СНИМКА НА ПРЕДЛОЖЕНИЕТО</p>
-            <PhotoPicker
-              id={data.imageId}
-              onChange={(id) => update("imageId", id)}
-              media={media}
-            />
-            <div className="product-preview">
-              <span className="pill">{kindNames[data.kind]}</span>
-              <h3>{data.title || "Името на предложението"}</h3>
-              <strong>{price ? price + " €" : "Цена по запитване"}</strong>
-              <p>{data.portion}</p>
-              <p>{data.description || "Описанието ще се покаже тук."}</p>
-              {data.inclusions
-                .filter(Boolean)
-                .map((line: string, i: number) => (
-                  <p className="included" key={i}>
-                    <Check size={16} />
-                    {line}
-                  </p>
-                ))}
-            </div>
+            {rules.image && (
+              <>
+                <p className="eyebrow">СНИМКА НА ПРЕДЛОЖЕНИЕТО</p>
+                <PhotoPicker
+                  id={data.imageId}
+                  onChange={(id) => update("imageId", id)}
+                  media={media}
+                />
+              </>
+            )}
+            <p className="eyebrow">ПРЕГЛЕД НА ЧЕРНОВАТА В САЙТА</p>
+            <MenuPreview data={draft} />
           </aside>
         </div>
         <footer className="dialog-footer">
           <span>
             {dirty
-              ? "Има незапазени промени"
-              : "Запазването не публикува на сайта."}
+              ? "Има незапазени промени · сайтът още не е променен"
+              : "Записването създава чернова. Публикуването е отделна стъпка."}
           </span>
           <button type="button" className="btn secondary" onClick={close}>
             Отказ
@@ -613,12 +744,14 @@ function SimpleForm({
   media,
   onClose,
   onSaved,
+  published,
 }: {
   type: EntityType;
   entity?: Entity;
   media: Media[];
   onClose: () => void;
   onSaved: () => Promise<void>;
+  published?: Record<string, any>;
 }) {
   const defaults: Record<string, any> = {
     category: {
@@ -743,6 +876,23 @@ function SimpleForm({
     >
       <form onSubmit={submit}>
         <div className="modal-body">
+          <div className="editing-state" role="status">
+            <strong>
+              {dirty
+                ? "Незапазени промени във формата"
+                : published
+                  ? changedFields(published, data).length
+                    ? "Запазена чернова · непубликувани промени"
+                    : "Публикувано · няма непубликувани промени"
+                  : "Непубликувана чернова"}
+            </strong>
+            {published && changedFields(published, data).length > 0 && (
+              <>
+                <p>Разлики спрямо публикуваното в сайта:</p>
+                <FieldChanges before={published} after={data} />
+              </>
+            )}
+          </div>
           <ErrorBox message={error} />
           {field("title", "Име / заглавие")}
           {type === "category" && (
@@ -861,10 +1011,6 @@ function SimpleForm({
               {field("instagram", "Instagram", false, "url")}
               {field("contactEmail", "Публичен имейл", false, "email")}
               {field("workingHours", "Работно време", true)}
-              <p className="muted">
-                Всички цени са само в евро. Получателят на контактната форма се
-                настройва отделно при свързването.
-              </p>
             </>
           )}
           {["category", "album"].includes(type) && (
@@ -1097,6 +1243,7 @@ export default function App() {
     } | null>(null),
     [uploadAlbum, setUploadAlbum] = useState<Entity | null>(null),
     [publishing, setPublishing] = useState(false),
+    [publishReview, setPublishReview] = useState(false),
     [preview, setPreview] = useState<any>(null);
   const publishRequest = useRef<{ revision: number; key: string } | null>(null);
   const load = useCallback(async () => {
@@ -1148,17 +1295,6 @@ export default function App() {
   }
   async function publish() {
     if (!state) return;
-    if (
-      !confirm(
-        "Да публикуваме всички запазени чернови?" +
-          (state.user.local
-            ? " Това е само локална публикация."
-            : state.user.environment === "staging"
-              ? " Това е публикация само в dev средата."
-              : ""),
-      )
-    )
-      return;
     setPublishing(true);
     setNotice("");
     try {
@@ -1182,6 +1318,7 @@ export default function App() {
           "Версията е записана, но още не е потвърдена като активна. Презареди след малко.",
         );
       await load();
+      setPublishReview(false);
       setNotice(
         state.user.local
           ? "Локалната публикация е готова. Публичният сайт не е променен."
@@ -1215,6 +1352,9 @@ export default function App() {
         )}
       </main>
     );
+  const changes = contentChanges(state.entities, state.publishedContent || []);
+  const statusFor = (entity: Entity) =>
+    recordStatus(entity, state.publishedContent || []);
   const dirty = state.state.draft_revision !== state.state.published_revision;
   const current = nav.find((n) => n[0] === view)!;
   const filtered = products.filter((p) =>
@@ -1293,7 +1433,9 @@ export default function App() {
           <div className="topbar-actions">
             <span className={"draft-state " + (dirty ? "has-changes" : "")}>
               <span />
-              {dirty ? "Има непубликувани промени" : "Всичко е публикувано"}
+              {dirty
+                ? (changes.length===1?"1 запазена промяна · непубликувана":`${changes.length} запазени промени · непубликувани`)
+                : "Всичко е публикувано"}
             </span>
             <button
               className="btn secondary"
@@ -1308,7 +1450,7 @@ export default function App() {
             <button
               className="btn primary"
               disabled={publishing || !dirty}
-              onClick={publish}
+              onClick={() => setPublishReview(true)}
             >
               {publishing ? (
                 <LoaderCircle className="spin" size={18} />
@@ -1320,6 +1462,23 @@ export default function App() {
           </div>
         </header>
         <main className="workspace">
+          {dirty && (
+            <div className="draft-banner">
+              <div>
+                <strong>Черновите още не са в сайта.</strong>
+                <p>
+                  {changes.length===1?"1 видима промяна":`${changes.length} видими промени`} спрямо активната публикация.
+                  Публикуването включва всички запазени записи.
+                </p>
+              </div>
+              <button
+                className="btn secondary"
+                onClick={() => setPublishReview(true)}
+              >
+                Виж какво е променено
+              </button>
+            </div>
+          )}
           {notice && (
             <div
               className={
@@ -1436,7 +1595,7 @@ export default function App() {
                 <div>
                   <p className="eyebrow">ВКУСНАТА ЧАСТ НА ПРАЗНИКА</p>
                   <h1>Меню и цени</h1>
-                  <p>Всяко предложение на своето място. Всички цени в евро.</p>
+                  <p>Всяко предложение на своето място.</p>
                 </div>
                 <button
                   className="btn primary"
@@ -1546,30 +1705,50 @@ export default function App() {
                         }
                         aria-label={"Редактирай " + p.data.title}
                       >
-                        {p.data.imageId ? (
+                        {offerKinds[offerKind(p.data)].image &&
+                        p.data.imageId ? (
                           <img
                             src={mediaURL(p.data.imageId)}
                             alt={p.data.title}
                           />
                         ) : (
                           <>
-                            <UtensilsCrossed size={30} />
-                            <span>Добави снимка</span>
+                            {offerKinds[offerKind(p.data)].image ? (
+                              <UtensilsCrossed size={30} />
+                            ) : (
+                              <FileText size={30} />
+                            )}
+                            <span>
+                              {offerKinds[offerKind(p.data)].image
+                                ? "Добави снимка"
+                                : kindNames[offerKind(p.data)]}
+                            </span>
                           </>
                         )}
                       </button>
                       <div className="product-card-content">
                         <div className="card-labels">
-                          <span>{kindNames[p.data.kind]}</span>
+                          <span>{kindNames[offerKind(p.data)]}</span>
+                          <span
+                            className={
+                              "record-status " +
+                              (statusFor(p) === "Публикувано"
+                                ? "is-published"
+                                : "is-draft")
+                            }
+                          >
+                            {statusFor(p)}
+                          </span>
                           {!p.data.visible && (
                             <span className="pill">Скрито</span>
                           )}
                         </div>
                         <div className="product-title">
                           <h2>{p.data.title}</h2>
-                          {["product", "package", "partner"].includes(
-                            p.data.kind,
-                          ) && <strong>{money(p.data.priceCents)}</strong>}
+                          {offerKinds[offerKind(p.data)].price &&
+                            p.data.priceCents != null && (
+                              <strong>{money(p.data.priceCents)}</strong>
+                            )}
                         </div>
                         <p>
                           {p.data.portion ||
@@ -1760,6 +1939,7 @@ export default function App() {
                       </button>
                       <div className="gallery-card-caption">
                         <strong>{p.data.caption || p.data.alt}</strong>
+                        <span className="record-status">{statusFor(p)}</span>
                         <div className="button-row">
                           <button
                             className="icon-btn"
@@ -1855,6 +2035,7 @@ export default function App() {
                     <div className="content-row" key={e.id}>
                       <div>
                         <h2>{e.data.title}</h2>
+                        <span className="record-status">{statusFor(e)}</span>
                         <p>
                           {e.data.description ||
                             e.data.message ||
@@ -1877,11 +2058,6 @@ export default function App() {
                       </button>
                     </div>
                   ))}
-                <p className="muted">
-                  Валутата е фиксирана в евро. Достъпът до профилите се
-                  настройва през Cloudflare Access и списъка с одобрени
-                  редактори.
-                </p>
               </div>
             </>
           )}
@@ -2014,6 +2190,13 @@ export default function App() {
       {editor &&
         (editor.type === "product" ? (
           <ProductForm
+            published={
+              editor.duplicate
+                ? undefined
+                : state.publishedContent?.find(
+                    (e) => e.id === editor.entity?.id,
+                  )?.data
+            }
             initialCategoryId={chosenCategory?.id}
             key={(editor.entity?.id || "new") + String(editor.duplicate)}
             entity={editor.entity}
@@ -2021,16 +2204,30 @@ export default function App() {
             categories={categories}
             media={state.media}
             onClose={() => setEditor(null)}
-            onSaved={load}
+            onSaved={async () => {
+              await load();
+              setNotice(
+                "Запазено като чернова. Сайтът не е променен — прегледай и публикувай, когато си готов.",
+              );
+            }}
           />
         ) : (
           <SimpleForm
+            published={
+              state.publishedContent?.find((e) => e.id === editor.entity?.id)
+                ?.data
+            }
             key={editor.entity?.id || editor.type}
             type={editor.type}
             entity={editor.entity}
             media={state.media}
             onClose={() => setEditor(null)}
-            onSaved={load}
+            onSaved={async () => {
+              await load();
+              setNotice(
+                "Запазено като чернова. Сайтът не е променен — прегледай и публикувай, когато си готов.",
+              );
+            }}
           />
         ))}
       {uploadAlbum && (
@@ -2048,9 +2245,87 @@ export default function App() {
           }
           album={uploadAlbum}
           onClose={() => setUploadAlbum(null)}
-          onSaved={load}
+          onSaved={async () => {
+            await load();
+            setNotice(
+              "Запазено като чернова. Сайтът не е променен — прегледай и публикувай, когато си готов.",
+            );
+          }}
         />
       )}{" "}
+      {publishReview && (
+        <Modal
+          title="Преглед преди публикуване"
+          onClose={() => {
+            if (!publishing) setPublishReview(false);
+          }}
+          wide
+        >
+          <div className="modal-body">
+            <p>
+              <strong>
+                {changes.length===1?"1 промяна ще бъде публикувана.":`${changes.length} промени ще бъдат публикувани заедно.`}
+              </strong>
+            </p>
+            <p className="muted">
+              Това са всички запазени чернови спрямо активния сайт. Незапазеното
+              във формите не се включва.
+              {state.user.environment === "staging" &&
+                " Това е само dev средата — trunche.com не се променя."}
+            </p>
+            {notice.startsWith("Грешка") && <ErrorBox message={notice} />}
+            <div className="publish-changes">
+              {changes.map((change) => (
+                <article key={change.id}>
+                  <header>
+                    <span className={"change-action " + change.action}>
+                      {change.action === "added"
+                        ? "Ново"
+                        : change.action === "removed"
+                          ? "Ще се премахне от сайта"
+                          : "Променено"}
+                    </span>
+                    <strong>{change.title}</strong>
+                  </header>
+                  {change.action === "updated" && (
+                    <FieldChanges
+                      before={change.before!}
+                      after={change.after!}
+                      references={state.entities}
+                    />
+                  )}
+                </article>
+              ))}
+            </div>
+            {!changes.length && (
+              <p>
+                Няма видими разлики със сайта. Скритите записи остават скрити.
+              </p>
+            )}
+          </div>
+          <footer className="dialog-footer">
+            <button
+              className="btn secondary"
+              disabled={publishing}
+              onClick={() => setPublishReview(false)}
+            >
+              Продължи редакцията
+            </button>
+            <button
+              className="btn primary"
+              disabled={publishing}
+              onClick={publish}
+            >
+              {publishing ? (
+                <LoaderCircle className="spin" size={18} />
+              ) : (
+                <CloudUpload size={18} />
+              )}
+              Публикувай всички запазени промени
+            </button>
+          </footer>
+        </Modal>
+      )}
       {preview && (
         <Modal
           title="Преглед на запазеното съдържание"
@@ -2066,35 +2341,12 @@ export default function App() {
               .map((c: any) => (
                 <section className="preview-section" key={c.id}>
                   <h2>{c.data.title}</h2>
-                  <div className="products-grid">
-                    {preview.content
-                      .filter(
-                        (e: any) =>
-                          e.type === "product" && e.data.categoryId === c.id,
-                      )
-                      .map((p: any) => (
-                        <article className="product-preview" key={p.id}>
-                          {p.data.imageId && (
-                            <img
-                              className="chosen-photo"
-                              src={mediaURL(p.data.imageId)}
-                              alt={p.data.title}
-                            />
-                          )}
-                          <h3>{p.data.title}</h3>
-                          {["product", "package", "partner"].includes(
-                            p.data.kind,
-                          ) && <strong>{money(p.data.priceCents)}</strong>}
-                          <p>{p.data.description}</p>
-                          {p.data.inclusions.map((line: string, i: number) => (
-                            <p className="included" key={i}>
-                              <Check size={16} />
-                              {line}
-                            </p>
-                          ))}
-                        </article>
-                      ))}
-                  </div>
+                  <MenuPreview
+                    categoryId={c.id}
+                    entities={preview.content.filter(
+                      (e: any) => e.type === "product",
+                    )}
+                  />
                 </section>
               ))}
             {preview.content

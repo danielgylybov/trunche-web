@@ -459,11 +459,27 @@ async function adminRoute(request: Request, env: Env, path: string) {
   if (path === "/api/admin/state" && request.method === "GET") {
     const state = await env.DB.prepare(
       "SELECT * FROM site_state WHERE id=1",
-    ).first();
+    ).first<any>();
     const media = await env.DB.prepare(
       "SELECT id,mime,size,width,height,created_at FROM media WHERE state='ready' ORDER BY created_at DESC LIMIT 2000",
     ).all();
+    let publishedContent: any[] = [];
+    if (state?.active_release) {
+      const release = await env.DB.prepare(
+        "SELECT object_key FROM releases WHERE id=?",
+      )
+        .bind(state.active_release)
+        .first<{ object_key: string }>();
+      const file = release ? await env.MEDIA.get(release.object_key) : null;
+      if (!file)
+        throw new HttpError(
+          503,
+          "Публикуваната версия временно не е достъпна.",
+        );
+      publishedContent = JSON.parse(await file.text()).content;
+    }
     return json({
+      publishedContent,
       user: { ...user, environment: env.ENVIRONMENT },
       entities: await list(env),
       media: media.results,

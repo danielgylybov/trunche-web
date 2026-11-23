@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { normalizeOffer } from "../../src/js/menu-view.mjs";
 const text = (max = 200) => z.string().trim().max(max);
 const safeLink = z.union([
   z.literal(""),
@@ -101,7 +102,8 @@ export type Entity = {
 };
 export function validateEntity(type: string, data: unknown) {
   if (!(type in schemas)) throw new Error("Непознат вид съдържание.");
-  return schemas[type as EntityType].parse(data);
+  const validated = schemas[type as EntityType].parse(data);
+  return type === "product" ? normalizeOffer(validated) : validated;
 }
 export function parseEuro(value: string) {
   const v = value.trim().replace(",", ".");
@@ -115,7 +117,7 @@ export function parseEuro(value: string) {
 }
 export const money = (cents: number | null) =>
   cents === null
-    ? "По запитване"
+    ? ""
     : new Intl.NumberFormat("bg-BG", {
         style: "currency",
         currency: "EUR",
