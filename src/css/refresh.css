@@ -134,7 +134,7 @@ button,input,textarea,select{font:inherit}a{color:var(--purple)}a:hover{color:va
 @media(max-width:991px){.site-nav .header-logo{width:160px}}
 @media(max-width:767px){.site-nav .header-logo{width:148px}}
 
-.photo-loading{animation:none}#section-viewer .gallery-photo .thumbnail-brand-loader{width:min(112px,calc(100% - 24px));height:auto;opacity:1;object-fit:contain;transition:none}
+.photo-loading{animation:none}#section-viewer .gallery-photo .thumbnail-brand-loader{display:block;width:112px;max-width:calc(100% - 24px);height:29px;opacity:1;transition:none}
 
 /* Compact header: original wordmark and cactus, with small cactus companions. */
 .site-nav{padding:.6rem 0}
