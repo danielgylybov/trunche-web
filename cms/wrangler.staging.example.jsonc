@@ -1,0 +1,32 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "trunche-cms-dev",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-11-19",
+  "workers_dev": true,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./.wrangler/staging-dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true,
+  },
+  "vars": {
+    "ENVIRONMENT": "staging",
+    "ACCESS_TEAM_DOMAIN": "",
+    "ACCESS_AUDIENCE": "",
+    "ADMIN_ORIGIN": "https://trunche-cms-dev.YOUR_SUBDOMAIN.workers.dev",
+    "PUBLIC_ORIGIN": "https://trunche-cms-dev.YOUR_SUBDOMAIN.workers.dev",
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "trunche-cms-dev",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "r2_buckets": [
+    { "binding": "MEDIA", "bucket_name": "trunche-cms-dev-media" },
+  ],
+}

@@ -1,0 +1,13 @@
+PRAGMA foreign_keys = ON;
+CREATE TABLE IF NOT EXISTS members(email TEXT PRIMARY KEY,role TEXT NOT NULL CHECK(role IN ('owner','editor')),active INTEGER NOT NULL DEFAULT 1 CHECK(active IN(0,1)));
+CREATE TABLE IF NOT EXISTS entities(id TEXT PRIMARY KEY,type TEXT NOT NULL CHECK(type IN('category','product','album','photo','page','announcement','settings')),data TEXT NOT NULL CHECK(json_valid(data)),version INTEGER NOT NULL DEFAULT 1,updated_at TEXT NOT NULL,updated_by TEXT NOT NULL,deleted_at TEXT);
+CREATE INDEX IF NOT EXISTS entities_type ON entities(type,deleted_at);
+CREATE TABLE IF NOT EXISTS media(id TEXT PRIMARY KEY,object_key TEXT UNIQUE NOT NULL,mime TEXT NOT NULL,size INTEGER NOT NULL CHECK(size>0),width INTEGER NOT NULL,height INTEGER NOT NULL,created_at TEXT NOT NULL,created_by TEXT NOT NULL,state TEXT NOT NULL CHECK(state IN('pending','ready','failed')));
+CREATE TABLE IF NOT EXISTS releases(id TEXT PRIMARY KEY,object_key TEXT NOT NULL,created_at TEXT NOT NULL,created_by TEXT NOT NULL,request_key TEXT UNIQUE NOT NULL,draft_revision INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS release_media(release_id TEXT NOT NULL REFERENCES releases(id),media_id TEXT NOT NULL REFERENCES media(id),PRIMARY KEY(release_id,media_id));
+CREATE TABLE IF NOT EXISTS site_state(id INTEGER PRIMARY KEY CHECK(id=1),active_release TEXT REFERENCES releases(id),draft_revision INTEGER NOT NULL DEFAULT 0,published_revision INTEGER NOT NULL DEFAULT 0);
+INSERT OR IGNORE INTO site_state(id) VALUES(1);
+CREATE TABLE IF NOT EXISTS audit(id TEXT PRIMARY KEY,action TEXT NOT NULL,entity_id TEXT,actor TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS usage(day TEXT PRIMARY KEY,upload_count INTEGER NOT NULL DEFAULT 0,write_count INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS publish_jobs(request_key TEXT PRIMARY KEY,owner TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS revision_guard(id TEXT PRIMARY KEY,ok INTEGER NOT NULL CHECK(ok=1));

@@ -1,0 +1,2102 @@
+{
+  "schemaVersion": 1,
+  "exportedAt": "2026-11-22T22:46:23.407214+00:00",
+  "entities": [
+    {
+      "id": "kuverti",
+      "type": "category",
+      "data": {
+        "title": "🎉 Детски Куверти",
+        "slug": "kuverti",
+        "description": "",
+        "icon": "cake",
+        "sortOrder": 0,
+        "visible": true
+      }
+    },
+    {
+      "id": "legacy-db52670764d4506fe3d332b8",
+      "type": "product",
+      "data": {
+        "title": "🚨 Важно",
+        "categoryId": "kuverti",
+        "section": "",
+        "kind": "info",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "Всеки куверт включва до 4 часа престой, храна, вход, украса, шапка, свирка, онлайн покана, сок или вода и солети.\n Минимум 8 деца над 1½ години.",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 0
+      }
+    },
+    {
+      "id": "legacy-1c8154a49c7a3dc39b894fe0",
+      "type": "product",
+      "data": {
+        "title": "Куверт 1️⃣",
+        "categoryId": "kuverti",
+        "section": "🎉 Детски куверти",
+        "kind": "package",
+        "description": "",
+        "priceCents": 1450,
+        "portion": "",
+        "inclusions": [
+          "🍕3 парчета пица Маргарита",
+          "🥪 или 4 броя сандвичи микс",
+          "❗Храната се сервира на плата."
+        ],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 2
+      }
+    },
+    {
+      "id": "legacy-cae636611f15230e1bb530a5",
+      "type": "product",
+      "data": {
+        "title": "Куверт 2️⃣",
+        "categoryId": "kuverti",
+        "section": "🎉 Детски куверти",
+        "kind": "package",
+        "description": "",
+        "priceCents": 1550,
+        "portion": "",
+        "inclusions": [
+          "🍔 Чийзбургер с пържени картофи",
+          "👶или 2 броя бебешки мъфини"
+        ],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 6
+      }
+    },
+    {
+      "id": "legacy-2de593a61ba2c799d7756e28",
+      "type": "product",
+      "data": {
+        "title": "🍇 Плато сезонни плодове",
+        "categoryId": "kuverti",
+        "section": "🧃 Допълнителни предложения за детската маса",
+        "kind": "product",
+        "description": "",
+        "priceCents": 1390,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "1кг",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 10
+      }
+    },
+    {
+      "id": "legacy-c4877972a5035ca7287d05da",
+      "type": "product",
+      "data": {
+        "title": "🥕 Чашка с моркови",
+        "categoryId": "kuverti",
+        "section": "🧃 Допълнителни предложения за детската маса",
+        "kind": "product",
+        "description": "",
+        "priceCents": 400,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "300г",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 11
+      }
+    },
+    {
+      "id": "legacy-ca94bc911d77f8734ad82644",
+      "type": "product",
+      "data": {
+        "title": "🍟 Плато пилешки хапки с картофи",
+        "categoryId": "kuverti",
+        "section": "🧃 Допълнителни предложения за детската маса",
+        "kind": "product",
+        "description": "",
+        "priceCents": 2000,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "600г",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 12
+      }
+    },
+    {
+      "id": "legacy-c587f5e8a409c8c54d735832",
+      "type": "product",
+      "data": {
+        "title": "🥪 Плато сандвичи с кроасан (пилешко филе)",
+        "categoryId": "kuverti",
+        "section": "🧃 Допълнителни предложения за детската маса",
+        "kind": "product",
+        "description": "",
+        "priceCents": 2000,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "8бр.",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 13
+      }
+    },
+    {
+      "id": "legacy-0a419770ad52b9733b46be84",
+      "type": "product",
+      "data": {
+        "title": "🔎 Допълнителна информация",
+        "categoryId": "kuverti",
+        "section": "🧃 Допълнителни предложения за детската маса",
+        "kind": "product",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [
+          "Украсата включва балони и надпис.",
+          "Предлагаме допълнителна декорация за Вашия празник",
+          "Балони с хелий — 2€/бр",
+          "Арки от балони и тематични декорации — от 67€ .",
+          "Цената е за едно дете.",
+          "❗Детски кът \"Трънче\" запазва правото на промяна в цените."
+        ],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 14
+      }
+    },
+    {
+      "id": "soleni",
+      "type": "category",
+      "data": {
+        "title": "🧂 Солени предложения за възрастните",
+        "slug": "soleni",
+        "description": "",
+        "icon": "pizza",
+        "sortOrder": 1,
+        "visible": true
+      }
+    },
+    {
+      "id": "legacy-7aa2487e4d79792c62601966",
+      "type": "product",
+      "data": {
+        "title": "🚨 Важно",
+        "categoryId": "soleni",
+        "section": "",
+        "kind": "info",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "Храната е само с предварителна поръчка и не може да се поръчва допълнително на момента. \n Минималната поръчка е по 4 плата на маса за възрастните.\n Масите са с капацитет 6-8 човека.\n Платата не могат да се разделят или комбинират.",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 0
+      }
+    },
+    {
+      "id": "legacy-518c5bb5154854b429ad038a",
+      "type": "product",
+      "data": {
+        "title": "🥦 Зеленчуково плато с млечен сос",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "800гр",
+        "priceCents": 1390,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "(чери домати, краставици, зелени и червени чушки, моркови)",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 2
+      }
+    },
+    {
+      "id": "legacy-46ba3fef88971ce27f63fc0f",
+      "type": "product",
+      "data": {
+        "title": "🍅 Капрезе хапки",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "25бр",
+        "priceCents": 1490,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "(чери домати, бейби моцарела, песто)",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 3
+      }
+    },
+    {
+      "id": "legacy-53ac86377422436f786f3a33",
+      "type": "product",
+      "data": {
+        "title": "🥩 Плато сухи мезета",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "300гр",
+        "priceCents": 1390,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "(луканка, пушено филе, филе Елена, маслини)",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 4
+      }
+    },
+    {
+      "id": "legacy-8f85efc6d6f4a3bee9741ff6",
+      "type": "product",
+      "data": {
+        "title": "🧀 Плато студени сирена",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "300гр",
+        "priceCents": 1390,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "(чедър, синьо сирене, гауда, грозде)",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 5
+      }
+    },
+    {
+      "id": "legacy-3c199ce076c66656c6ca81e5",
+      "type": "product",
+      "data": {
+        "title": "🍢 Коктейлни хапки",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "30бр",
+        "priceCents": 2000,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "(бейби моцарела и чери домат, грозде и чедър, луканка и кашкавал, свинско филе и чедър, сьомга и крема сирене)",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 6
+      }
+    },
+    {
+      "id": "legacy-718266b5b85f59525ee309ea",
+      "type": "product",
+      "data": {
+        "title": "🌿 Плато спаначени палачинкови хапки",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "20бр",
+        "priceCents": 2200,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "(сьомга, крема сирене и копър)",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 7
+      }
+    },
+    {
+      "id": "legacy-4fe49c575a7d6be170b5f52b",
+      "type": "product",
+      "data": {
+        "title": "🥞 Плато с палачинкови хапки",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "20бр",
+        "priceCents": 1900,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "(пушено пилешко филе, чедър, крема сирене, айсберг)",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 8
+      }
+    },
+    {
+      "id": "legacy-bc2588e0aa386fa2c6b4d286",
+      "type": "product",
+      "data": {
+        "title": "🥖 Брускети",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [
+          "🍅Крема сирене, домат и песто — 8бр / 15 EUR",
+          "🫒Маслинова паста,чери домати — 8бр / 15 EUR",
+          "🍋‍🟩Сьомга, крема сирене и копър — 8бр / 19 EUR",
+          "🌶️Прошуто и пикантен млечен мус — 8бр / 19 EUR"
+        ],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 9
+      }
+    },
+    {
+      "id": "legacy-a6a144b6075b18815f6f48c8",
+      "type": "product",
+      "data": {
+        "title": "🥐Сандвичи с кроасан",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [
+          "🍅Крема сирене, домат и песто — 8бр / 19 EUR",
+          "🍗Пилешко филе, чедър, домат — 8бр / 22 EUR",
+          "🥓Свинско филе, кашкавал, домат — 8бр / 22 EUR",
+          "🍋‍🟩Сьомга, крема сирене — 8бр / 22 EUR"
+        ],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 14
+      }
+    },
+    {
+      "id": "legacy-c216826618ceca394937dfba",
+      "type": "product",
+      "data": {
+        "title": "🧀Плато панирани сирена",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "600гр",
+        "priceCents": 2000,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "(кашкавал, краве сирене, топено сирене, боровинки)",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 19
+      }
+    },
+    {
+      "id": "legacy-fc20f402baf5d36d9d685565",
+      "type": "product",
+      "data": {
+        "title": "🥩Плато месни хапки",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "600гр",
+        "priceCents": 2000,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "(панирани пилешки хапки, хапки със сусам, мини кюфтенца, чеснов сос)",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 20
+      }
+    },
+    {
+      "id": "legacy-202a19c86c630db099190a6f",
+      "type": "product",
+      "data": {
+        "title": "🍖Плато от мини шишчета",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "14бр",
+        "priceCents": 2000,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "(пилешки и свински)",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 21
+      }
+    },
+    {
+      "id": "legacy-ee8a3683dc7b422a7f086e29",
+      "type": "product",
+      "data": {
+        "title": "🍟Плато от пържени картофки",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "800гр",
+        "priceCents": 1350,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 22
+      }
+    },
+    {
+      "id": "legacy-46dace2dbccf611b46896ab6",
+      "type": "product",
+      "data": {
+        "title": "🍕Пица Маргарита",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "460гр",
+        "priceCents": 1150,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "(доматен сос и моцарела)",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 23
+      }
+    },
+    {
+      "id": "legacy-1dc26827a4b81fc4fcd3ca80",
+      "type": "product",
+      "data": {
+        "title": "🍕Пица със свинско филе",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "580гр",
+        "priceCents": 1250,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "(доматен сос ,моцарела, свинско филе)",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 24
+      }
+    },
+    {
+      "id": "legacy-5d530997d4ecb308ad34e832",
+      "type": "product",
+      "data": {
+        "title": "🍕Пица с пилешко филе и царевица",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "580гр",
+        "priceCents": 1250,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "(доматен сос,моцарела,пилешко филе и царевица)",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 25
+      }
+    },
+    {
+      "id": "legacy-da9e5124d649cf8b574e67c7",
+      "type": "product",
+      "data": {
+        "title": "🍕Пица пеперони",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "580гр",
+        "priceCents": 1400,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "(доматен сос,моцарела,пеперони)",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 26
+      }
+    },
+    {
+      "id": "legacy-a28a8f562747b2fbcaa45201",
+      "type": "product",
+      "data": {
+        "title": "🍕Пица прошуто",
+        "categoryId": "soleni",
+        "section": "🧂 Солени предложения",
+        "kind": "product",
+        "description": "580гр",
+        "priceCents": 1450,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "(доматен сос,моцарела,прошуто крудо)",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 27
+      }
+    },
+    {
+      "id": "sladki",
+      "type": "category",
+      "data": {
+        "title": "🍰 Сладки изкушения за възрастните",
+        "slug": "sladki",
+        "description": "",
+        "icon": "sweet",
+        "sortOrder": 2,
+        "visible": true
+      }
+    },
+    {
+      "id": "legacy-2291ce32a1358352f157b9c3",
+      "type": "product",
+      "data": {
+        "title": "🧁 Тарталети",
+        "categoryId": "sladki",
+        "section": "🍰 Сладки изкушения",
+        "kind": "product",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [
+          "Баварски крем и плодове — 20бр / 17,50 EUR",
+          "Шоколадов крем и кокосови стърготини — 20бр / 13,50 EUR"
+        ],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 1
+      }
+    },
+    {
+      "id": "legacy-40f6cd6a84fa22b96f43ab17",
+      "type": "product",
+      "data": {
+        "title": "🥐 Кроасани",
+        "categoryId": "sladki",
+        "section": "🍰 Сладки изкушения",
+        "kind": "product",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [
+          "Баварски крем с ягоди — 8бр / 22 EUR",
+          "Течен шоколад с филиран бадем — 8бр / 22 EUR"
+        ],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 4
+      }
+    },
+    {
+      "id": "legacy-aef45fdae881cc303fb8004d",
+      "type": "product",
+      "data": {
+        "title": "🍇 Плато сезонни плодове",
+        "categoryId": "sladki",
+        "section": "🍰 Сладки изкушения",
+        "kind": "product",
+        "description": "",
+        "priceCents": 1390,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "1кг",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 7
+      }
+    },
+    {
+      "id": "napitki",
+      "type": "category",
+      "data": {
+        "title": "🥤 Напитки",
+        "slug": "napitki",
+        "description": "",
+        "icon": "drink",
+        "sortOrder": 3,
+        "visible": true
+      }
+    },
+    {
+      "id": "legacy-8cbc71451da49a70097ab758",
+      "type": "product",
+      "data": {
+        "title": "🌿 Домашен сироп от бъз",
+        "categoryId": "napitki",
+        "section": "🥤 Напитки",
+        "kind": "product",
+        "description": "",
+        "priceCents": 650,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "литър",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 1
+      }
+    },
+    {
+      "id": "legacy-5d087d111e24c507ec95abb0",
+      "type": "product",
+      "data": {
+        "title": "🍋 Домашна лимонада",
+        "categoryId": "napitki",
+        "section": "🥤 Напитки",
+        "kind": "product",
+        "description": "",
+        "priceCents": 990,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "литър",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 2
+      }
+    },
+    {
+      "id": "legacy-fc72a21b53e0ce460bd8e23b",
+      "type": "product",
+      "data": {
+        "title": "🍷 Сангрия",
+        "categoryId": "napitki",
+        "section": "🥤 Напитки",
+        "kind": "product",
+        "description": "",
+        "priceCents": 950,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "литър",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 3
+      }
+    },
+    {
+      "id": "legacy-339a35fac090edc331b8477a",
+      "type": "product",
+      "data": {
+        "title": "🌊 Минерална вода",
+        "categoryId": "napitki",
+        "section": "🥤 Напитки",
+        "kind": "product",
+        "description": "",
+        "priceCents": 160,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 4
+      }
+    },
+    {
+      "id": "legacy-da2493274a130e285b90c652",
+      "type": "product",
+      "data": {
+        "title": "🥤Газирани напитки",
+        "categoryId": "napitki",
+        "section": "🥤 Напитки",
+        "kind": "product",
+        "description": "",
+        "priceCents": 190,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 5
+      }
+    },
+    {
+      "id": "legacy-ab80a8a0b5256b4c9dae2a2f",
+      "type": "product",
+      "data": {
+        "title": "🧃Натурален сок",
+        "categoryId": "napitki",
+        "section": "🥤 Напитки",
+        "kind": "product",
+        "description": "",
+        "priceCents": 190,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 6
+      }
+    },
+    {
+      "id": "legacy-5681150a4524971e16ad9d9b",
+      "type": "product",
+      "data": {
+        "title": "☕ Кафе Лаваца",
+        "categoryId": "napitki",
+        "section": "🥤 Напитки",
+        "kind": "product",
+        "description": "",
+        "priceCents": 160,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 7
+      }
+    },
+    {
+      "id": "legacy-442b31b6b105f3e87fd40688",
+      "type": "product",
+      "data": {
+        "title": "☕Капучино",
+        "categoryId": "napitki",
+        "section": "🥤 Напитки",
+        "kind": "product",
+        "description": "",
+        "priceCents": 260,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 8
+      }
+    },
+    {
+      "id": "legacy-16c9728a13aedfb2f1dde93b",
+      "type": "product",
+      "data": {
+        "title": "🥛Кафе с мляко",
+        "categoryId": "napitki",
+        "section": "🥤 Напитки",
+        "kind": "product",
+        "description": "",
+        "priceCents": 190,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 9
+      }
+    },
+    {
+      "id": "legacy-b675354845bdbbc53397be4b",
+      "type": "product",
+      "data": {
+        "title": "🧋Фрапе",
+        "categoryId": "napitki",
+        "section": "🥤 Напитки",
+        "kind": "product",
+        "description": "",
+        "priceCents": 270,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 10
+      }
+    },
+    {
+      "id": "legacy-5986384dd6de76d614e96a65",
+      "type": "product",
+      "data": {
+        "title": "🍺Бира Бургаско/Каменица",
+        "categoryId": "napitki",
+        "section": "🥤 Напитки",
+        "kind": "product",
+        "description": "",
+        "priceCents": 230,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 11
+      }
+    },
+    {
+      "id": "legacy-28e4b8b69945697c71489c77",
+      "type": "product",
+      "data": {
+        "title": "🍺Бира Стела/Старопрамен",
+        "categoryId": "napitki",
+        "section": "🥤 Напитки",
+        "kind": "product",
+        "description": "",
+        "priceCents": 290,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 12
+      }
+    },
+    {
+      "id": "legacy-e59de1aedbcb1f3022cb3104",
+      "type": "product",
+      "data": {
+        "title": "🥂 Вино",
+        "categoryId": "napitki",
+        "section": "🥤 Напитки",
+        "kind": "product",
+        "description": "",
+        "priceCents": 920,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "375мл",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 13
+      }
+    },
+    {
+      "id": "legacy-fcc571dce280cb8773d8cdfc",
+      "type": "product",
+      "data": {
+        "title": "🥂 Вино",
+        "categoryId": "napitki",
+        "section": "🥤 Напитки",
+        "kind": "product",
+        "description": "",
+        "priceCents": 1800,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "750мл",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 14
+      }
+    },
+    {
+      "id": "animacia",
+      "type": "category",
+      "data": {
+        "title": "🎭 Анимация,фотография и декорация",
+        "slug": "animacia",
+        "description": "",
+        "icon": "party",
+        "sortOrder": 4,
+        "visible": true
+      }
+    },
+    {
+      "id": "legacy-6e54ea84c6caa2238b47c809",
+      "type": "product",
+      "data": {
+        "title": "🚨 Важно",
+        "categoryId": "animacia",
+        "section": "",
+        "kind": "info",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [],
+        "variants": [],
+        "note": "Анимация не е включена в цената на детския куверт.\n\n С аниматорите се уговаряте лично.  \n\nПри ползване на външна услуга(аниматор или фотограф) е нужно предварително уведомяване и такса 20€. \n\n Забранено е внасянето на  обемна външна украса.",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 0
+      }
+    },
+    {
+      "id": "legacy-baf4e7d9bf1064680a85948c",
+      "type": "product",
+      "data": {
+        "title": "Часовете за анимация са фиксирани.❗Преди да запазите аниматор, уведомете детския кът за избрания час.",
+        "categoryId": "animacia",
+        "section": "🎭 Анимация",
+        "kind": "hours",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [
+          "10:30-12:00 / 12:00-13:30",
+          "17:00-18:30 / 18:30-20:00"
+        ],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 2
+      }
+    },
+    {
+      "id": "legacy-264f191b38c8ebd2672877a7",
+      "type": "product",
+      "data": {
+        "title": "👨‍🍳 Абчо Кебапчо",
+        "categoryId": "animacia",
+        "section": "🎭 Анимация",
+        "kind": "partner",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [
+          "🎶 Професионално озвучаване",
+          "🎯 Състезателни игри според възрастта",
+          "🎭 Музикални предизвикателства",
+          "🎂 Ритуал с торта"
+        ],
+        "variants": [
+          {
+            "title": "90 мин",
+            "priceCents": 10000,
+            "detail": ""
+          }
+        ],
+        "note": "",
+        "imageId": null,
+        "phone": "+359876700726",
+        "website": "",
+        "facebook": "https://www.facebook.com/abchokebapcho/?locale=bg_BG",
+        "visible": true,
+        "sortOrder": 3
+      }
+    },
+    {
+      "id": "legacy-e4742e8a936cc570578309ef",
+      "type": "product",
+      "data": {
+        "title": "🎤 Виктор",
+        "categoryId": "animacia",
+        "section": "🎭 Анимация",
+        "kind": "partner",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [
+          "🎶Професионално озвучаване",
+          "🎲 Забавления и фокуси",
+          "🎯 Състезателни игри според възрастта",
+          "🎂 Ритуал с торта"
+        ],
+        "variants": [
+          {
+            "title": "90 мин",
+            "priceCents": 10000,
+            "detail": ""
+          }
+        ],
+        "note": "",
+        "imageId": null,
+        "phone": "+359887105418",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 8
+      }
+    },
+    {
+      "id": "legacy-84539bdac0ce00042b85b092",
+      "type": "product",
+      "data": {
+        "title": "🦊 Partyfox",
+        "categoryId": "animacia",
+        "section": "🎭 Анимация",
+        "kind": "partner",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [
+          "🎤 Водещ с костюм на любим герой",
+          "🎉Машина за пяна",
+          "🎶 Професионално озвучаване",
+          "📜 Тематичен сценарий",
+          "🎲 Игрови реквизит",
+          "🕺 Игри и танци",
+          "🎂 Ритуал с торта"
+        ],
+        "variants": [
+          {
+            "title": "90 мин",
+            "priceCents": 15000,
+            "detail": ""
+          }
+        ],
+        "note": "",
+        "imageId": null,
+        "phone": "+359896244640",
+        "website": "https://partyfox.bg",
+        "facebook": "https://www.facebook.com/profile.php?id=100090302025392&locale=bg_BG",
+        "visible": true,
+        "sortOrder": 13
+      }
+    },
+    {
+      "id": "legacy-f8e71691768def6b6942ebf2",
+      "type": "product",
+      "data": {
+        "title": "🪅Симеон",
+        "categoryId": "animacia",
+        "section": "🎭 Анимация",
+        "kind": "partner",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [
+          "🎶 Професионално озвучаване",
+          "❄️Машина за сняг",
+          "🎉Костюм на любим герой",
+          "🎈Тематичен реквизит и игри",
+          "🎁Награди за децата"
+        ],
+        "variants": [
+          {
+            "title": "90 мин",
+            "priceCents": 13000,
+            "detail": ""
+          }
+        ],
+        "note": "",
+        "imageId": null,
+        "phone": "359877892682",
+        "website": "",
+        "facebook": "https://www.facebook.com/Ovtsata?rdid=nFygZSBdOUp5eFxF&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1LqkDAA9SN%2F#",
+        "visible": true,
+        "sortOrder": 21
+      }
+    },
+    {
+      "id": "legacy-e04fb138e2cd9505cfc41b17",
+      "type": "product",
+      "data": {
+        "title": "🧪Научни експерименти Магика",
+        "categoryId": "animacia",
+        "section": "🎭 Анимация",
+        "kind": "partner",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [
+          "🧊Шоу програма със сух лед",
+          "🧊 Работилница и шоу със сух лед",
+          "🫟Слайм работилница"
+        ],
+        "variants": [
+          {
+            "title": "Цената се определя от избраната програма",
+            "priceCents": null,
+            "detail": ""
+          }
+        ],
+        "note": "",
+        "imageId": null,
+        "phone": "359877152655",
+        "website": "https://magikaentertainment.wixsite.com/magika",
+        "facebook": "https://www.facebook.com/partyMAGIKA/?locale=bg_BG",
+        "visible": true,
+        "sortOrder": 27
+      }
+    },
+    {
+      "id": "legacy-7b1341d521edb7bc761a7064",
+      "type": "product",
+      "data": {
+        "title": "📸 Ива Спасова",
+        "categoryId": "animacia",
+        "section": "📷Фотограф",
+        "kind": "partner",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [
+          "📷 Индивидуална фотосесия на рожденика",
+          "👨‍👩‍👧‍👦 Снимки с гостите",
+          "💾 Всички сполучливи кадри в дигитален формат",
+          "🎁 Подарък – 1 моментна снимка (10/15 см)"
+        ],
+        "variants": [
+          {
+            "title": "60 мин",
+            "priceCents": 9000,
+            "detail": ""
+          },
+          {
+            "title": "120 мин",
+            "priceCents": 11300,
+            "detail": ""
+          }
+        ],
+        "note": "",
+        "imageId": null,
+        "phone": "+359899143092",
+        "website": "",
+        "facebook": "https://www.facebook.com/SpasovaPhotographerandmakeupArtist",
+        "visible": true,
+        "sortOrder": 33
+      }
+    },
+    {
+      "id": "legacy-b00ecdd4ce65132c4816a2a8",
+      "type": "product",
+      "data": {
+        "title": "🎈Kasidi-парти украса и декорация",
+        "categoryId": "animacia",
+        "section": "🎈Декорация",
+        "kind": "partner",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [
+          "🎈Арки от балони",
+          "🎈Тематични декорации",
+          "🎈Балон с хелий — 2,00€/бр.",
+          "🎈Цифра с хелий 1м. — 15,00€/бр."
+        ],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "+35989545287",
+        "website": "",
+        "facebook": "https://www.facebook.com/p/Kasidi-%D0%BF%D0%B0%D1%80%D1%82%D0%B8-%D1%83%D0%BA%D1%80%D0%B0%D1%81%D0%B0-%D0%B8-%D0%B4%D0%B5%D0%BA%D0%BE%D1%80%D0%B0%D1%86%D0%B8%D1%8F-100063565777458/",
+        "visible": true,
+        "sortOrder": 40
+      }
+    },
+    {
+      "id": "uslovia",
+      "type": "category",
+      "data": {
+        "title": "📋 Общи условия и правила",
+        "slug": "uslovia",
+        "description": "",
+        "icon": "rules",
+        "sortOrder": 5,
+        "visible": true
+      }
+    },
+    {
+      "id": "legacy-caf77e2194b70333bffa7c1d",
+      "type": "product",
+      "data": {
+        "title": "🕙 Работно време",
+        "categoryId": "uslovia",
+        "section": "📋 Общи условия и правила",
+        "kind": "hours",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [
+          "10:00 – 14:00ч",
+          "16:30 – 20:30ч"
+        ],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 1
+      }
+    },
+    {
+      "id": "legacy-21949310d391ffab3156499a",
+      "type": "product",
+      "data": {
+        "title": "Допълнителна информация",
+        "categoryId": "uslovia",
+        "section": "📋 Общи условия и правила",
+        "kind": "product",
+        "description": "",
+        "priceCents": null,
+        "portion": "",
+        "inclusions": [
+          "💵 Резервации се правят само на място с капаро от 50 EUR или 240 EUR за частно парти",
+          "🎊 Детският кът организира повече от едно мероприятие в един и същи час, освен ако не е затворено за частно парти.",
+          "⚠️ Капарото не се връща. При неподходящо време датата може да се смени до 4 дни предварително.",
+          "📝 Менюто се уточнява и корекции се правят до 7 дни преди празника.",
+          "❌ Внасянето на храни и напитки отвън е забранено.",
+          "🍰 Ако се носи торта отвън, тя трябва да има сертификат за качество и се начислява такса сервиз – 10 EUR.",
+          "⏰ Оувъртайм: 30 EUR/30 мин или 60 EUR/час след изтичане на уговореното време.",
+          "🔒 Детският кът може да бъде нает само за Вашето събитие срещу доплащане 240 EUR до 4 часа(частно парти).",
+          "👗 При ползване на външна услуга (анимация, фотограф) – предварително уведомяване и такса 20 EUR.",
+          "❌Забранено е внасянето на външна украса.",
+          "🎂Работим със сладкарница \r\nCake Box \r\nи \r\nШамони. \r\nТортите се поръчват и заплащат директно на сладкарницата.",
+          "❗Детски кът \"Трънче\" запазва правото на промяна в цените.",
+          "Детският кът не разполоага с ПОС терминал."
+        ],
+        "variants": [],
+        "note": "",
+        "imageId": null,
+        "phone": "",
+        "website": "",
+        "facebook": "",
+        "visible": true,
+        "sortOrder": 2
+      }
+    },
+    {
+      "id": "album-d530d517c1bb7ee9",
+      "type": "album",
+      "data": {
+        "title": "Кетъринг",
+        "description": "",
+        "coverId": null,
+        "visible": true,
+        "sortOrder": 0
+      }
+    },
+    {
+      "id": "album-67f2aa62e1ecc488",
+      "type": "album",
+      "data": {
+        "title": "Декорация",
+        "description": "",
+        "coverId": null,
+        "visible": true,
+        "sortOrder": 1
+      }
+    },
+    {
+      "id": "album-d58267e99b673455",
+      "type": "album",
+      "data": {
+        "title": "Място за игри",
+        "description": "",
+        "coverId": null,
+        "visible": true,
+        "sortOrder": 2
+      }
+    },
+    {
+      "id": "album-279a53793722c561",
+      "type": "album",
+      "data": {
+        "title": "Места за настаняване",
+        "description": "",
+        "coverId": null,
+        "visible": true,
+        "sortOrder": 3
+      }
+    }
+  ],
+  "galleryFiles": [
+    {
+      "id": "1U7o5d9o4p3tszIN4Kmmt1fRgN6RIbf9P",
+      "name": "3_кетъринг_.JPEG",
+      "albumId": "album-d530d517c1bb7ee9",
+      "sortOrder": 0,
+      "alt": "Кетъринг — снимка 1"
+    },
+    {
+      "id": "1bhFIceIFcYkqUG56YW_wbdz-klYKIvQy",
+      "name": "3_кетъринг_.JPEG",
+      "albumId": "album-d530d517c1bb7ee9",
+      "sortOrder": 1,
+      "alt": "Кетъринг — снимка 2"
+    },
+    {
+      "id": "1uJwGqpQDDUxwp1E0NfOQmPR_UV7V9PMO",
+      "name": "02_декорация_0017.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 0,
+      "alt": "Декорация — снимка 1"
+    },
+    {
+      "id": "1ZWAONr8mIuRoRpXUrpGkLn3ZkxTTzbEe",
+      "name": "02_декорация_0016.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 1,
+      "alt": "Декорация — снимка 2"
+    },
+    {
+      "id": "15L7s0sLuM-46ilLGg_z6mOG7mbf1Qc1f",
+      "name": "02_декорация_0015.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 2,
+      "alt": "Декорация — снимка 3"
+    },
+    {
+      "id": "16wja5gzRyojHFzLkC14qY45cbom1CbZJ",
+      "name": "02_декорация_0014.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 3,
+      "alt": "Декорация — снимка 4"
+    },
+    {
+      "id": "1lPYHpUMQ5yG-xSWGwlrOMRO8U5sv6HCP",
+      "name": "02_декорация_0013.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 4,
+      "alt": "Декорация — снимка 5"
+    },
+    {
+      "id": "1bmJA_0niu9PCHoStz7A4J2cIbmtGqxeO",
+      "name": "02_декорация_0012.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 5,
+      "alt": "Декорация — снимка 6"
+    },
+    {
+      "id": "1cnCjepL4LzFXknuQ8ieUlxzuQb1teW6c",
+      "name": "02_декорация_0011.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 6,
+      "alt": "Декорация — снимка 7"
+    },
+    {
+      "id": "1ZZWNvFKrfcDODzb9_cWfECQu85NdG-X0",
+      "name": "02_декорация_0010.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 7,
+      "alt": "Декорация — снимка 8"
+    },
+    {
+      "id": "1A294GzafrFaiCcO-iqOkLpuE9jKbkDtV",
+      "name": "02_декорация_0009.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 8,
+      "alt": "Декорация — снимка 9"
+    },
+    {
+      "id": "1-TVicwFVyWQLlcjwHHa6wFdWwnnPYxQK",
+      "name": "02_декорация_0008.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 9,
+      "alt": "Декорация — снимка 10"
+    },
+    {
+      "id": "1Ynq_xzhcwnon4uJ71jqCy_v40Rhfdr67",
+      "name": "02_декорация_0007.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 10,
+      "alt": "Декорация — снимка 11"
+    },
+    {
+      "id": "1-U3kwVz5TrAcAgw8KBLcqxUSoBq2sdPv",
+      "name": "02_декорация_0006.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 11,
+      "alt": "Декорация — снимка 12"
+    },
+    {
+      "id": "1Cbny0S_IwMd1fSGvKg6smi9Wg0LQ2eVU",
+      "name": "02_декорация_0005.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 12,
+      "alt": "Декорация — снимка 13"
+    },
+    {
+      "id": "15fdhtAL_7zkI6O-AgH9LHDItFEwsqJf8",
+      "name": "02_декорация_0004.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 13,
+      "alt": "Декорация — снимка 14"
+    },
+    {
+      "id": "14myhmENnJDFBsJXtzWx0Y-0Hwx1YYKC6",
+      "name": "02_декорация_0003.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 14,
+      "alt": "Декорация — снимка 15"
+    },
+    {
+      "id": "1Tm45sC9HSB-HCIgc6rM95PKjH705M32u",
+      "name": "02_декорация_0002.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 15,
+      "alt": "Декорация — снимка 16"
+    },
+    {
+      "id": "170q80JZP7_7Src5RuRhpUafbpAFy3DJr",
+      "name": "01_място за игри_0001",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 0,
+      "alt": "Място за игри — снимка 1"
+    },
+    {
+      "id": "16lCdJZqmQRvvP3DzPYlp0K0PPM_cQRX1",
+      "name": "01_място за игри_0020",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 1,
+      "alt": "Място за игри — снимка 2"
+    },
+    {
+      "id": "1Hh3qVNNIyExqne17n5bZyBZhA9do6a7N",
+      "name": "01_място за игри_0021",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 2,
+      "alt": "Място за игри — снимка 3"
+    },
+    {
+      "id": "10382cdAhqj0XjypxRV91v0eXg7hQNMKT",
+      "name": "01_място за игри_0019",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 3,
+      "alt": "Място за игри — снимка 4"
+    },
+    {
+      "id": "10dodq1ER8OAG7zm7T4JrZ6X5FdqmnV4C",
+      "name": "01_място за игри_0018",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 4,
+      "alt": "Място за игри — снимка 5"
+    },
+    {
+      "id": "14lURDRWjomr2zfkB1cwQnGsGnHHP_zPR",
+      "name": "01_място за игри_0017",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 5,
+      "alt": "Място за игри — снимка 6"
+    },
+    {
+      "id": "1x5eOZtaCScrOaRfPCdF_ovWo4q3KFmwF",
+      "name": "01_място за игри_0016",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 6,
+      "alt": "Място за игри — снимка 7"
+    },
+    {
+      "id": "1qKi58XaUiiq_gRYiPAYmd4lOd6f7R6km",
+      "name": "01_място за игри_0015",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 7,
+      "alt": "Място за игри — снимка 8"
+    },
+    {
+      "id": "1cBqruNfNx2-dfrZNYP0kAhNV9rlKUByA",
+      "name": "01_място за игри_0014",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 8,
+      "alt": "Място за игри — снимка 9"
+    },
+    {
+      "id": "18_dXBlw8rOOawLzFw02kC4-w58K59uAD",
+      "name": "01_място за игри_0013",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 9,
+      "alt": "Място за игри — снимка 10"
+    },
+    {
+      "id": "1fGgSJ95ljIRx0ACJNGw16p1uk29HarN0",
+      "name": "01_място за игри_0012",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 10,
+      "alt": "Място за игри — снимка 11"
+    },
+    {
+      "id": "1tpleU3IVI2QD_7uGl1PqkZBKHxzdcAQU",
+      "name": "01_място за игри_0011",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 11,
+      "alt": "Място за игри — снимка 12"
+    },
+    {
+      "id": "1PF775LTWlGo7REGGwOBUpRr9TYSdy3Gr",
+      "name": "01_място за игри_0010",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 12,
+      "alt": "Място за игри — снимка 13"
+    },
+    {
+      "id": "16wwhvR8WwHpmQa763DSb32yWE1FgeqtV",
+      "name": "01_място за игри_0009",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 13,
+      "alt": "Място за игри — снимка 14"
+    },
+    {
+      "id": "1iJ7_M3KBbJPsEYnCkqrIg37kdM6SZKDQ",
+      "name": "01_място за игри_0008",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 14,
+      "alt": "Място за игри — снимка 15"
+    },
+    {
+      "id": "14GoycrcyJ9YYWxoziOTwCeCgKT-48Wtu",
+      "name": "01_място за игри_0007",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 15,
+      "alt": "Място за игри — снимка 16"
+    },
+    {
+      "id": "1s8hEnJ7PYd6oXFqIORumfYZ-nR2SJj6H",
+      "name": "01_място за игри_0006",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 16,
+      "alt": "Място за игри — снимка 17"
+    },
+    {
+      "id": "1berLIpT4jy-fcgXlo7J9miZcrasOKen3",
+      "name": "01_място за игри_0005",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 17,
+      "alt": "Място за игри — снимка 18"
+    },
+    {
+      "id": "1FfcEvII2qaTvgSrhbJhML10iQv21lbOW",
+      "name": "01_място за игри_0004",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 18,
+      "alt": "Място за игри — снимка 19"
+    },
+    {
+      "id": "1TrSiNzvpj8Kd76Si_GBFiBUS2gYahdU1",
+      "name": "01_място за игри_0003",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 19,
+      "alt": "Място за игри — снимка 20"
+    },
+    {
+      "id": "1s-ammqDExxpl39rUaNwIrlfQKdKRdrGV",
+      "name": "01_място за игри_0002",
+      "albumId": "album-d58267e99b673455",
+      "sortOrder": 20,
+      "alt": "Място за игри — снимка 21"
+    },
+    {
+      "id": "1JNhE7BXo8bTbn_N_mJBGNdzzXSUY9OsT",
+      "name": "4_места за настаняване _IMG_4395.JPEG",
+      "albumId": "album-279a53793722c561",
+      "sortOrder": 0,
+      "alt": "Места за настаняване — снимка 1"
+    },
+    {
+      "id": "1V2O7qYJTie80wjyYHY1fq-8_fJXvgFMo",
+      "name": "4_места за настаняване _IMG_4394.JPEG",
+      "albumId": "album-279a53793722c561",
+      "sortOrder": 1,
+      "alt": "Места за настаняване — снимка 2"
+    },
+    {
+      "id": "11aFjkp6YoxqdI0FTWXF1V9E6MYnDUlgC",
+      "name": "4_места за настаняване _IMG_4390.JPEG",
+      "albumId": "album-279a53793722c561",
+      "sortOrder": 2,
+      "alt": "Места за настаняване — снимка 3"
+    },
+    {
+      "id": "1Z_sGSG0l1jtFuXKyfw2JYAASjKbDqU1v",
+      "name": "4_места за настаняване _IMG_0065.JPEG",
+      "albumId": "album-279a53793722c561",
+      "sortOrder": 3,
+      "alt": "Места за настаняване — снимка 4"
+    },
+    {
+      "id": "1zm1NYqmX7AZCVT6n7t1qCb1P60ir84Wp",
+      "name": "4_места за настаняване _IMG_0057.JPEG",
+      "albumId": "album-279a53793722c561",
+      "sortOrder": 4,
+      "alt": "Места за настаняване — снимка 5"
+    },
+    {
+      "id": "1B3kKE0pVFvMwcJaS6gT6LV5itWm-7PD8",
+      "name": "4_места за настаняване _IMG_0053.JPEG",
+      "albumId": "album-279a53793722c561",
+      "sortOrder": 5,
+      "alt": "Места за настаняване — снимка 6"
+    },
+    {
+      "id": "1rsbS11Fu4r4gK_kXLfjsH1_KCYdD4gZF",
+      "name": "4_места за настаняване _IMG_0049.JPEG",
+      "albumId": "album-279a53793722c561",
+      "sortOrder": 6,
+      "alt": "Места за настаняване — снимка 7"
+    },
+    {
+      "id": "1BTanjwDAt2I46WvzFoldAJ-qo8ZHaO9U",
+      "name": "4_места за настаняване _IMG_0044.JPEG",
+      "albumId": "album-279a53793722c561",
+      "sortOrder": 7,
+      "alt": "Места за настаняване — снимка 8"
+    },
+    {
+      "id": "17wFK2B7vRqQQ1j1alLTUi-ZtsNvezwbo",
+      "name": "4_места за настаняване _IMG_0038.JPEG",
+      "albumId": "album-279a53793722c561",
+      "sortOrder": 8,
+      "alt": "Места за настаняване — снимка 9"
+    },
+    {
+      "id": "12PHulq2HpNGs8nm5ALhyyw_PcGkV8EVE",
+      "name": "4_места за настаняване _IMG_0036.JPEG",
+      "albumId": "album-279a53793722c561",
+      "sortOrder": 9,
+      "alt": "Места за настаняване — снимка 10"
+    },
+    {
+      "id": "1V2oau4-aIuGaR0G0mFNhgKQua9Qg8x67",
+      "name": "4_места за настаняване _IMG_0028.JPEG",
+      "albumId": "album-279a53793722c561",
+      "sortOrder": 10,
+      "alt": "Места за настаняване — снимка 11"
+    },
+    {
+      "id": "1PIYvsUiNZYuj5vn9zlqeufM3sVhpkLVL",
+      "name": "4_места за настаняване _IMG_0027.JPEG",
+      "albumId": "album-279a53793722c561",
+      "sortOrder": 11,
+      "alt": "Места за настаняване — снимка 12"
+    },
+    {
+      "id": "1wI7hz7_eO_d5JE1k-7HbD3tCgU7pQVpI",
+      "name": "4_места за настаняване _IMG_0038.HEIC",
+      "albumId": "album-279a53793722c561",
+      "sortOrder": 12,
+      "alt": "Места за настаняване — снимка 13"
+    },
+    {
+      "id": "12dENci4k9C7b16hH3BYJ0VlihCeATGTa",
+      "name": "3_кетъринг_.JPEG",
+      "albumId": "album-d530d517c1bb7ee9",
+      "sortOrder": 2,
+      "alt": "Кетъринг — снимка 3"
+    },
+    {
+      "id": "1jspR5Rfk_JJTFbJTnHv4wiYms0N87GNA",
+      "name": "3_кетъринг_.JPEG",
+      "albumId": "album-d530d517c1bb7ee9",
+      "sortOrder": 3,
+      "alt": "Кетъринг — снимка 4"
+    },
+    {
+      "id": "1OdWW2kM1WZwMhLAhBaclB5FBdqQ4YM9l",
+      "name": "3_кетъринг_.JPEG",
+      "albumId": "album-d530d517c1bb7ee9",
+      "sortOrder": 4,
+      "alt": "Кетъринг — снимка 5"
+    },
+    {
+      "id": "1uDlAfKrPhNKzwR9jqZUAxpQjoPJh7oAY",
+      "name": "3_кетъринг_.JPEG",
+      "albumId": "album-d530d517c1bb7ee9",
+      "sortOrder": 5,
+      "alt": "Кетъринг — снимка 6"
+    },
+    {
+      "id": "1kJlbYasxDCsPIl03LNbpuME0Myg7DaAw",
+      "name": "3_кетъринг_.JPEG",
+      "albumId": "album-d530d517c1bb7ee9",
+      "sortOrder": 6,
+      "alt": "Кетъринг — снимка 7"
+    },
+    {
+      "id": "1663yB-4MOXeBwBhwm_rJIp9TIpb9qW8z",
+      "name": "3_кетъринг_.JPEG",
+      "albumId": "album-d530d517c1bb7ee9",
+      "sortOrder": 7,
+      "alt": "Кетъринг — снимка 8"
+    },
+    {
+      "id": "1UgDEpz3pjbpwOh4seu-ZbClEQkb_czIb",
+      "name": "3_кетъринг_.JPEG",
+      "albumId": "album-d530d517c1bb7ee9",
+      "sortOrder": 8,
+      "alt": "Кетъринг — снимка 9"
+    },
+    {
+      "id": "1XyoPFZxJRokcbyKAE0AxiBYG6SeLfmpW",
+      "name": "3_кетъринг_.JPEG",
+      "albumId": "album-d530d517c1bb7ee9",
+      "sortOrder": 9,
+      "alt": "Кетъринг — снимка 10"
+    },
+    {
+      "id": "1r8QGRhqVKAuBm-4uYTjrR4gSlvJPCgum",
+      "name": "3_кетъринг_.JPEG",
+      "albumId": "album-d530d517c1bb7ee9",
+      "sortOrder": 10,
+      "alt": "Кетъринг — снимка 11"
+    },
+    {
+      "id": "1UdR8Y_KSZlliFj4QQAHOL4A4ANQcyaOX",
+      "name": "3_кетъринг_.JPEG",
+      "albumId": "album-d530d517c1bb7ee9",
+      "sortOrder": 11,
+      "alt": "Кетъринг — снимка 12"
+    },
+    {
+      "id": "1rcCjr4T6nWXwVIAClzq0-n6NizKItNYN",
+      "name": "3_кетъринг_.JPEG",
+      "albumId": "album-d530d517c1bb7ee9",
+      "sortOrder": 12,
+      "alt": "Кетъринг — снимка 13"
+    },
+    {
+      "id": "1gWzEFwAbZEni1KbHZ_MIfgnXoQxsIlsc",
+      "name": "2_декорация_IMG_1605.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 16,
+      "alt": "Декорация — снимка 17"
+    },
+    {
+      "id": "150BaljGpXMTq2moNXelGiDXNQpVDrb5q",
+      "name": "2_декорация_IMG_1588.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 17,
+      "alt": "Декорация — снимка 18"
+    },
+    {
+      "id": "1r6XEjg6Ce3Yp9X_mA3YGWlqg8wfG5UCd",
+      "name": "2_декорация_IMG_1087.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 18,
+      "alt": "Декорация — снимка 19"
+    },
+    {
+      "id": "1l2nEwfbJG6nxXCbRtFBWk2tGfQnNVnU5",
+      "name": "2_декорация_IMG_3479.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 19,
+      "alt": "Декорация — снимка 20"
+    },
+    {
+      "id": "1MztHBrqHMJXB9mbF_kccGjngKbF6Anyf",
+      "name": "2_декорация_IMG_1479.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 20,
+      "alt": "Декорация — снимка 21"
+    },
+    {
+      "id": "1_7YGa7CSht1Sja3q38klEITGhEGHwYbd",
+      "name": "2_декорация_IMG_1791.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 21,
+      "alt": "Декорация — снимка 22"
+    },
+    {
+      "id": "1NSiX7OSe8ISx9Cn5ik4VIxf7bl63bQ-u",
+      "name": "2_декорация_IMG_1604.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 22,
+      "alt": "Декорация — снимка 23"
+    },
+    {
+      "id": "139bqfSDSdZ1VOXCsy6ZJQ5_vMN9UpEdc",
+      "name": "2_декорация_IMG_2280_Original.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 23,
+      "alt": "Декорация — снимка 24"
+    },
+    {
+      "id": "1V79C5OXbbJIvrzMPkd9nPJywFoHPdktS",
+      "name": "2_декорация_IMG_1587.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 24,
+      "alt": "Декорация — снимка 25"
+    },
+    {
+      "id": "1ZFsYzmDTiOfkzKBeoqvJokwNsh8_FKnP",
+      "name": "2_декорация_IMG_1033.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 25,
+      "alt": "Декорация — снимка 26"
+    },
+    {
+      "id": "1sFykS3AUzndJJYVeoYMlOK_-21AYFzPH",
+      "name": "2_декорация_IMG_1536.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 26,
+      "alt": "Декорация — снимка 27"
+    },
+    {
+      "id": "18IyMmkUPf3Jhc_Hm843Lt00pH0njcmRq",
+      "name": "2_декорация_IMG_0944.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 27,
+      "alt": "Декорация — снимка 28"
+    },
+    {
+      "id": "1O0dCL1NOlTaBa-9FuAbLpcmy6c8L_vhB",
+      "name": "2_декорация_IMG_1059.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 28,
+      "alt": "Декорация — снимка 29"
+    },
+    {
+      "id": "1wQ8f0ev5A_wf_P7b0o_Z7l6gp8mggCvb",
+      "name": "2_декорация_IMG_0996.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 29,
+      "alt": "Декорация — снимка 30"
+    },
+    {
+      "id": "17HPz7STa25EhxET5pSyhj3CtWntCDrnu",
+      "name": "2_декорация_IMG_1349.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 30,
+      "alt": "Декорация — снимка 31"
+    },
+    {
+      "id": "1HeMwvD4Jz4QLNNadyHNSl1xThvJrAsbC",
+      "name": "2_декорация_IMG_1005.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 31,
+      "alt": "Декорация — снимка 32"
+    },
+    {
+      "id": "14lVCKatRIsejiZN62U5cMVatD5Lr1r2Z",
+      "name": "2_декорация_IMG_1054.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 32,
+      "alt": "Декорация — снимка 33"
+    },
+    {
+      "id": "139r-3l2o-Y4VdTYwRZTX1VLRvFF0odR0",
+      "name": "2_декорация_IMG_0981.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 33,
+      "alt": "Декорация — снимка 34"
+    },
+    {
+      "id": "1dys5duB0VZF0KzbCU5VQNDpEF9hGBM6q",
+      "name": "2_декорация_IMG_1009.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 34,
+      "alt": "Декорация — снимка 35"
+    },
+    {
+      "id": "1WjnsZT8Xxriz7T0W5ZzJb2DWlMcHKYM5",
+      "name": "2_декорация_IMG_1973.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 35,
+      "alt": "Декорация — снимка 36"
+    },
+    {
+      "id": "1ktddVmSPZdIbii6zz2OBPu2ygNB8ohoi",
+      "name": "2_декорация_IMG_1360.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 36,
+      "alt": "Декорация — снимка 37"
+    },
+    {
+      "id": "1UeL1WxRGwv95K6vRXl4rphji0JxuyjSS",
+      "name": "2_декорация_IMG_1020.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 37,
+      "alt": "Декорация — снимка 38"
+    },
+    {
+      "id": "1SWikSp4OLFgrdlsgwjiAxflUNnAeiCqW",
+      "name": "2_декорация_IMG_0974.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 38,
+      "alt": "Декорация — снимка 39"
+    },
+    {
+      "id": "1_hHtKGt-BcXl9SW5Nsol8EU2oQICG5IE",
+      "name": "2_декорация_IMG_1746.JPG",
+      "albumId": "album-67f2aa62e1ecc488",
+      "sortOrder": 39,
+      "alt": "Декорация — снимка 40"
+    }
+  ],
+  "partnerImages": [
+    {
+      "entityId": "legacy-264f191b38c8ebd2672877a7",
+      "source": "https://trunche.com/src/assets/partenrs/abcho.jpg"
+    },
+    {
+      "entityId": "legacy-e4742e8a936cc570578309ef",
+      "source": "https://trunche.com/src/assets/partenrs/victor.jpg"
+    },
+    {
+      "entityId": "legacy-84539bdac0ce00042b85b092",
+      "source": "https://trunche.com/src/assets/partenrs/logo_partyfox.jpg"
+    },
+    {
+      "entityId": "legacy-f8e71691768def6b6942ebf2",
+      "source": "https://scontent.fsof11-1.fna.fbcdn.net/v/t39.30808-6/497533410_1123366136482122_3959621651358792743_n.jpg?stp=dst-jpg_tt6&cstp=mx1300x865&ctp=s1300x865&_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=FEdbF6OkEF0Q7kNvwFpWFSl&_nc_oc=AdpbHpipDDWAlJTGBGUaowNXFOTJj1BDTFsVx1EhEdNxxnza0jT5PJLqvosrez_YsbY&_nc_zt=23&_nc_ht=scontent.fsof11-1.fna&_nc_gid=i-g6SOaocvSXVzEVQ8XAWQ&_nc_ss=7b289&oh=00_AQHwyQJSWw6jiXoenJir5C1N8NCQ2XUdALgyXMo_I7FH8w&oe=6A7F45CC"
+    },
+    {
+      "entityId": "legacy-e04fb138e2cd9505cfc41b17",
+      "source": "https://scontent.fsof11-1.fna.fbcdn.net/v/t39.30808-6/755809867_1992447688360851_2859640239958140262_n.jpg?stp=dst-jpg_tt6&cstp=mx871x870&ctp=s871x870&_nc_cat=103&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=KoRyGu10quoQ7kNvwGGD9vx&_nc_oc=AdqVZuy3wuIiuhCqSCS-9Jr8tWalxmPuIrZc4hRChEkb5lzsA8d-xaeByaIMMUdivGM&_nc_zt=23&_nc_ht=scontent.fsof11-1.fna&_nc_gid=9YjsV7wPeju4_bcHl-UzeQ&_nc_ss=7b289&oh=00_AQHn-g5MajeLkeNbHoztreDNQO1RHfFCR0ipQYlrDkfmWA&oe=6A7F7791"
+    },
+    {
+      "entityId": "legacy-7b1341d521edb7bc761a7064",
+      "source": "https://trunche.com/src/assets/partenrs/iva-spasova.jpg"
+    },
+    {
+      "entityId": "legacy-b00ecdd4ce65132c4816a2a8",
+      "source": "https://scontent.fsof11-1.fna.fbcdn.net/v/t39.30808-6/279012789_2866910986947068_3620632328606967706_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=mt15TYYEdrYQ7kNvwERyyGE&_nc_oc=AdmehIn1aE_NtYtrjHGR24qB7cKT91j2KTEXQFR4JZMhH4X7wX54nUv_POhYW6P0JRg&_nc_zt=23&_nc_ht=scontent.fsof11-1.fna&_nc_gid=8YqMyDHy_1IwmUTFJQz81g&oh=00_Afv74yQTGOG3N_2rYDmQt9lH4I3HGc1fOCoRJKR__7HBMw&oe=698F9741"
+    }
+  ]
+}
