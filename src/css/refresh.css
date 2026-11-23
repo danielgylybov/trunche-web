@@ -107,3 +107,23 @@ button,input,textarea,select{font:inherit}a{color:var(--purple)}a:hover{color:va
 @media(max-width:767px){.tiny-flower{width:20px;height:20px}.hero-confetti>span{width:28px;height:28px}.hero-confetti>span:nth-child(3){width:28px;height:28px}}
 
 .ribbon-sparkle{display:block;width:22px;height:22px;flex:0 0 22px;color:var(--yellow)}.invitation-doodle svg{display:block;width:72px;height:72px}.loading-flower{width:48px;height:48px;font-size:0}.photo-loading .decoration-icon{width:40px;height:40px}
+
+/* Two equal groups create a continuous, gap-free mobile ribbon. */
+.joy-ribbon{display:block;padding:.85rem 1rem}
+.ribbon-track{display:flex;width:max-content;margin:0 auto}
+.ribbon-group{display:flex;align-items:center;gap:2.5rem;flex-shrink:0}
+.ribbon-copy{display:none}
+@media(max-width:991px){
+ .joy-ribbon{padding:.85rem 0}
+ .ribbon-track{margin:0;animation:ribbon-travel 22s linear infinite;will-change:transform}
+ .ribbon-group{gap:1.5rem;padding-right:1.5rem}
+ .ribbon-copy{display:flex}
+ .joy-ribbon span{font-size:.8125rem}
+ .joy-ribbon:active .ribbon-track{animation-play-state:paused}
+}
+@keyframes ribbon-travel{to{transform:translateX(-50%)}}
+@media(max-width:991px) and (prefers-reduced-motion:reduce){
+ .ribbon-track{width:100%;animation:none;transform:none;will-change:auto}
+ .ribbon-group{width:100%;flex-wrap:wrap;justify-content:center;gap:.8rem 1rem;padding:0 1rem;white-space:normal}
+ .ribbon-copy{display:none}
+}
