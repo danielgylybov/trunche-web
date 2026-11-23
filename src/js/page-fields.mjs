@@ -10,7 +10,7 @@ export const pageSections = {
         "label": "Малък текст над заглавието",
         "selector": ".hero-copy .eyebrow",
         "multiline": false,
-        "value": "✿ ЕДНО ЩАСТЛИВО МЯСТО В ГОРНА БАНЯ"
+        "value": "ЕДНО ЩАСТЛИВО МЯСТО В ГОРНА БАНЯ"
       },
       {
         "key": "title",

@@ -15,7 +15,7 @@ describe('actual public page bindings',()=>{
       const value='Променено '+field.key+' <script>literal</script>';
       const data=validateEntity('page',{...pageDefaults(key),[field.key]:value});
       renderPageContent(document,[{type:'page',data}],section.file);
-      expect(document.querySelector(field.selector)?.textContent?.replace(/^✿\s*/,'')).toBe(value);
+      expect(document.querySelector(field.selector)?.textContent?.replace(/^✿\s*/,'').trim()).toBe(value);
       expect(document.querySelector(field.selector)?.querySelector('script')).toBeNull();
     }
   });
