@@ -338,6 +338,12 @@ function changeText(key: string, value: any, references: Entity[] = []) {
   if (value == null || value === "") return "Празно";
   return String(value);
 }
+function DiffImage({field,data,label}:{field:string;data:Record<string,any>;label:string}) {
+  const id=field==='coverId'?data.coverId:data.imageId;
+  if(!['imageId','coverId','imagePosition'].includes(field)||!id)return null;
+  const position=data.imagePosition||{x:50,y:50};
+  return <img className={'diff-image '+(data.kind==='partner'?'portrait':'')} src={mediaURL(id)} alt={label+' промяната'} style={{objectPosition:`${position.x}% ${position.y}%`}}/>;
+}
 function FieldChanges({
   before,
   after,
@@ -354,9 +360,9 @@ function FieldChanges({
         <div key={key}>
           <dt>{fieldLabels[key] || key}</dt>
           <dd>
-            <del>{changeText(key, before[key], references)}</del>
+            <del>{changeText(key, before[key], references)}<DiffImage field={key} data={before} label="Преди"/></del>
             <span aria-hidden="true"> → </span>
-            <ins>{changeText(key, after[key], references)}</ins>
+            <ins>{changeText(key, after[key], references)}<DiffImage field={key} data={after} label="След"/></ins>
           </dd>
         </div>
       ))}
@@ -1498,13 +1504,13 @@ export default function App() {
       }),
     );
   }
-  async function dropPhoto(target: string) {
+  async function dropPhoto(target: string, items: Entity[] = photos) {
     if (!dragging || sorting || dragging === target) {
       setDragging(null);
       setDropTarget(null);
       return;
     }
-    const reordered = reorderItems(photos, dragging, target);
+    const reordered = reorderItems(items, dragging, target);
     setDragging(null);
     setDropTarget(null);
     setSorting(true);
@@ -1516,6 +1522,15 @@ export default function App() {
       "Подредбата е запазена като чернова.",
     );
     setSorting(false);
+  }
+  function dragClass(id: string) {return (dragging===id?'is-dragging ':'')+(dropTarget===id?'is-drop-target':'');}
+  function dragProps(id: string, items: Entity[], enabled = true) {
+    return {draggable: enabled && !sorting,
+      onDragStart: (e: React.DragEvent) => {if(!enabled || sorting)return;setDragging(id);e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',id);},
+      onDragOver: (e: React.DragEvent) => {if(enabled && dragging && items.some(x=>x.id===dragging)){e.preventDefault();e.dataTransfer.dropEffect='move';setDropTarget(id);}},
+      onDrop: (e: React.DragEvent) => {e.preventDefault();if(enabled && items.some(x=>x.id===dragging))void dropPhoto(id,items);},
+      onDragEnd: () => {setDragging(null);setDropTarget(null);}
+    };
   }
   async function publish() {
     if (!state) return;
@@ -1841,13 +1856,14 @@ export default function App() {
                 {categories.map((c) => (
                   <button
                     key={c.id}
-                    className={chosenCategory?.id === c.id ? "active" : ""}
+                    {...dragProps(c.id, categories)}
+                    className={(chosenCategory?.id === c.id ? "active " : "") + dragClass(c.id)}
                     onClick={() => {
                       setCategory(c.id);
                       setSearch("");
                     }}
                   >
-                    {c.data.title}
+                    <GripVertical size={16} aria-hidden="true" />{c.data.title}
                     <span>
                       {
                         products.filter((p) => p.data.categoryId === c.id)
@@ -1923,10 +1939,12 @@ export default function App() {
                   {filtered.map((p) => (
                     <article
                       className={
-                        "product-card " + (!p.data.visible ? "is-hidden" : "")
+                        "product-card " + (!p.data.visible ? "is-hidden " : "") + dragClass(p.id)
                       }
                       key={p.id}
+                      {...dragProps(p.id, filtered, !search)}
                     >
+                      <span className="menu-drag-handle" title="Плъзни за пренареждане"><GripVertical size={20}/></span>
                       <button
                         className="product-image"
                         onClick={() =>
@@ -1937,6 +1955,7 @@ export default function App() {
                         {offerKinds[offerKind(p.data)].image &&
                         p.data.imageId ? (
                           <img
+                            draggable={false}
                             src={mediaURL(p.data.imageId)}
                             alt={p.data.title}
                           />

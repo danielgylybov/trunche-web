@@ -148,6 +148,15 @@ describe("published content comparison", () => {
     ).toBe("added");
     expect(contentChanges([category], published)[0].action).toBe("removed");
   });
+  it("detects replacement, removal and repositioning of menu photos", () => {
+    for(const edit of [{imageId:'replacement'},{imageId:null},{imagePosition:{x:20,y:80}}]) {
+      const edited={...product,data:{...product.data,...edit}};
+      const change=contentChanges([category,edited],published)[0];
+      expect(change.action).toBe('updated');
+      expect(change.fields).toContain(Object.keys(edit)[0]);
+      expect(recordStatus(edited,published)).toBe('Непубликувани промени');
+    }
+  });
   it("includes child removals when a category is hidden", () => {
     const changes = contentChanges(
       [{ ...category, data: { ...category.data, visible: false } }, product],

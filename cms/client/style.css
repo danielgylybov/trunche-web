@@ -1680,3 +1680,5 @@ svg {
 .library-photo .media-choice {
   width: 100%;
 }
+
+.diff-image{display:block;width:160px;max-width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px;margin-top:8px}.diff-image.portrait{width:100px;aspect-ratio:1;border-radius:50%}.field-changes dd{align-items:start}.product-card{position:relative}.menu-drag-handle{position:absolute;top:8px;left:8px;z-index:1;background:white;border-radius:8px;padding:4px;cursor:grab}.product-card[draggable=true],.category-tabs button[draggable=true]{cursor:grab}.product-card.is-dragging,.category-tabs .is-dragging{opacity:.45}.product-card.is-drop-target,.category-tabs .is-drop-target{outline:3px dashed #7651be;outline-offset:3px}
