@@ -140,6 +140,6 @@ button,input,textarea,select{font:inherit}a{color:var(--purple)}a:hover{color:va
 .site-nav{padding:.6rem 0}
 .site-nav .navbar-brand{position:relative;isolation:isolate;display:inline-flex;align-items:center;flex-shrink:0;padding:0 23px;margin:0;height:62px}
 .site-nav .navbar-brand:before{content:none}
-.site-nav .navbar-brand:after{content:'';position:absolute;inset:-4px 0;z-index:1;background:url('../assets/brand-cactus.webp') left center/22px 52px no-repeat,url('../assets/brand-cactus.webp') right center/22px 52px no-repeat;pointer-events:none}
+.site-nav .navbar-brand:after{content:'';position:absolute;inset:-4px 0;z-index:-1;background:url('../assets/cactus-garden.webp') center bottom/100% 100% no-repeat;pointer-events:none}
 .site-nav .navbar-brand .header-logo{position:relative;z-index:0;width:152px;height:62px;aspect-ratio:686/334;object-fit:contain}
 @media(max-width:767px){.site-nav .navbar-brand{padding:0 20px;height:56px}.site-nav .navbar-brand .header-logo{width:136px;height:56px}}
