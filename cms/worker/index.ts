@@ -1,3 +1,9 @@
+import {
+  purgePlan,
+  purgeEntity,
+  cleanupObjects,
+  removeUnusedMedia,
+} from "./purge";
 import { ZodError } from "zod";
 import { imageSize } from "image-size";
 import {
@@ -128,7 +134,7 @@ async function mediaResponse(
     "X-Content-Type-Options": "nosniff",
     "Cache-Control": privateView
       ? "private,no-store"
-      : "public,max-age=31536000,immutable",
+      : "public,max-age=60",
     ETag: file.httpEtag,
   });
   if (!privateView && request.headers.get("If-None-Match") === file.httpEtag)
@@ -188,6 +194,28 @@ async function checkReferences(
       if (!row)
         throw new HttpError(400, "Избери съществуваща категория или албум.");
     }
+  if (type === "product" && data.section) {
+    const category = await env.DB.prepare(
+      "SELECT data FROM entities WHERE id=?",
+    )
+      .bind(data.categoryId)
+      .first<{ data: string }>();
+    const categoryData = JSON.parse(category!.data);
+    let allowed = categoryData.sections;
+    if (!allowed) {
+      const legacy = await env.DB.prepare(
+        "SELECT DISTINCT json_extract(data,'$.section') AS section FROM entities WHERE type='product' AND json_extract(data,'$.categoryId')=?",
+      )
+        .bind(data.categoryId)
+        .all<{ section: string }>();
+      allowed = legacy.results.map((r) => r.section);
+    }
+    if (!allowed.includes(data.section))
+      throw new HttpError(
+        400,
+        "Избери подкатегория от списъка или я добави в редакцията на категорията.",
+      );
+  }
   for (const id of [data.imageId, data.coverId])
     if (id) {
       const row = await env.DB.prepare(
@@ -206,6 +234,23 @@ async function checkReferences(
     return slug?.id as string | undefined;
   }
 }
+function referenceGuard(data: Record<string, any>) {
+  const checks = [
+    ["categoryId", "entities", "type='category' AND deleted_at IS NULL"],
+    ["albumId", "entities", "type='album' AND deleted_at IS NULL"],
+    ["imageId", "media", "state='ready'"],
+    ["coverId", "media", "state='ready'"],
+  ];
+  return {
+    sql: checks
+      .map(
+        ([, table, where]) =>
+          `(? IS NULL OR EXISTS(SELECT 1 FROM ${table} WHERE id=? AND ${where}))`,
+      )
+      .join(" AND "),
+    bindings: checks.flatMap(([key]) => [data[key] || null, data[key] || null]),
+  };
+}
 async function saveEntity(
   request: Request,
   env: Env,
@@ -218,6 +263,24 @@ async function saveEntity(
   const duplicate = await checkReferences(env, type, data);
   if (duplicate && duplicate !== id)
     throw new HttpError(409, "Този адрес на категория вече съществува.");
+  if (type === "category" && id && Array.isArray((data as any).sections)) {
+    const children = await env.DB.prepare(
+      "SELECT data FROM entities WHERE type='product' AND json_extract(data,'$.categoryId')=?",
+    )
+      .bind(id)
+      .all<{ data: string }>();
+    if (
+      children.results.some((row) => {
+        const section = JSON.parse(row.data).section;
+        return section && !(data as any).sections.includes(section);
+      })
+    )
+      throw new HttpError(
+        409,
+        "Има предложения в премахнатата подкатегория, включително в кошчето. Първо ги премести или изтрий окончателно.",
+      );
+  }
+  const references = referenceGuard(data);
   const stamp = now(),
     recordId = id || uid();
   if (id) {
@@ -225,8 +288,16 @@ async function saveEntity(
       throw new HttpError(400, "Липсва версия на записа.");
     const results = await env.DB.batch([
       env.DB.prepare(
-        "UPDATE entities SET data=?,version=version+1,updated_at=?,updated_by=? WHERE id=? AND type=? AND version=? AND deleted_at IS NULL",
-      ).bind(JSON.stringify(data), stamp, actor, id, type, input.version),
+        `UPDATE entities SET data=?,version=version+1,updated_at=?,updated_by=? WHERE id=? AND type=? AND version=? AND deleted_at IS NULL AND ${references.sql}`,
+      ).bind(
+        JSON.stringify(data),
+        stamp,
+        actor,
+        id,
+        type,
+        input.version,
+        ...references.bindings,
+      ),
       env.DB.prepare(
         "UPDATE site_state SET draft_revision=draft_revision+1 WHERE id=1 AND changes()=1",
       ),
@@ -243,15 +314,27 @@ async function saveEntity(
     ).first<{ n: number }>();
     if ((count?.n || 0) >= 2000)
       throw new HttpError(413, "Достигнат е лимитът от 2000 записа.");
-    await env.DB.batch([
+    const created = await env.DB.batch([
       env.DB.prepare(
-        "INSERT INTO entities(id,type,data,updated_at,updated_by) VALUES(?,?,?,?,?)",
-      ).bind(recordId, type, JSON.stringify(data), stamp, actor),
+        `INSERT INTO entities(id,type,data,updated_at,updated_by) SELECT ?,?,?,?,? WHERE ${references.sql}`,
+      ).bind(
+        recordId,
+        type,
+        JSON.stringify(data),
+        stamp,
+        actor,
+        ...references.bindings,
+      ),
       env.DB.prepare(
-        "UPDATE site_state SET draft_revision=draft_revision+1 WHERE id=1",
+        "UPDATE site_state SET draft_revision=draft_revision+1 WHERE id=1 AND changes()=1",
       ),
       await auditStmt(env, "create", actor, recordId),
     ]);
+    if (!created[0].meta.changes)
+      throw new HttpError(
+        409,
+        "Свързана категория или снимка е премахната. Презареди.",
+      );
   }
   return json(
     rowEntity(
@@ -309,7 +392,7 @@ async function upload(request: Request, env: Env, actor: string) {
     await env.DB.prepare("DELETE FROM media WHERE id=? AND state='failed'")
       .bind(hash)
       .run();
-  const key = "images/" + hash,
+  const key = "images/" + hash + "/" + uid(),
     day = now().slice(0, 10);
   const reserved = await env.DB.batch([
     env.DB.prepare(
@@ -429,6 +512,10 @@ async function publish(request: Request, env: Env, actor: string) {
         state.draft_revision,
       ),
       env.DB.prepare(
+        "INSERT INTO release_entities SELECT ?,json_extract(value,'$.id') FROM json_each(?)",
+      ).bind(id, JSON.stringify(snapshot.content)),
+      env.DB.prepare("INSERT INTO release_indexed VALUES(?)").bind(id),
+      env.DB.prepare(
         "INSERT INTO release_media(release_id,media_id) SELECT ?,value FROM json_each(?)",
       ).bind(id, JSON.stringify(snapshot.mediaIds)),
       env.DB.prepare(
@@ -491,6 +578,50 @@ async function adminRoute(request: Request, env: Env, path: string) {
       ).results,
     });
   }
+  if (
+    [
+      "/api/admin/purge-plan",
+      "/api/admin/purge",
+      "/api/admin/cleanup",
+    ].includes(path) &&
+    request.method === "POST"
+  ) {
+    if (user.role !== "owner")
+      throw new HttpError(
+        403,
+        "Само собственикът може да изтрива окончателно.",
+      );
+    if (path.endsWith("/cleanup")) return json(await cleanupObjects(env));
+    const input = await readJSON(request);
+    return json(
+      path.endsWith("/purge-plan")
+        ? await purgePlan(env, input.id, input.version)
+        : await purgeEntity(env, user.email, input),
+    );
+  }
+  if (path.startsWith("/api/admin/media/") && request.method === "DELETE") {
+    if (user.role !== "owner")
+      throw new HttpError(
+        403,
+        "Само собственикът може да изтрива окончателно.",
+      );
+    const input = await readJSON(request),
+      id = path.slice("/api/admin/media/".length);
+    if (input.confirmation !== "ИЗТРИЙ")
+      throw new HttpError(400, "Потвърди изтриването.");
+    if (!(await removeUnusedMedia(env, id)))
+      throw new HttpError(
+        409,
+        "Снимката се използва в запис, кошчето или запазена публикация. Първо премахни връзките към нея.",
+      );
+    let pending = false;
+    try {
+      pending = (await cleanupObjects(env)).pending > 0;
+    } catch {
+      pending = true;
+    }
+    return json({ ok: true, cleanupPending: pending });
+  }
   if (path === "/api/admin/reorder" && request.method === "POST") {
     const input = await readJSON(request);
     if (
@@ -516,8 +647,8 @@ async function adminRoute(request: Request, env: Env, path: string) {
         env.DB.prepare(
           `INSERT INTO revision_guard VALUES(?,CASE WHEN
  (SELECT count(*) FROM entities e JOIN json_each(?) j ON e.id=json_extract(j.value,'$.id') AND e.version=json_extract(j.value,'$.version') WHERE e.deleted_at IS NULL)=?
- AND (SELECT count(DISTINCT e.type) FROM entities e JOIN json_each(?) j ON e.id=json_extract(j.value,'$.id'))=1 THEN 1 ELSE 0 END)`,
-        ).bind(guardId, items, input.items.length, items),
+ AND (SELECT count(DISTINCT e.type) FROM entities e JOIN json_each(?) j ON e.id=json_extract(j.value,'$.id'))=1 AND (SELECT count(DISTINCT coalesce(json_extract(e.data,'$.albumId'),json_extract(e.data,'$.categoryId'),'')) FROM entities e JOIN json_each(?) j ON e.id=json_extract(j.value,'$.id'))=1 THEN 1 ELSE 0 END)`,
+        ).bind(guardId, items, input.items.length, items, items),
         env.DB.prepare(
           `UPDATE entities SET data=json_set(data,'$.sortOrder',(SELECT CAST(j.key AS INTEGER) FROM json_each(?) j WHERE json_extract(j.value,'$.id')=entities.id)),version=version+1,updated_at=?,updated_by=? WHERE id IN(SELECT json_extract(value,'$.id') FROM json_each(?))`,
         ).bind(items, now(), user.email, items),
@@ -549,10 +680,17 @@ async function adminRoute(request: Request, env: Env, path: string) {
     );
     if (duplicate && duplicate !== input.id)
       throw new HttpError(409, "Този адрес на категория вече съществува.");
+    const references = referenceGuard(JSON.parse(row.data));
     const results = await env.DB.batch([
       env.DB.prepare(
-        "UPDATE entities SET deleted_at=NULL,version=version+1,updated_at=?,updated_by=? WHERE id=? AND version=? AND deleted_at IS NOT NULL",
-      ).bind(now(), user.email, input.id, input.version),
+        `UPDATE entities SET deleted_at=NULL,version=version+1,updated_at=?,updated_by=? WHERE id=? AND version=? AND deleted_at IS NOT NULL AND ${references.sql}`,
+      ).bind(
+        now(),
+        user.email,
+        input.id,
+        input.version,
+        ...references.bindings,
+      ),
       env.DB.prepare(
         "UPDATE site_state SET draft_revision=draft_revision+1 WHERE id=1 AND changes()=1",
       ),

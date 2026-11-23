@@ -1555,3 +1555,128 @@ svg {
     flex-direction: column;
   }
 }
+.structured-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  align-items: center;
+}
+.structured-row input {
+  flex: 1;
+  min-width: 0;
+}
+.portion-editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 80px;
+  gap: 0.5rem;
+}
+.time-slot {
+  display: grid;
+  grid-template-columns: minmax(100px, 1.3fr) minmax(90px, 1fr) minmax(
+      90px,
+      1fr
+    ) 34px;
+  gap: 0.5rem;
+  align-items: end;
+  margin-bottom: 0.7rem;
+}
+.time-slot label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+.time-slot input,
+.time-slot select {
+  min-width: 0;
+  width: 100%;
+}
+.image-position-frame {
+  aspect-ratio: 16/10;
+  overflow: hidden;
+  border: 2px solid var(--purple);
+  border-radius: 12px;
+  touch-action: none;
+  cursor: grab;
+  background: #eee;
+}
+.image-position-frame.portrait {
+  aspect-ratio: 1;
+  max-width: 240px;
+  border-radius: 50%;
+}
+.image-position-frame:active {
+  cursor: grabbing;
+}
+.image-position-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  display: block;
+}
+.image-position-editor {
+  margin: 1rem 0;
+}
+.image-position-editor label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+.image-position-editor input[type="range"] {
+  flex: 1;
+}
+.image-position-editor p {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.gallery-card {
+  position: relative;
+  cursor: grab;
+}
+.gallery-card.is-dragging {
+  opacity: 0.4;
+}
+.gallery-card.is-drop-target {
+  outline: 3px solid var(--purple);
+  outline-offset: 3px;
+}
+.gallery-drag-handle {
+  position: absolute;
+  z-index: 2;
+  right: 0.6rem;
+  top: 0.6rem;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border-radius: 6px;
+  padding: 0.3rem;
+  pointer-events: none;
+}
+@media (max-width: 600px) {
+  .time-slot {
+    grid-template-columns: 1fr 1fr 34px;
+  }
+  .time-slot label:first-child {
+    grid-column: 1/-1;
+  }
+}
+.btn.danger-solid {
+  background: #a52b42;
+  color: #fff;
+  border-color: #a52b42;
+}
+.library-photo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+.library-photo .text-button {
+  font-size: 0.7rem;
+  text-align: center;
+}
+.library-photo .media-choice {
+  width: 100%;
+}

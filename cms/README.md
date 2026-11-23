@@ -78,7 +78,7 @@ node cms/scripts/import-partners-local.mjs
 
 Приложението ограничава 2000 записа (включително кошчето), 2000 снимки / 8 GB, 500 нови качвания дневно, 5000 мутиращи заявки дневно, 20 публикации дневно / 100 запазени версии. Файловете след оптимизация са до 2 MB и 2500 px. Няма автоматично преминаване на платен план, но лимитите на приложението **не гарантират нулева сметка в Cloudflare**: R2 операции и общият трафик се таксуват според акаунта. Нужни са account usage alerts и следене на употребата.
 
-Public JSON има 30 секунди кеш; снимките са immutable по SHA-256. Worker edge cache се използва само за публичните GET заявки в production. Чернови/preview са `no-store`. Публикувана снимка може да остане в кеш и старите версии дори след скриване в нова версия. За окончателно сваляне на снимка е нужен отделен процес за изчистване на всички публикации и кешове — не е реализиран чрез кошчето.
+Public JSON uses a 30-second cache; media uses 60 seconds. Production edge caching applies only to public GET routes. Draft previews are no-store. Final deletion and cleanup are documented below.
 
 Преди production са нужни: изпитан production импорт; пълен backup и възстановяване на R2; управление/почистване на стари версии и неизползвани/неуспешни файлове; наблюдение на квоти; тест на реален Access OTP вход и CORS от production домейните. При достигнат лимит записването спира с обяснение; няма скрито изтриване на версии.
 
@@ -133,3 +133,9 @@ The public CMS menu and admin previews share `src/js/menu-view.mjs`. The preview
 Record badges compare drafts with the active publication, ignoring metadata/property order. Forms distinguish unsaved edits from saved drafts and show old/new field values. The publish dialog lists added, changed and removed visible records, including children of hidden categories/albums. A code deployment does not publish user drafts.
 
 Validation: 27 unit/integration tests passed; browser checks covered information without prices, edit/save/publish status transitions and layout at 1280 and 390 px. Local test prices and records were restored after validation. The deployed dev Worker version above includes these changes.
+
+## Structured editing and final deletion
+
+Gallery supports dragging photos within an album and accessible arrow controls. Card images store a focal position shared by preview and public rendering. Hours use day/time rows; portions use quantity/unit fields. Category sections are defined once and selected in offers. Success notices dismiss after 5.5 seconds. Messenger is the default contact destination.
+
+Apply migration 0002 before deploying. Owner-only final deletion requires a trashed record absent from the active publication and exact title confirmation. Historical releases containing that record are removed, preventing rollback to deleted content. Shared images remain; unused media can be deleted from the library. Failed object deletions are queued and retried from History. Media cache is 60 seconds; this supersedes the earlier immutable-cache note.

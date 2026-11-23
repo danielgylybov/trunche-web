@@ -113,7 +113,7 @@
       end: rec.end,
       frequency: rec.frequency || "once_per_day",
       bannerEnabled: toBool(rec.bannerEnabled ?? "true"),
-      messengerUrl: rec.messengerUrl || "https://m.me/100033687105031",
+      messengerUrl: rec.messengerUrl || "https://m.me/1058779830861330",
       title: rec.title || "🌴 В отпуск сме",
       message: rec.message || "Връзка само през Facebook Messenger.",
       cacheTtlMinutes: toInt(rec.cacheTtlMinutes || "60"),
@@ -219,7 +219,7 @@
         const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Sofia',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
         const render=()=>records.filter(e=>e.data.start<=today&&e.data.end>=today).forEach(e=>{
           const d=e.data;
-          const makeContent=root=>{const title=document.createElement('strong');title.textContent=d.title;const message=document.createElement('p');message.textContent=d.message;message.style.whiteSpace='pre-line';root.append(title,message);if(d.buttonUrl){const link=document.createElement('a');link.href=d.buttonUrl;link.textContent=d.buttonLabel;link.className='btn btn-primary';root.append(link);}};
+          const makeContent=root=>{const title=document.createElement('strong');title.textContent=d.title;const message=document.createElement('p');message.textContent=d.message;message.style.whiteSpace='pre-line';root.append(title,message);if(d.buttonEnabled!==false){const link=document.createElement('a');link.href=d.buttonUrl||'https://m.me/1058779830861330';link.textContent=d.buttonLabel||'Пиши ни в Messenger';link.className='btn btn-primary';root.append(link);}};
           if(d.banner){const banner=document.createElement('aside');banner.className='cms-announcement';banner.setAttribute('aria-label',d.title);makeContent(banner);document.querySelector('main')?.prepend(banner);}
           const storageKey='trunche_notice_'+e.id,periodKey=d.start+'..'+d.end;
           if(d.modal&&shouldShowByFrequency(d.frequency,storageKey,periodKey)){const dialog=document.createElement('dialog');dialog.className='cms-notice-dialog';dialog.setAttribute('aria-label',d.title);makeContent(dialog);const close=document.createElement('button');close.type='button';close.textContent='Разбрах';close.className='btn btn-outline-dark';close.addEventListener('click',()=>dialog.close());dialog.append(close);document.body.append(dialog);dialog.showModal();markShown(d.frequency,storageKey,periodKey);}

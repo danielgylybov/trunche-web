@@ -63,12 +63,14 @@
         if(description)description.textContent=p.data.description;
         if(p.data.body){let body=document.querySelector('[data-cms-page-body]');if(!body){body=document.createElement('div');body.className='container cms-page-body';body.dataset.cmsPageBody='';(key==='home'?document.querySelector('.home-hero'):key==='contacts'?document.querySelector('#subtitle'):document.querySelector('.menu-intro')).after(body);}body.textContent=p.data.body;body.style.whiteSpace='pre-line';}
       }
+      const {formatTimeSlot}=await import('./content-fields.mjs');
       const settings=(await entities('settings'))[0]?.data;
+      document.querySelectorAll('[data-messenger-link]').forEach(link=>{link.href=settings?.messenger||'https://m.me/1058779830861330';});
       if(settings){
         document.querySelectorAll('a[href^="tel:"]').forEach(link=>{link.href='tel:'+settings.phone.replace(/[^+\d]/g,'');if(link.closest('.site-footer'))link.textContent=settings.phone;});
         for(const network of ['facebook','instagram'])if(settings[network])document.querySelectorAll('a[href*="'+network+'.com"]').forEach(link=>{link.href=settings[network];});
         const footer=document.querySelector('.site-footer .footer-shell > div > p');if(footer&&settings.address)footer.textContent=settings.address;
-        if(key==='contacts'){const root=document.createElement('p');root.className='cms-contact-details';root.style.whiteSpace='pre-line';root.textContent=[settings.address,settings.phone,settings.contactEmail,settings.workingHours].filter(Boolean).join('\n');document.querySelector('#subtitle')?.after(root);}
+        if(key==='contacts'){const root=document.createElement('p');root.className='cms-contact-details';root.style.whiteSpace='pre-line';root.textContent=[settings.address,settings.phone,settings.contactEmail,(settings.timeSlots?.length?settings.timeSlots.map(formatTimeSlot).join('\n'):settings.workingHours)].filter(Boolean).join('\n');document.querySelector('#subtitle')?.after(root);}
       }
     }catch{console.warn('CMS page content unavailable');}
   });

@@ -1,3 +1,9 @@
+import {
+  formatPortion,
+  parsePortion,
+  timeSlotsFor,
+  formatTimeSlot,
+} from "./content-fields.mjs";
 // Shared content rules and card renderer for the public menu and admin previews.
 export const offerKinds = {
   product: {
@@ -91,13 +97,27 @@ export function normalizeOffer(data = {}) {
     description: promoted ? data.note : data.description || "",
     note: promoted ? "" : data.note || "",
     priceCents: rules.price ? (data.priceCents ?? null) : null,
-    portion: rules.portion ? data.portion || "" : "",
+    portionSpec: rules.portion
+      ? data.portionSpec || parsePortion(data.portion)
+      : null,
+    portion: rules.portion
+      ? formatPortion(data.portionSpec || parsePortion(data.portion)) ||
+        data.portion ||
+        ""
+      : "",
+    timeSlots: kind === "hours" ? timeSlotsFor(data) : [],
+    imagePosition: rules.image
+      ? data.imagePosition || { x: 50, y: 50 }
+      : { x: 50, y: 50 },
     imageId: rules.image ? data.imageId || null : null,
     phone: rules.contacts ? data.phone || "" : "",
     facebook: rules.contacts ? data.facebook || "" : "",
     website: rules.contacts ? data.website || "" : "",
     variants: rules.variants ? data.variants || [] : [],
-    inclusions: (data.inclusions || []).filter((line) => String(line).trim()),
+    inclusions:
+      kind === "hours" && timeSlotsFor(data).length
+        ? []
+        : (data.inclusions || []).filter((line) => String(line).trim()),
   };
 }
 export const offerMoney = (cents) =>
@@ -145,6 +165,7 @@ export function renderOffer(input, options = {}) {
     const img = node("img", partner ? "partner-image" : "product-image");
     img.src = options.mediaURL(d.imageId);
     img.alt = cleanMenuTitle(d.title);
+    img.style.objectPosition = `${d.imagePosition.x}% ${d.imagePosition.y}%`;
     img.loading = "lazy";
     img.decoding = "async";
     if (!partner) {
@@ -177,7 +198,13 @@ export function renderOffer(input, options = {}) {
     [d.description, "menu-item-description"],
   ])
     if (value) body.append(node("p", cls, value));
-  if (d.inclusions.length) {
+  if (kind === "hours" && d.timeSlots.length) {
+    const hours = node("div", "hours-values");
+    d.timeSlots.forEach((slot) =>
+      hours.append(node("span", "", formatTimeSlot(slot))),
+    );
+    body.append(hours);
+  } else if (d.inclusions.length) {
     if (kind === "hours") {
       const hours = node("div", "hours-values");
       d.inclusions.forEach((line) => hours.append(node("span", "", line)));

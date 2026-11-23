@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { normalizeOffer } from "../../src/js/menu-view.mjs";
+import { DEFAULT_MESSENGER } from "../../src/js/content-fields.mjs";
 const text = (max = 200) => z.string().trim().max(max);
 const safeLink = z.union([
   z.literal(""),
@@ -15,8 +16,45 @@ const base = z.object({
   visible: z.boolean().default(true),
   sortOrder: z.number().int().min(0).max(100000).default(0),
 });
+const timeSlot = z
+  .object({
+    days: z
+      .enum([
+        "all",
+        "weekdays",
+        "weekend",
+        "mon",
+        "tue",
+        "wed",
+        "thu",
+        "fri",
+        "sat",
+        "sun",
+      ])
+      .default("all"),
+    start: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
+    end: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
+  })
+  .refine((v) => v.end > v.start, {
+    message: "Крайният час трябва да е след началния.",
+  });
+const timeSlots = z.array(timeSlot).max(40).default([]);
+const crop = z
+  .object({
+    x: z.number().min(0).max(100).default(50),
+    y: z.number().min(0).max(100).default(50),
+  })
+  .default({ x: 50, y: 50 });
 export const schemas = {
   category: base.extend({
+    sections: z
+      .array(text().min(1))
+      .max(60)
+      .refine(
+        (v) => new Set(v).size === v.length,
+        "Подкатегориите трябва да са различни.",
+      )
+      .optional(),
     slug: text(80).regex(/^[a-z0-9-]+$/),
     description: text(1000).default(""),
     icon: z
@@ -29,6 +67,15 @@ export const schemas = {
     description: text(4000).default(""),
     priceCents: z.number().int().min(0).max(100000000).nullable().default(null),
     portion: text().default(""),
+    portionSpec: z
+      .object({
+        quantity: z.number().positive().max(100000),
+        unit: z.enum(["g", "kg", "ml", "l", "pcs"]),
+      })
+      .nullable()
+      .default(null),
+    timeSlots,
+    imagePosition: crop,
     kind: z
       .enum(["product", "package", "partner", "info", "hours", "rich"])
       .default("product"),
@@ -74,8 +121,9 @@ export const schemas = {
       frequency: z
         .enum(["always", "once_per_session", "once_per_day", "once_per_period"])
         .default("once_per_day"),
-      buttonLabel: text().default("Свържи се с нас"),
-      buttonUrl: safeLink.default(""),
+      buttonLabel: text().default("Пиши ни в Messenger"),
+      buttonEnabled:z.boolean().default(true),
+      buttonUrl: safeLink.default(DEFAULT_MESSENGER),
     })
     .refine((v) => v.end >= v.start, {
       message: "Крайната дата трябва да е след началната.",
@@ -89,6 +137,8 @@ export const schemas = {
     instagram: safeLink.default(""),
     contactEmail: z.union([z.literal(""), z.email()]).default(""),
     workingHours: text(2000).default(""),
+    timeSlots,
+    messenger: safeLink.default(DEFAULT_MESSENGER),
   }),
 };
 export type EntityType = keyof typeof schemas;
