@@ -139,3 +139,9 @@ Validation: 27 unit/integration tests passed; browser checks covered information
 Gallery supports dragging photos within an album and accessible arrow controls. Card images store a focal position shared by preview and public rendering. Hours use day/time rows; portions use quantity/unit fields. Category sections are defined once and selected in offers. Success notices dismiss after 5.5 seconds. Messenger is the default contact destination.
 
 Apply migration 0002 before deploying. Owner-only final deletion requires a trashed record absent from the active publication and exact title confirmation. Historical releases containing that record are removed, preventing rollback to deleted content. Shared images remain; unused media can be deleted from the library. Failed object deletions are queued and retried from History. Media cache is 60 seconds; this supersedes the earlier immutable-cache note.
+
+## Concrete page sections
+
+The Texts editor now uses seven fixed sections in `src/js/page-fields.mjs`: home hero, about, invitation, contacts intro, menu intro, gallery intro, and shared footer. Every field has a concrete selector in the real HTML. Defaults are extracted from the existing redesign and are shown before any record is created. Existing saved edits override those defaults. Page diffs compare the first edit against visible defaults rather than reporting all fields as new.
+
+Contacts and working hours update existing marked links, contact rows and the map via `src/js/page-content.mjs`. Partner contact links are intentionally not marked and remain independent. Unknown public email and opening hours are left empty until supplied. A missing optional map query uses the address. There is no longer a second appended contact block or detached page body. The page-binding tests exercise every editable slot using the actual four HTML files.

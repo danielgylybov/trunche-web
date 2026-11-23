@@ -1,3 +1,4 @@
+import {pageSections} from "../../src/js/page-fields.mjs";
 import { z } from "zod";
 import { normalizeOffer } from "../../src/js/menu-view.mjs";
 import { DEFAULT_MESSENGER } from "../../src/js/content-fields.mjs";
@@ -107,8 +108,9 @@ export const schemas = {
     caption: text(1000).default(""),
   }),
   page: base.extend({
-    key: z.enum(["home", "about", "contacts", "terms"]),
-    body: text(20000),
+    key: z.enum(["home", "about", "contacts", "terms", "gallery", "invitation", "footer"]),
+    ...Object.fromEntries([...new Set(Object.values(pageSections).flatMap(s=>s.fields.map(f=>f.key)))].filter(k=>!["title","body","description"].includes(k)).map(k=>[k,text(2000).optional()])),
+    body: text(20000).default(""),
     description: text(500).default(""),
   }),
   announcement: base
@@ -136,6 +138,7 @@ export const schemas = {
     facebook: safeLink.default(""),
     instagram: safeLink.default(""),
     contactEmail: z.union([z.literal(""), z.email()]).default(""),
+    mapQuery: text(500).optional(),
     workingHours: text(2000).default(""),
     timeSlots,
     messenger: safeLink.default(DEFAULT_MESSENGER),

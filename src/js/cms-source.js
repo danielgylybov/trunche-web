@@ -51,27 +51,8 @@
   document.addEventListener('DOMContentLoaded',async()=>{
     if(override)document.querySelectorAll('a[href]').forEach(link=>{const target=new URL(link.href,location.href);if(target.origin===location.origin&&target.pathname.endsWith('.html')){target.searchParams.set('cms',origin);link.href=target.href;}});
     try{
-      const pages=await entities('page');
-      const path=location.pathname;
-      const key=path.endsWith('contact.html')?'contacts':path.endsWith('terms.html')?'terms':path.endsWith('gallery.html')?null:'home';
-      for(const p of pages){
-        if(p.data.key==='about'&&document.querySelector('#about')){const root=document.querySelector('#about .about-grid > div');root.querySelector('h2').textContent=p.data.title;root.querySelector('p:not(.eyebrow)').textContent=p.data.body;}
-        if(p.data.key!==key)continue;
-        const heading=key==='home'?document.querySelector('.hero-copy h1'):key==='contacts'?document.querySelector('#title'):document.querySelector('.menu-intro h1');
-        if(heading)heading.textContent=p.data.title;
-        const description=key==='home'?document.querySelector('.hero-description'):key==='contacts'?document.querySelector('#subtitle'):document.querySelector('.menu-intro h1 + p');
-        if(description)description.textContent=p.data.description;
-        if(p.data.body){let body=document.querySelector('[data-cms-page-body]');if(!body){body=document.createElement('div');body.className='container cms-page-body';body.dataset.cmsPageBody='';(key==='home'?document.querySelector('.home-hero'):key==='contacts'?document.querySelector('#subtitle'):document.querySelector('.menu-intro')).after(body);}body.textContent=p.data.body;body.style.whiteSpace='pre-line';}
-      }
-      const {formatTimeSlot}=await import('./content-fields.mjs');
-      const settings=(await entities('settings'))[0]?.data;
-      document.querySelectorAll('[data-messenger-link]').forEach(link=>{link.href=settings?.messenger||'https://m.me/1058779830861330';});
-      if(settings){
-        document.querySelectorAll('a[href^="tel:"]').forEach(link=>{link.href='tel:'+settings.phone.replace(/[^+\d]/g,'');if(link.closest('.site-footer'))link.textContent=settings.phone;});
-        for(const network of ['facebook','instagram'])if(settings[network])document.querySelectorAll('a[href*="'+network+'.com"]').forEach(link=>{link.href=settings[network];});
-        const footer=document.querySelector('.site-footer .footer-shell > div > p');if(footer&&settings.address)footer.textContent=settings.address;
-        if(key==='contacts'){const root=document.createElement('p');root.className='cms-contact-details';root.style.whiteSpace='pre-line';root.textContent=[settings.address,settings.phone,settings.contactEmail,(settings.timeSlots?.length?settings.timeSlots.map(formatTimeSlot).join('\n'):settings.workingHours)].filter(Boolean).join('\n');document.querySelector('#subtitle')?.after(root);}
-      }
+      const {renderPageContent}=await import('./page-content.mjs');
+      renderPageContent(document,(await ready).content,location.pathname.split('/').pop()||'index.html');
     }catch{console.warn('CMS page content unavailable');}
   });
 })();

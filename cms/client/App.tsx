@@ -1,3 +1,5 @@
+import {contactDefaults,normalizeSiteRecord} from "../../src/js/page-content.mjs";
+import {pageSections,pageDefaults} from "../../src/js/page-fields.mjs";
 import {
   useState,
   useEffect,
@@ -75,10 +77,10 @@ const nav = [
   ["home", "Начало", LayoutDashboard],
   ["menu", "Меню и цени", UtensilsCrossed],
   ["gallery", "Галерия", Images],
-  ["pages", "Страници и контакти", FileText],
+  ["pages", "Текстове на сайта", FileText],
   ["announcements", "Съобщения и отпуск", CalendarDays],
   ["history", "История и кошче", History],
-  ["settings", "Настройки", Settings],
+  ["settings", "Контакти и работно време", Settings],
 ] as const;
 const kindNames = Object.fromEntries(
   Object.entries(offerKinds).map(([key, rules]) => [key, rules.label]),
@@ -871,6 +873,7 @@ function ProductForm({
   );
 }
 function SimpleForm({
+  pageKey = "home",
   type,
   entity,
   media,
@@ -881,6 +884,7 @@ function SimpleForm({
   albums = [],
   canDeleteMedia = false,
 }: {
+  pageKey?: string;
   type: EntityType;
   entity?: Entity;
   media: Media[];
@@ -952,6 +956,8 @@ function SimpleForm({
   };
   const [data, setData] = useState<Record<string, any>>({
       ...defaults[type],
+      ...(type==="settings"?contactDefaults:{}),
+      ...(type==="page"?pageDefaults(entity?.data.key||pageKey):{}),
       ...entity?.data,
       ...(type === "category"
         ? { sections: sectionChoices(entity, products) }
@@ -1022,7 +1028,7 @@ function SimpleForm({
   return (
     <Modal
       title={
-        entity
+        type === 'page' ? (pageSections[data.key]?.label||'Текстове на сайта') : type==='settings'?'Контакти и работно време':entity
           ? "Редакция"
           : type === "album"
             ? "Нов албум"
@@ -1052,7 +1058,7 @@ function SimpleForm({
             )}
           </div>
           <ErrorBox message={error} />
-          {field("title", "Име / заглавие")}
+          {!["page","settings"].includes(type)&&field("title", "Име / заглавие")}
           {type === "category" && (
             <>
               
@@ -1088,7 +1094,7 @@ function SimpleForm({
               </Field>
             </>
           )}
-          {["category", "album", "page"].includes(type) &&
+          {["category", "album"].includes(type) &&
             field("description", "Кратко описание", true)}
           {type === "album" && (
             <>
@@ -1107,28 +1113,11 @@ function SimpleForm({
               {field("caption", "Надпис", true)}
             </>
           )}
-          {type === "page" && (
-            <>
-              <Field label="Страница">
-                <select
-                  value={data.key}
-                  onChange={(e) => update("key", e.target.value)}
-                >
-                  {[
-                    ["home", "Начало"],
-                    ["about", "За нас"],
-                    ["contacts", "Контакти"],
-                    ["terms", "Условия"],
-                  ].map(([v, l]) => (
-                    <option key={v} value={v}>
-                      {l}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-              {field("body", "Съдържание", true)}
-            </>
-          )}
+          {type === "page" && <>
+            <h3>{pageSections[data.key]?.label}</h3>
+            <p className="muted">{pageSections[data.key]?.location}. Всяко поле по-долу променя точно този текст в сайта.</p>
+            {pageSections[data.key]?.fields.map(f=>field(f.key,f.label,f.multiline))}
+          </>}
           {type === "announcement" && (
             <>
               <Field label="Шаблон за съобщението">
@@ -1196,7 +1185,9 @@ function SimpleForm({
           {type === "settings" && (
             <>
               {field("phone", "Телефон", false, "tel")}
-              {field("address", "Адрес")}
+              <p className="muted">Тези данни обновяват контактното каре, картата, бутоните за обаждане и социалните връзки на всички страници. Контактите на партньорите в менюто остават отделни.</p>
+              {field("address", "Адрес в контактното каре")}
+              {field("mapQuery", "Място за картата (по желание; празно = адресът)")}
               {field("facebook", "Facebook", false, "url")}
               {field("instagram", "Instagram", false, "url")}
               {field("contactEmail", "Публичен имейл", false, "email")}
@@ -1229,7 +1220,7 @@ function SimpleForm({
               />
             </Field>
           )}
-          {type !== "settings" && (
+          {!["settings","page"].includes(type) && (
             <label className="check">
               <input
                 type="checkbox"
@@ -1445,6 +1436,7 @@ export default function App() {
       type: EntityType;
       entity?: Entity;
       duplicate?: boolean;
+      pageKey?: string;
     } | null>(null),
     [uploadAlbum, setUploadAlbum] = useState<Entity | null>(null),
     [publishing, setPublishing] = useState(false),
@@ -2272,7 +2264,11 @@ export default function App() {
               )}
             </>
           )}
-          {["pages", "announcements", "settings"].includes(view) && (
+          {view === "pages" && <>
+            <div className="page-heading"><div><p className="eyebrow">ТЕКСТОВЕТЕ НА СВОЕТО МЯСТО</p><h1>Текстове на сайта</h1><p>Избери блока, който искаш да промениш. Менюто и снимките имат свои отделни раздели.</p></div></div>
+            <div className="panel">{Object.entries(pageSections).map(([key,section])=>{const record=all.filter(e=>e.type==='page'&&e.data.key===key).sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt))[0];return <div className="content-row" key={key}><div><h2>{section.label}</h2><p>{section.location}</p><span className="record-status">{record?statusFor(record):'Текущите текстове от редизайна'}</span><p className="muted">{section.fields.length} конкретни полета</p>{(state.user.local||state.user.environment==='staging')&&<a className="text-button" target="_blank" rel="noopener" href={(state.user.local?'http://localhost:8080/':'/site/')+section.file+(state.user.local?'?cms=http://127.0.0.1:8787':'')+(key==='about'?'#about':'')}>Виж мястото в сайта ↗</a>}</div><button className="btn secondary" onClick={()=>setEditor({type:'page',entity:record,pageKey:key})}>Редактирай блока</button></div>})}</div>
+          </>}
+          {["announcements", "settings"].includes(view) && (
             <>
               <div className="page-heading">
                 <div>
@@ -2300,10 +2296,11 @@ export default function App() {
                   }
                 >
                   <Plus size={18} />
-                  {view === "settings" ? "Редактирай настройките" : "Добави"}
+                  {view === "settings" ? "Редактирай контактите" : "Добави"}
                 </button>
               </div>
-              <div className="panel">
+              {view==='settings'&&(()=>{const record=all.find(e=>e.type==='settings');const data={...contactDefaults,...record?.data};return <section className="panel"><h2>Контактни данни за сайта</h2><p>Адресът и картата са в Контакти. Телефонът, Messenger и социалните връзки се използват и в останалите страници.</p><dl className="contact-summary">{[['Телефон',data.phone],['Адрес',data.address],['Карта',data.mapQuery||data.address],['Публичен имейл',data.contactEmail||'Не е въведен'],['Работно време',data.timeSlots?.length?data.timeSlots.map(formatTimeSlot).join('; '):data.workingHours||'Не е въведено'],['Facebook',data.facebook],['Instagram',data.instagram],['Messenger',data.messenger]].map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value||'Не е въведено'}</dd></div>)}</dl><span className="record-status">{record?statusFor(record):'Текущите данни от сайта'}</span></section>})()}
+              <div className="panel" hidden={view==='settings'}>
                 {all
                   .filter(
                     (e) =>
@@ -2521,13 +2518,11 @@ export default function App() {
           />
         ) : (
           <SimpleForm
+            pageKey={editor.pageKey}
             albums={albums}
             canDeleteMedia={state.user.role === "owner"}
             products={products}
-            published={
-              state.publishedContent?.find((e) => e.id === editor.entity?.id)
-                ?.data
-            }
+            published={['page','settings'].includes(editor.type)?normalizeSiteRecord(editor.type,state.publishedContent?.find(e=>e.id===editor.entity?.id)?.data||(editor.type==='page'?{key:editor.entity?.data.key||editor.pageKey}:{})):state.publishedContent?.find(e=>e.id===editor.entity?.id)?.data}
             key={editor.entity?.id || editor.type}
             type={editor.type}
             entity={editor.entity}

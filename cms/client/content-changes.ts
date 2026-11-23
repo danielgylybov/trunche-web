@@ -1,6 +1,10 @@
+import {normalizeSiteRecord} from "../../src/js/page-content.mjs";
+import {pageSections} from "../../src/js/page-fields.mjs";
 import { normalizeOffer } from "../../src/js/menu-view.mjs";
 import type { Entity } from "../worker/model";
 export const fieldLabels: Record<string, string> = {
+  ...Object.fromEntries(Object.values(pageSections).flatMap(s=>s.fields.map(f=>[f.key,f.label]))),
+  mapQuery:"Място на картата",
   title: "Заглавие",
   kind: "Вид предложение",
   categoryId: "Категория",
@@ -95,7 +99,7 @@ export function visibleDraft(entities: Entity[]): PublishedRecord[] {
     .map((e) => ({
       id: e.id,
       type: e.type,
-      data: e.type === "product" ? normalizeOffer(e.data) : e.data,
+      data: e.type === "product" ? normalizeOffer(e.data) : normalizeSiteRecord(e.type,e.data),
     }));
 }
 export function contentChanges(
@@ -106,13 +110,13 @@ export function contentChanges(
   const previous = new Map(
     published.map((e) => [
       e.id,
-      { ...e, data: e.type === "product" ? normalizeOffer(e.data) : e.data },
+      { ...e, data: e.type === "product" ? normalizeOffer(e.data) : normalizeSiteRecord(e.type,e.data) },
     ]),
   );
   const changes: ContentChange[] = [];
   for (const id of new Set([...next.keys(), ...previous.keys()])) {
-    const before = previous.get(id),
-      after = next.get(id);
+    const after = next.get(id);
+    const before = previous.get(id) || (after&&['page','settings'].includes(after.type)?{...after,data:normalizeSiteRecord(after.type,after.type==='page'?{key:after.data.key}:{})}:undefined);
     const fields = changedFields(before?.data, after?.data);
     if (!before || !after || fields.length)
       changes.push({
@@ -128,7 +132,7 @@ export function contentChanges(
   return changes;
 }
 export function recordStatus(entity: Entity, published: PublishedRecord[]) {
-  const before = published.find((e) => e.id === entity.id);
+  const before = published.find((e) => e.id === entity.id) || (['page','settings'].includes(entity.type)?{...entity,data:normalizeSiteRecord(entity.type,entity.type==='page'?{key:entity.data.key}:{})}:undefined);
   if (entity.data.visible === false && before)
     return "Ще се скрие след публикуване";
   if (!before)
@@ -136,9 +140,9 @@ export function recordStatus(entity: Entity, published: PublishedRecord[]) {
       ? "Скрито · извън сайта"
       : "Ново · непубликувано";
   const after =
-    entity.type === "product" ? normalizeOffer(entity.data) : entity.data;
+    entity.type === "product" ? normalizeOffer(entity.data) : normalizeSiteRecord(entity.type,entity.data);
   return changedFields(
-    entity.type === "product" ? normalizeOffer(before.data) : before.data,
+    entity.type === "product" ? normalizeOffer(before.data) : normalizeSiteRecord(entity.type,before.data),
     after,
   ).length
     ? "Непубликувани промени"

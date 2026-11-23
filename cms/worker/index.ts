@@ -225,6 +225,10 @@ async function checkReferences(
         .first();
       if (!row) throw new HttpError(400, "Снимката не е готова.");
     }
+  if(type==='page'||type==='settings') {
+    const duplicate=await env.DB.prepare("SELECT id FROM entities WHERE type=? AND deleted_at IS NULL AND (?='settings' OR json_extract(data,'$.key')=?)").bind(type,type,data.key||null).first<any>();
+    return duplicate?.id as string|undefined;
+  }
   if (type === "category") {
     const slug = await env.DB.prepare(
       "SELECT id FROM entities WHERE type='category' AND deleted_at IS NULL AND json_extract(data,'$.slug')=?",
@@ -262,7 +266,7 @@ async function saveEntity(
   const data = validateEntity(type, input.data);
   const duplicate = await checkReferences(env, type, data);
   if (duplicate && duplicate !== id)
-    throw new HttpError(409, "Този адрес на категория вече съществува.");
+    throw new HttpError(409, type==='category'?"Този адрес на категория вече съществува.":"Този блок вече съществува. Отвори го от списъка за редакция.");
   if (type === "category" && id && Array.isArray((data as any).sections)) {
     const children = await env.DB.prepare(
       "SELECT data FROM entities WHERE type='product' AND json_extract(data,'$.categoryId')=?",
