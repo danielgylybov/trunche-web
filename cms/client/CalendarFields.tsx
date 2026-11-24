@@ -4,6 +4,9 @@ export function CalendarFields({data,update,announcements=[]}:{data:Record<strin
   const periods:any[]=data.availability||[];
   const [month,setMonth]=useState(sofiaToday().slice(0,7));
   const [year,monthNumber]=month.split('-').map(Number);
+  const monthNames=Array.from({length:12},(_,i)=>new Intl.DateTimeFormat('bg-BG',{month:'long',timeZone:'UTC'}).format(new Date(Date.UTC(2026,i,1))));
+  const chooseMonth=(y:number,m:number)=>setMonth(`${y}-${String(m).padStart(2,'0')}`);
+  const moveMonth=(delta:number)=>{const date=new Date(Date.UTC(year,monthNumber-1+delta,1));chooseMonth(date.getUTCFullYear(),date.getUTCMonth()+1);};
   const dates=monthDays(year,monthNumber-1);
   const marked=calendarPeriods(data,announcements);
   const addDay=(date:string)=>update('availability',[...periods,{id:crypto.randomUUID(),start:date,end:date,allDay:true,startTime:'10:00',endTime:'14:00'}]);
@@ -12,7 +15,12 @@ export function CalendarFields({data,update,announcements=[]}:{data:Record<strin
     <label className="check"><input type="checkbox" checked={!!data.calendarEnabled} onChange={e=>update('calendarEnabled',e.target.checked)}/>Показвай календара за заетост на клиентите</label>
     <p className="muted">Календарът се показва само в „Планирай празник“ след публикуване. Изключването го скрива, без да изтрива отбелязаните периоди.</p>
     <h3>Заети дни и часове</h3><p>Избери ден от календара или добави период с конкретни дати и часове.</p>
-    <div className="calendar-picker"><label>Избери месец<input type="month" min="2000-01" max="2100-12" required value={month} onChange={e=>{if(e.target.value)setMonth(e.target.value);}}/></label><p className="muted">Натисни ден, за да добавиш заетост за целия ден. После можеш да зададеш конкретни часове в периода по-долу.</p><div className="calendar-picker-grid">
+    <div className="calendar-picker"><div className="calendar-month-picker" role="group" aria-label="Месец на календара">
+      <button className="calendar-month-arrow previous" type="button" aria-label="Предишен месец" disabled={month==='2000-01'} onClick={()=>moveMonth(-1)}>←</button>
+      <label className="calendar-month-select">Месец<select value={monthNumber} onChange={e=>chooseMonth(year,Number(e.target.value))}>{monthNames.map((name,i)=><option value={i+1} key={name}>{name[0].toUpperCase()+name.slice(1)}</option>)}</select></label>
+      <label className="calendar-year-select">Година<select value={year} onChange={e=>chooseMonth(Number(e.target.value),monthNumber)}>{Array.from({length:101},(_,i)=>2000+i).map(y=><option value={y} key={y}>{y}</option>)}</select></label>
+      <button className="calendar-month-arrow next" type="button" aria-label="Следващ месец" disabled={month==='2100-12'} onClick={()=>moveMonth(1)}>→</button>
+    </div><p className="muted">Натисни ден, за да добавиш заетост за целия ден. После можеш да зададеш конкретни часове в периода по-долу.</p><div className="calendar-picker-grid">
       {['Пн','Вт','Ср','Чт','Пт','Сб','Нд'].map(day=><span key={day}>{day}</span>)}
       {Array.from({length:dates.offset},(_,i)=><span key={'empty'+i}/>)}
       {dates.dates.map(date=>{const state=dayAvailability(date,marked);const blocked=state.status==='busy'||state.status==='vacation';return <button type="button" className={state.status} key={date} aria-label={date+' · '+availabilityLabels[state.status]} title={availabilityLabels[state.status]} disabled={blocked||periods.length>=300} onClick={()=>addDay(date)}>{Number(date.slice(-2))}{state.status!=='unmarked'&&<small>{state.status==='vacation'?'Отпуск':state.status==='partial'?'Часове':'Заето'}</small>}</button>;})}
