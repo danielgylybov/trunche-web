@@ -101,6 +101,7 @@ export const schemas = {
     note: text(4000).default(""),
     imageId: text(80).nullable().default(null),
     phone: text(40).default(""),
+    galleryAlbumId: text(80).regex(/^[a-zA-Z0-9-]+$/).nullable().default(null),
     website: safeLink.default(""),
     facebook: safeLink.default(""),
   }),

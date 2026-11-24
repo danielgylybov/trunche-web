@@ -143,3 +143,21 @@ describe.skipIf(!enabled)("real local D1 and R2 API", () => {
     });
   }, 30000);
 });
+
+describe.skipIf(!enabled)('gallery album references',()=>{
+ it('persists an offer album and prevents deletion until the offer is unlinked',async()=>{
+  const state=(await call('/api/admin/state')).body;
+  const category=state.entities.find((e:any)=>e.type==='category'&&!e.deletedAt);
+  expect(category).toBeTruthy();let album:any,product:any;
+  try{
+   const created=await call('/api/admin/entities/album','POST',{data:{title:'QA album '+crypto.randomUUID(),visible:false}});expect(created.status).toBe(201);album=created.body;
+   const offer=await call('/api/admin/entities/product','POST',{data:{title:'QA gallery reference',categoryId:category.id,kind:'partner',visible:false,galleryAlbumId:album.id}});expect(offer.status).toBe(201);product=offer.body;expect(product.data.galleryAlbumId).toBe(album.id);
+   expect((await call('/api/admin/entities/album/'+album.id,'DELETE',{version:album.version})).status).toBe(409);
+   const update=await call('/api/admin/entities/product/'+product.id,'PUT',{data:{...product.data,galleryAlbumId:null},version:product.version});expect(update.status).toBe(200);product=update.body;
+   expect((await call('/api/admin/entities/album/'+album.id,'DELETE',{version:album.version})).status).toBe(200);album=null;
+  }finally{
+   if(product)await call('/api/admin/entities/product/'+product.id,'DELETE',{version:product.version});
+   if(album)await call('/api/admin/entities/album/'+album.id,'DELETE',{version:album.version});
+  }
+ });
+});

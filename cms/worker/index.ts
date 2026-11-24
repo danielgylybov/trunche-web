@@ -184,6 +184,7 @@ async function checkReferences(
   for (const [id, expected] of [
     [data.categoryId, "category"],
     [data.albumId, "album"],
+    [data.galleryAlbumId, "album"],
   ] as const)
     if (id) {
       const row = await env.DB.prepare(
@@ -242,6 +243,7 @@ function referenceGuard(data: Record<string, any>) {
   const checks = [
     ["categoryId", "entities", "type='category' AND deleted_at IS NULL"],
     ["albumId", "entities", "type='album' AND deleted_at IS NULL"],
+    ["galleryAlbumId", "entities", "type='album' AND deleted_at IS NULL"],
     ["imageId", "media", "state='ready'"],
     ["coverId", "media", "state='ready'"],
   ];
@@ -767,14 +769,14 @@ async function adminRoute(request: Request, env: Env, path: string) {
     if (request.method === "DELETE" && id) {
       const input = await readJSON(request);
       const references = await env.DB.prepare(
-        "SELECT id FROM entities WHERE deleted_at IS NULL AND (json_extract(data,'$.categoryId')=? OR json_extract(data,'$.albumId')=?) LIMIT 1",
+        "SELECT id FROM entities WHERE deleted_at IS NULL AND (json_extract(data,'$.categoryId')=? OR json_extract(data,'$.albumId')=? OR json_extract(data,'$.galleryAlbumId')=?) LIMIT 1",
       )
-        .bind(id, id)
+        .bind(id, id, id)
         .first();
       if (references)
         throw new HttpError(
           409,
-          "Първо премести или премахни съдържанието в тази категория/албум.",
+          "Първо премести съдържанието или премахни връзките от предложенията към тази категория/албум.",
         );
       const results = await env.DB.batch([
         env.DB.prepare(

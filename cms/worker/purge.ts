@@ -37,9 +37,9 @@ export async function purgePlan(env: Env, id: string, version: number) {
   if (entity.version !== version)
     throw new HttpError(409, "Записът е променен. Презареди.");
   const refs = await env.DB.prepare(
-    "SELECT id FROM entities WHERE (json_extract(data,'$.categoryId')=? OR json_extract(data,'$.albumId')=?) LIMIT 1",
+    "SELECT id FROM entities WHERE (json_extract(data,'$.categoryId')=? OR json_extract(data,'$.albumId')=? OR json_extract(data,'$.galleryAlbumId')=?) LIMIT 1",
   )
-    .bind(id, id)
+    .bind(id, id, id)
     .first();
   if (refs)
     throw new HttpError(

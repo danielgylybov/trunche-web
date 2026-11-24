@@ -15,10 +15,10 @@ export function cleanMenuTitle(value: unknown): string;
 export function offerMoney(cents: number | null | undefined): string;
 export function renderOffer(
   data: Record<string, any>,
-  options?: { mediaURL?: (id: string) => string },
+  options?: { mediaURL?: (id: string) => string; galleryURL?:string },
 ): HTMLElement;
 export function renderOfferCategory(
   categoryId: string,
   entities: { data: Record<string, any> }[],
-  options?: { mediaURL?: (id: string) => string },
+  options?: { mediaURL?: (id: string) => string; galleryURL?:string },
 ): HTMLElement;

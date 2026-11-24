@@ -19,7 +19,7 @@ export function MenuPreview({
       ref.current!.shadowRoot || ref.current!.attachShadow({ mode: "open" });
     const style = document.createElement("style");
     style.textContent = css;
-    const options = { mediaURL: (id: string) => "/api/admin/media/" + id };
+    const options = { galleryURL: ["localhost","127.0.0.1"].includes(location.hostname)?"http://localhost:8080/gallery.html?cms=http://127.0.0.1:8787":"/site/gallery", mediaURL: (id: string) => "/api/admin/media/" + id };
     const card = data
       ? renderOffer(data, options)
       : renderOfferCategory(categoryId!, entities || [], options);

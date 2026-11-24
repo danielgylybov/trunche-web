@@ -33,6 +33,13 @@ export function publicSnapshot(entities: Entity[], readyMedia: Set<string>) {
         (e.type !== "photo" || visibleAlbums.has(e.data.albumId)),
     )
     .map((e) => ({ id: e.id, type: e.type, data: e.data }));
+  for(const entity of content){
+    if(entity.type==='product'&&entity.data.galleryAlbumId){
+      const id=entity.data.galleryAlbumId;
+      if(!visibleAlbums.has(id)||!content.some(e=>e.type==='photo'&&e.data.albumId===id))
+        throw new Error(`Албумът към „${entity.data.title}“ трябва да е видим и да има видими снимки. Избери друг албум или премахни връзката.`);
+    }
+  }
   const mediaIds = [
     ...new Set(
       content

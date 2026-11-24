@@ -44,7 +44,7 @@
       return albums.flatMap((album,i)=>{
         const ordered=photos.filter(p=>p.data.albumId===album.id);
         if(album.data.coverId){const cover=ordered.findIndex(p=>p.data.imageId===album.data.coverId);if(cover>0)ordered.unshift(...ordered.splice(cover,1));}
-        return ordered.map((p,j)=>({id:p.data.imageId,name:`${i}_${album.data.title.replace(/_/g,' ')}_${String(j).padStart(5,'0')}`,alt:p.data.alt,caption:p.data.caption}));
+        return ordered.map((p,j)=>({id:p.data.imageId,albumId:album.id,name:`${i}_${album.data.title.replace(/_/g,' ')}_${String(j).padStart(5,'0')}`,alt:p.data.alt,caption:p.data.caption}));
       });
     }
   };

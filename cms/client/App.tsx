@@ -322,7 +322,7 @@ function changeText(key: string, value: any, references: Entity[] = []) {
     return value
       ? `Хоризонтално ${Math.round(value.x)}%, вертикално ${Math.round(value.y)}%`
       : "Центрирано";
-  if (["categoryId", "albumId"].includes(key))
+  if (["categoryId", "albumId", "galleryAlbumId"].includes(key))
     return references.find((e) => e.id === value)?.data.title || "Няма";
   if (key === "priceCents") return value == null ? "Без цена" : money(value);
   if (key === "kind") return kindNames[value] || value;
@@ -388,10 +388,12 @@ function ProductForm({
   onSaved,
   duplicate = false,
   initialCategoryId,
+  albums = [],
   products,
   published,
   canDeleteMedia = false,
 }: {
+  albums?: Entity[];
   initialCategoryId?: string;
   entity?: Entity;
   categories: Entity[];
@@ -562,7 +564,7 @@ function ProductForm({
                   <FieldChanges
                     before={normalizeOffer(published)}
                     after={draft}
-                    references={categories}
+                    references={[...categories,...albums]}
                   />
                 </>
               )}
@@ -685,6 +687,12 @@ function ProductForm({
             {rules.contacts && (
               <fieldset className="offer-fieldset">
                 <legend>Контакти на партньора</legend>
+                <Field label="Снимки в галерията" hint="По желание. Албумът трябва да е видим и със снимки при публикуване.">
+                  <select value={data.galleryAlbumId||''} onChange={e=>update('galleryAlbumId',e.target.value||null)}>
+                    <option value="">Без връзка към галерия</option>
+                    {albums.map(album=><option key={album.id} value={album.id}>{album.data.title}{album.data.visible===false?' · скрит албум':''}</option>)}
+                  </select>
+                </Field>
                 <Field label="Телефон">
                   <input
                     type="tel"
@@ -2518,6 +2526,7 @@ export default function App() {
                     (e) => e.id === editor.entity?.id,
                   )?.data
             }
+            albums={albums}
             initialCategoryId={chosenCategory?.id}
             key={(editor.entity?.id || "new") + String(editor.duplicate)}
             entity={editor.entity}

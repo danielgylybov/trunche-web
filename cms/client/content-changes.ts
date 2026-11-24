@@ -29,6 +29,7 @@ export const fieldLabels: Record<string, string> = {
   slug: "Адрес",
   icon: "Икона",
   albumId: "Албум",
+  galleryAlbumId:"Албум към предложението",
   alt: "Описание на снимката",
   caption: "Надпис",
   coverId: "Корица",

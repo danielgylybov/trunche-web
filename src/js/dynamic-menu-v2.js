@@ -404,7 +404,7 @@ async function loadAllCategories(categories) {
   const root=document.getElementById('menuRoot');
   const results=await Promise.allSettled(categories.map(async category=>{
     let node;
-    if(window.TruncheCMS?.enabled){const {renderOfferCategory}=await import('./menu-view.mjs');node=renderOfferCategory(category.id,await window.TruncheCMS.entities('product'),{mediaURL:window.TruncheCMS.media});}
+    if(window.TruncheCMS?.enabled){const {renderOfferCategory}=await import('./menu-view.mjs?v=20261124-gallery-albums');node=renderOfferCategory(category.id,await window.TruncheCMS.entities('product'),{mediaURL:window.TruncheCMS.media});}
     else{const response=await fetch(sheetUrl(category.id),{signal:AbortSignal.timeout(15000)});if(!response.ok)throw new Error('Category request failed');node=renderCategory(category.id,parseGvizResponse(await response.text()));}
     node.setAttribute('aria-label',categoryUI(category).title);
     const searchHeading=el('h3','search-category-title');searchHeading.textContent=categoryUI(category).title;searchHeading.hidden=true;

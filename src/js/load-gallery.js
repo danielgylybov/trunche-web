@@ -1,4 +1,5 @@
 (() => {
+  const galleryModuleURL=new URL('./gallery-albums.mjs',document.currentScript.src).href;
   const brandLoaderURL = new URL('../assets/logo-loading.svg', document.currentScript.src).href;
   const FOLDER_ID = '1d0EOV6f4Lmnn0ni0RPEUAW9jpFgT0P3U';
   // Existing public, origin-restricted key. The local preview uses the bundled snapshot.
@@ -37,21 +38,6 @@
       // A known-good, public photo listing keeps previews and outages usable.
       return loadSnapshot();
     }
-  }
-  function groupFiles(files) {
-    const groups = new Map();
-    files.forEach(file => {
-      if (!/^[\w-]+$/.test(file.id) || !file.name) return;
-      const match = file.name.match(/^(\d+)?_?(.+?)_/);
-      const label = (match?.[2] || 'Спомени').trim();
-      const key = label.toLocaleLowerCase('bg');
-      const order = match?.[1] ? Number(match[1]) : 9999;
-      if (!groups.has(key)) groups.set(key, {title: label.charAt(0).toLocaleUpperCase('bg') + label.slice(1), order, files: []});
-      const group = groups.get(key);
-      group.order = Math.min(group.order, order);
-      group.files.push(file);
-    });
-    return [...groups.values()].sort((a,b) => a.order-b.order || a.title.localeCompare(b.title,'bg')).map(group => ({...group, files:group.files.sort((a,b) => a.name.localeCompare(b.name,'bg',{numeric:true}))}));
   }
   function makeButton(label, className) {
     const button = document.createElement('button');
@@ -98,7 +84,8 @@
     if(!viewer||!buttonsRoot)return;
     viewer.setAttribute('aria-busy','true');
     try {
-      const groups=groupFiles(await loadFiles());
+      const [{groupGalleryFiles,requestedAlbumIndex},files]=await Promise.all([import(galleryModuleURL),loadFiles()]);
+      const groups=groupGalleryFiles(files);
       if(!groups.length){viewer.textContent='Скоро тук ще има още усмихнати спомени.';return;}
       const openPhoto=setupLightbox();const buttons=[];
       function showGroup(group,index,userAction=false) {
@@ -121,9 +108,10 @@
       groups.forEach((group,index)=>{
         const button=makeButton(`${group.title} · ${group.files.length}`,'btn btn-outline-primary');
         button.setAttribute('aria-controls','section-viewer');button.setAttribute('aria-pressed','false');
-        button.addEventListener('click',()=>showGroup(group,index,true));buttons.push(button);buttonsRoot.appendChild(button);
+        button.addEventListener('click',()=>{showGroup(group,index,true);if(group.id)history.replaceState(null,'','#album='+encodeURIComponent(group.id));});buttons.push(button);buttonsRoot.appendChild(button);
       });
-      showGroup(groups[0],0);
+      function selectRequested(scroll=false){const selected=requestedAlbumIndex(groups,location.hash);showGroup(groups[selected>=0?selected:0],selected>=0?selected:0,scroll&&selected>=0);}
+      selectRequested(true);window.addEventListener('hashchange',()=>selectRequested(true));
     } catch(error) {
       console.error('Gallery could not load');
       viewer.innerHTML='<div class="menu-status" role="alert"><h3>Спомените още пътуват…</h3><p>В момента няма връзка с галерията.</p></div>';

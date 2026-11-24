@@ -114,6 +114,7 @@ export function normalizeOffer(data = {}) {
     phone: rules.contacts ? data.phone || "" : "",
     facebook: rules.contacts ? data.facebook || "" : "",
     website: rules.contacts ? data.website || "" : "",
+    galleryAlbumId: rules.contacts && /^[a-zA-Z0-9-]{1,80}$/.test(data.galleryAlbumId||"") ? data.galleryAlbumId : null,
     variants: rules.variants ? data.variants || [] : [],
     inclusions:
       kind === "hours" && timeSlotsFor(data).length
@@ -284,6 +285,13 @@ export function renderOffer(input, options = {}) {
       }
     }
     if (contacts.childNodes.length) body.append(contacts);
+  }
+  if(d.galleryAlbumId){
+    const link=node('a','btn menu-gallery-link','Виж снимки в галерията');
+    let base=options.galleryURL||'gallery.html';
+    if(!options.galleryURL && typeof location!=='undefined' && ['localhost','127.0.0.1'].includes(location.hostname)){const cms=new URLSearchParams(location.search).get('cms');if(cms)base+='?cms='+encodeURIComponent(cms);}
+    link.href=base+'#album='+encodeURIComponent(d.galleryAlbumId);
+    body.append(link);
   }
   card.append(body);
   return card;
