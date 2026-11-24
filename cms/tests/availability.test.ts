@@ -36,10 +36,16 @@ describe('availability dates and validation',()=>{
 describe('customer calendar',()=>{
  function doc(){const w=new Window();w.document.write('<main><div class="invitation-strip"></div></main>');return w.document;}
  it('is absent while flag is off and is not duplicated on rerender',()=>{
-  const d=doc();renderAvailability(d,[{type:'settings',data:{calendarEnabled:false}}],'index.html');expect(d.querySelector('#availability')).toBeNull();
+  const d=doc();renderAvailability(d,[{type:'settings',data:{calendarEnabled:false}}],'contact.html');expect(d.querySelector('#availability')).toBeNull();
   const content=[{type:'settings',data:{calendarEnabled:true,availability:[period]}}];
-  renderAvailability(d,content,'index.html');renderAvailability(d,content,'index.html');expect(d.querySelectorAll('#availability')).toHaveLength(1);
-  renderAvailability(d,[{type:'settings',data:{calendarEnabled:false}}],'index.html');expect(d.querySelector('#availability')).toBeNull();
+  renderAvailability(d,content,'contact.html');renderAvailability(d,content,'contact.html');expect(d.querySelectorAll('#availability')).toHaveLength(1);
+  renderAvailability(d,[{type:'settings',data:{calendarEnabled:false}}],'contact.html');expect(d.querySelector('#availability')).toBeNull();
+ });
+ it('renders only in Plan a party, inside its dedicated slot',()=>{
+  const d=doc();const slot=d.createElement('div');slot.setAttribute('data-availability-slot','');d.querySelector('main')!.prepend(slot);
+  const content=[{type:'settings',data:{calendarEnabled:true}}];
+  renderAvailability(d,content,'index.html');expect(d.querySelector('#availability')).toBeNull();
+  renderAvailability(d,content,'contact.html');expect(slot.querySelector('#availability')).not.toBeNull();
  });
  it('offers navigable months and spoken statuses without making unmarked days reservations',()=>{
   const d=doc();renderAvailability(d,[{type:'settings',data:{calendarEnabled:true,availability:[]}}],'contact.html');

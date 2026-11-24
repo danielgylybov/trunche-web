@@ -1,7 +1,7 @@
 import {sofiaToday,calendarPeriods,dayAvailability,monthDays,availabilityLabels} from './availability.mjs';
 export function renderAvailability(document, content, file) {
   document.querySelector('[data-availability-calendar]')?.remove();
-  if(!['index.html','contact.html'].includes(file))return;
+  if(file!=='contact.html')return;
   const settings=content.find(e=>e.type==='settings')?.data;
   if(!settings?.calendarEnabled)return;
   const periods=calendarPeriods(settings,content.filter(e=>e.type==='announcement'));
@@ -26,6 +26,6 @@ export function renderAvailability(document, content, file) {
   }
   function move(delta){const d=new Date(Date.UTC(year,month+delta,1));year=d.getUTCFullYear();month=d.getUTCMonth();selected=`${year}-${String(month+1).padStart(2,'0')}-01`;show();}
   prev.addEventListener('click',()=>move(-1));next.addEventListener('click',()=>move(1));show();
-  const target=document.querySelector('.invitation-strip') || document.querySelector('main .container.my-5') || document.querySelector('main');
-  if(target?.matches('main'))target.append(section);else target?.before(section);
+  const target=document.querySelector('[data-availability-slot]') || document.querySelector('main');
+  target?.append(section);
 }

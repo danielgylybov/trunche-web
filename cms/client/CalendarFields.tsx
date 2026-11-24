@@ -10,7 +10,7 @@ export function CalendarFields({data,update,announcements=[]}:{data:Record<strin
   const change=(index:number,key:string,value:any)=>update('availability',periods.map((p,i)=>i===index?{...p,[key]:value}:p));
   return <>
     <label className="check"><input type="checkbox" checked={!!data.calendarEnabled} onChange={e=>update('calendarEnabled',e.target.checked)}/>Показвай календара за заетост на клиентите</label>
-    <p className="muted">Календарът се показва в Начало и Контакти след публикуване. Изключването го скрива, без да изтрива отбелязаните периоди.</p>
+    <p className="muted">Календарът се показва само в „Планирай празник“ след публикуване. Изключването го скрива, без да изтрива отбелязаните периоди.</p>
     <h3>Заети дни и часове</h3><p>Избери ден от календара или добави период с конкретни дати и часове.</p>
     <div className="calendar-picker"><label>Избери месец<input type="month" min="2000-01" max="2100-12" required value={month} onChange={e=>{if(e.target.value)setMonth(e.target.value);}}/></label><p className="muted">Натисни ден, за да добавиш заетост за целия ден. После можеш да зададеш конкретни часове в периода по-долу.</p><div className="calendar-picker-grid">
       {['Пн','Вт','Ср','Чт','Пт','Сб','Нд'].map(day=><span key={day}>{day}</span>)}
