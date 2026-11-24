@@ -1,4 +1,4 @@
-import {renderAvailability} from './availability-view.mjs';
+import {renderAvailability} from './availability-view.mjs?v=20261124-enquiry';
 import {pageSections,pageDefaults} from './page-fields.mjs';
 import {formatTimeSlot,DEFAULT_MESSENGER} from './content-fields.mjs';
 export const contactDefaults={title:'Трънче',visible:true,sortOrder:0,mapQuery:'',phone:'0895 415 287',address:'гр.София, кв.Горна баня, ул.Тихи кът 10',facebook:'https://www.facebook.com/profile.php?id=100033687105031',instagram:'https://www.instagram.com/detski.kut.trunche',messenger:DEFAULT_MESSENGER,contactEmail:'',workingHours:'',timeSlots:[],calendarEnabled:false,availability:[]};

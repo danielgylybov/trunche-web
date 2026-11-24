@@ -14,17 +14,33 @@ export function renderAvailability(document, content, file) {
   const grid=node('div','availability-grid');grid.setAttribute('role','group');grid.setAttribute('aria-labelledby',heading.id);
   const detail=node('div','availability-detail');detail.setAttribute('aria-live','polite');
   card.append(toolbar,legend,grid,detail);section.append(card);
-  const link=node('a','btn btn-primary','Пиши ни за избрания ден');link.href=settings.messenger||'https://m.me/1058779830861330';section.append(link);
-  const today=sofiaToday();let [year,month]=today.split('-').map(Number);month--;let selected=today;
+
+  const today=sofiaToday();let [year,month]=today.split('-').map(Number);month--;let selected=today;let hasSelection=false;
   const dateLabel=date=>new Intl.DateTimeFormat('bg-BG',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(date+'T12:00:00Z'));
+  function enquire(){
+    const form=document.getElementById('contactForm'),message=form?.querySelector('[name="message"]');
+    if(!message)return;
+    const line='Запитване за дата: '+dateLabel(selected);
+    const old=message.dataset.calendarLine;
+    let text=message.value;
+    if(old && text.startsWith(old))text=text.slice(old.length).replace(/^\n+/, '');
+    message.value=line+(text.trim()?'\n\n'+text:'\n\nБихме искали да организираме празник.');
+    message.dataset.calendarLine=line;
+    message.dispatchEvent(new document.defaultView.Event('input',{bubbles:true}));
+    const feedback=form.querySelector('[data-enquiry-feedback]');
+    if(feedback){feedback.hidden=false;feedback.textContent='Добавена дата: '+dateLabel(selected)+' — допълни данните и изпрати запитването.';}
+    form.scrollIntoView?.({behavior:document.defaultView.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});
+    message.focus({preventScroll:true});
+  }
   function show(){
     heading.textContent=new Intl.DateTimeFormat('bg-BG',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(year,month,1)));
     grid.replaceChildren();for(const label of ['Пн','Вт','Ср','Чт','Пт','Сб','Нд'])grid.append(node('span','availability-weekday',label));
     const {offset,dates}=monthDays(year,month);for(let i=0;i<offset;i++)grid.append(node('span','availability-empty'));
-    for(const date of dates){const state=dayAvailability(date,periods),button=node('button','availability-day '+state.status,String(Number(date.slice(-2))));button.type='button';button.setAttribute('aria-label',dateLabel(date)+' · '+availabilityLabels[state.status]);button.setAttribute('aria-pressed',String(date===selected));if(date===today)button.setAttribute('aria-current','date');button.addEventListener('click',()=>{selected=date;show();});grid.append(button);}
+    for(const date of dates){const state=dayAvailability(date,periods),button=node('button','availability-day '+state.status,String(Number(date.slice(-2))));button.type='button';button.setAttribute('aria-label',dateLabel(date)+' · '+availabilityLabels[state.status]);button.setAttribute('aria-pressed',String(date===selected));if(date===today)button.setAttribute('aria-current','date');button.addEventListener('click',()=>{selected=date;hasSelection=true;show();});grid.append(button);}
     const state=dayAvailability(selected,periods);detail.replaceChildren(node('strong','',dateLabel(selected)),node('p','',availabilityLabels[state.status]+(state.times.length?' · '+state.times.map(t=>t.join(' – ')).join(', '):'')));
+    if(hasSelection && selected>=today && document.getElementById('contactForm')){const action=node('button','btn availability-enquire','Запитване за този ден');action.type='button';action.addEventListener('click',enquire);detail.append(action);}
   }
-  function move(delta){const d=new Date(Date.UTC(year,month+delta,1));year=d.getUTCFullYear();month=d.getUTCMonth();selected=`${year}-${String(month+1).padStart(2,'0')}-01`;show();}
+  function move(delta){const d=new Date(Date.UTC(year,month+delta,1));year=d.getUTCFullYear();month=d.getUTCMonth();selected=`${year}-${String(month+1).padStart(2,'0')}-01`;hasSelection=false;show();}
   prev.addEventListener('click',()=>move(-1));next.addEventListener('click',()=>move(1));show();
   const target=document.querySelector('[data-availability-slot]') || document.querySelector('main');
   target?.append(section);

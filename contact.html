@@ -28,8 +28,8 @@
     <!-- Canonical -->
     <link rel="canonical" href="https://trunche.com/contact.html" />
     <link rel="preload" href="src/assets/fonts/Nunito-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
-    <link href="src/css/refresh.css?v=20261124-calendar" rel="stylesheet" />
-<script src="src/js/cms-source.js?v=20261124-routing"></script>
+    <link href="src/css/refresh.css?v=20261124-enquiry" rel="stylesheet" />
+<script src="src/js/cms-source.js?v=20261124-enquiry"></script>
 </head>
 <body class="d-flex flex-column">
 <div class="background"></div>
@@ -52,10 +52,10 @@
 </nav>
 
         <!-- Page content-->
-        <section class="py-5">
-            <div class="container px-5">
-                <div class="bg-light rounded-4 py-5 px-4 px-md-5">
-                    <div class="text-center mb-2 mb-md-5">
+        <section class="party-page">
+            <div class="container party-container">
+                <div class="party-content">
+                    <div class="party-heading">
                         <div class="feature bg-primary bg-gradient-primary-to-secondary text-white rounded-3 mb-3"><i class="bi bi-envelope"></i></div>
                         <h1 class="fw-bolder" id="title">Да спретнем един празник!</h1>
                         <p class="lead fw-normal text-muted mb-0" id="subtitle">Разкажи ни за малкия рожденик. Ще измислим останалото заедно.</p>
@@ -66,12 +66,14 @@
                         </div>
                     </div>
 
-                    <div data-availability-slot></div>
-
-                    <div class="row gx-5 justify-content-center">
-                        <div class="col-lg-6 col-xl-6 col-sm-12">
+                    <div class="planning-workspace">
+                        <div data-availability-slot></div>
+                        <div class="party-form-column">
                             <!-- EmailJS form (без action/method) -->
                             <form id="contactForm" novalidate>
+                                <h2>Запитване за празник</h2>
+                                <p class="muted">Разкажи ни за празника и ще уточним подробностите заедно.</p>
+                                <p data-enquiry-feedback role="status" hidden></p>
                                 <!-- Name -->
                                 <div class="form-floating mb-3">
                                     <input class="form-control" id="name" name="from_name" type="text" placeholder="Въведете вашето име..." required />
@@ -114,7 +116,7 @@
                             </form>
                         </div>
 
-                        <div class="col-lg-6 col-xl-6 col-sm-12 mt-5 mt-md-0">
+                        <div class="contact-information">
                             <p class="lead fw-normal text-muted mb-0">Адрес</p>
                             <a data-site-address href="https://www.google.com/maps?q=Детски+кът+Трънче,+ул.+Тихи+кът+10,+София">гр.София, кв.Горна баня, ул.Тихи кът 10</a>
                             <p class="lead fw-normal text-muted mb-0">Телефон</p>

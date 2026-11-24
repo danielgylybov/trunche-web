@@ -66,3 +66,25 @@ describe('publication payload',()=>{
   expect(dayAvailability('2026-12-24',calendarPeriods(saved,snapshot.content.filter(e=>e.type==='announcement'))).status).toBe('vacation');
  });
 });
+
+describe('calendar enquiry handoff',()=>{
+ it('fills a selected date only on request and preserves the customer message and details',()=>{
+  const w=new Window();const d=w.document;
+  d.write('<main><div data-availability-slot></div><form id="contactForm"><input name="from_name" value="Test"><textarea name="message">Искам украса с балони.</textarea><p data-enquiry-feedback hidden></p></form></main>');
+  let submitted=false;d.querySelector('form')!.addEventListener('submit',()=>{submitted=true;});
+  renderAvailability(d,[{type:'settings',data:{calendarEnabled:true}}],'contact.html');
+  expect(d.querySelector('.availability-section a')).toBeNull();
+  expect(d.querySelector('.availability-enquire')).toBeNull();
+  (d.querySelector('[aria-label="Следващ месец"]') as any).click();
+  (d.querySelectorAll('.availability-day')[0] as any).click();
+  const message=d.querySelector('textarea')!;
+  expect(message.value).toBe('Искам украса с балони.');
+  (d.querySelector('.availability-enquire') as any).click();
+  expect(message.value).toContain('Запитване за дата:');expect(message.value).toContain('Искам украса с балони.');
+  const first=message.value;
+  (d.querySelectorAll('.availability-day')[1] as any).click();(d.querySelector('.availability-enquire') as any).click();
+  expect(message.value).not.toBe(first);expect(message.value.match(/Запитване за дата:/g)).toHaveLength(1);
+  expect(message.value).toContain('Искам украса с балони.');expect(d.querySelector('input')!.value).toBe('Test');
+  expect(d.querySelector('[data-enquiry-feedback]')!.hasAttribute('hidden')).toBe(false);expect(submitted).toBe(false);
+ });
+});
