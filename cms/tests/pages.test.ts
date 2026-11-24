@@ -2,7 +2,7 @@ import {describe,it,expect} from 'vitest';
 import {readFileSync} from 'node:fs';
 import {Window} from 'happy-dom';
 import {pageSections,pageDefaults} from '../../src/js/page-fields.mjs';
-import {renderPageContent} from '../../src/js/page-content.mjs';
+import {renderPageContent,pageFileFromPath} from '../../src/js/page-content.mjs';
 import {validateEntity,type Entity} from '../worker/model';
 import {contentChanges} from '../client/content-changes';
 import {contactDefaults} from '../../src/js/page-content.mjs';
@@ -51,3 +51,17 @@ describe('page diff against existing redesign defaults',()=>{
     expect(contentChanges([{...settings,data:{...contactDefaults,phone:'0888 123 456'}}],[])[0].fields).toEqual(['phone']);
   });
 });
+
+ describe('Cloudflare canonical page paths',()=>{
+  it('normalizes extensionless, HTML and trailing slash paths',()=>{
+    for(const path of ['/site/contact','/site/contact/','/site/contact.html','contact'])expect(pageFileFromPath(path)).toBe('contact.html');
+    expect(pageFileFromPath('/site/')).toBe('index.html');
+  });
+  it('renders published availability on the real extensionless Plan a party route',()=>{
+    const document=doc('contact.html');
+    renderPageContent(document,[{type:'settings',data:{calendarEnabled:true}}],'/site/contact');
+    expect(document.querySelector('[data-availability-slot] #availability')).not.toBeNull();
+    renderPageContent(document,[{type:'settings',data:{calendarEnabled:false}}],'/site/contact');
+    expect(document.querySelector('#availability')).toBeNull();
+  });
+ });

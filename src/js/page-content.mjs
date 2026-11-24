@@ -18,7 +18,13 @@ function setText(node,value){
   node.style.whiteSpace='pre-line';
   if(node.matches('a,button')&&!node.closest('nav'))node.hidden=!text;
 }
+export function pageFileFromPath(path){
+  const last=String(path).split('?')[0].replace(/\/+$/,'').split('/').pop()||'index';
+  const name=last.replace(/\.html$/,'');
+  return ['index','contact','terms','gallery'].includes(name)?name+'.html':'index.html';
+}
 export function renderPageContent(document,content,file){
+  file=pageFileFromPath(file);
   renderAvailability(document,content,file);
   const pages=content.filter(e=>e.type==='page'&&e.data.visible!==false);
   for(const [key,section] of Object.entries(pageSections)){

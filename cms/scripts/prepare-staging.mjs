@@ -24,10 +24,10 @@ for (const name of [
   );
   // CMS loader is synchronous in the head: its configuration must precede it.
   html = html
-    .replace('<script src="src/js/cms-source.js"></script>', "")
+    .replace(/<script src="src\/js\/cms-source\.js(?:\?[^" ]*)?"><\/script>/, "")
     .replace(
       "</head>",
-      '<script src="src/js/cms-source.js"></script>\n</head>',
+      '<script src="src/js/cms-source.js?v=20261124-routing"></script>\n</head>',
     );
   if (name === "contact.html") {
     html = html.replace(
