@@ -52,7 +52,7 @@
   document.addEventListener('DOMContentLoaded',async()=>{
     if(override)document.querySelectorAll('a[href]').forEach(link=>{const target=new URL(link.href,location.href);if(target.origin===location.origin&&target.pathname.endsWith('.html')){target.searchParams.set('cms',origin);link.href=target.href;}});
     try{
-      const {renderPageContent}=await import('./page-content.mjs?v=20261124-enquiry');
+      const {renderPageContent}=await import('./page-content.mjs?v=20261124-messenger');
       renderPageContent(document,(await ready).content,location.pathname);
     }catch{console.warn('CMS page content unavailable');}
   });

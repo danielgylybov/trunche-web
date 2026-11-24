@@ -6,6 +6,8 @@ const normalized=value=>String(value??'').replace(/\s+/g,'').trim();
 function setText(node,value){
   if(!node)return;
   const text=String(value??'');
+  const buttonLabel=node.matches('[data-messenger-link]')&&node.querySelector('[data-messenger-label]');
+  if(buttonLabel){setText(buttonLabel,text);node.hidden=!text;return;}
   // Keep the redesign's illustrations, spans and highlighted words when text is unchanged.
   if(normalized(node.textContent)!==normalized(text)){
     const decoration=node.querySelector('.tiny-flower');

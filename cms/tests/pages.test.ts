@@ -65,3 +65,13 @@ describe('page diff against existing redesign defaults',()=>{
     expect(document.querySelector('#availability')).toBeNull();
   });
  });
+
+describe('Messenger contact button',()=>{
+ it('keeps its icon when the editable button label changes',()=>{
+  const document=doc('contact.html');
+  renderPageContent(document,[{type:'page',data:{key:'contacts',buttonLabel:'Свържи се с нас'}}],'contact.html');
+  const link=document.querySelector('[data-messenger-link]')!;
+  expect(link.querySelector('svg use')).not.toBeNull();
+  expect(link.querySelector('[data-messenger-label]')?.textContent).toBe('Свържи се с нас');
+ });
+});

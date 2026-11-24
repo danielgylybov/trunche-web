@@ -27,7 +27,7 @@ for (const name of [
     .replace(/<script src="src\/js\/cms-source\.js(?:\?[^" ]*)?"><\/script>/, "")
     .replace(
       "</head>",
-      '<script src="src/js/cms-source.js?v=20261124-enquiry"></script>\n</head>',
+      '<script src="src/js/cms-source.js?v=20261124-messenger"></script>\n</head>',
     );
   if (name === "contact.html") {
     html = html.replace(
